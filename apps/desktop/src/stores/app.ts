@@ -12,6 +12,7 @@ interface UiState {
   historyOpen: boolean;
   settingsOpen: boolean;
   setupOpen: boolean;
+  memoryOpen: boolean;
 }
 
 interface AppState extends LiveState {
@@ -48,7 +49,7 @@ export const useApp = create<AppState>((set, get) => ({
   conn: "booting",
   connError: null,
   setup: null,
-  ui: { chatOpen: true, historyOpen: false, settingsOpen: false, setupOpen: false },
+  ui: { chatOpen: true, historyOpen: false, settingsOpen: false, setupOpen: false, memoryOpen: false },
 
   setConn: (conn, error = null) => set({ conn, connError: error }),
 

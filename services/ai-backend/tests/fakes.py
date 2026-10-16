@@ -20,9 +20,17 @@ def text(*parts: str) -> list[StreamChunk]:
     ]
 
 
-def tool_call(query: Any) -> list[StreamChunk]:
+def tool_call(query: Any, name: str = "web_search") -> list[StreamChunk]:
     return [
-        StreamChunk(kind="tool_calls", tool_calls=[ToolCall(name="web_search", arguments={"query": query})]),
+        StreamChunk(kind="tool_calls", tool_calls=[ToolCall(name=name, arguments={"query": query})]),
+        StreamChunk(kind="done", eval_count=1, eval_duration_ms=1.0, prompt_eval_count=10),
+    ]
+
+
+def memory_ops(*operations: dict[str, Any]) -> list[StreamChunk]:
+    """What the local model returns for a memory-extraction request (an update_memory tool call)."""
+    return [
+        StreamChunk(kind="tool_calls", tool_calls=[ToolCall(name="update_memory", arguments={"operations": list(operations)})]),
         StreamChunk(kind="done", eval_count=1, eval_duration_ms=1.0, prompt_eval_count=10),
     ]
 

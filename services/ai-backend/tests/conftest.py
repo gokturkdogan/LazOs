@@ -61,6 +61,8 @@ def client(boot: BootConfig, fake_llm: FakeLLM, fake_search: FakeSearchProvider)
 
     app = create_app(boot, services_factory=factory)
     with TestClient(app) as c:
+        # Background learning would consume scripted FakeLLM replies; memory tests enable it explicitly.
+        app.state.services.user_settings = app.state.services.user_settings.model_copy(update={"memory_auto_learn": False})
         c.token = app.state.token  # type: ignore[attr-defined]
         c.services = app.state.services  # type: ignore[attr-defined]
         yield c

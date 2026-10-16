@@ -1,5 +1,10 @@
 import type {
   AudioDevice,
+  CoreIdentity,
+  EpisodeHit,
+  MemoryCategory,
+  MemoryItem,
+  MemoryOverview,
   ConversationDetail,
   ConversationSummary,
   SetupInfo,
@@ -77,6 +82,17 @@ export const api = {
 
   devices: (refresh = false) =>
     request<{ inputs: AudioDevice[]; outputs: AudioDevice[] }>("GET", `/api/audio/devices?refresh=${refresh}`),
+  memory: () => request<MemoryOverview>("GET", "/api/memory"),
+  saveIdentity: (identity: CoreIdentity) => request<CoreIdentity>("PUT", "/api/memory/identity", identity),
+  resetIdentity: () => request<CoreIdentity>("POST", "/api/memory/identity/reset"),
+  addMemory: (category: MemoryCategory, content: string) =>
+    request<MemoryItem & { created: boolean }>("POST", "/api/memory/items", { category, content }),
+  updateMemory: (id: string, patch: { category?: MemoryCategory; content?: string }) =>
+    request<MemoryItem>("PATCH", `/api/memory/items/${id}`, patch),
+  deleteMemory: (id: string) => request<void>("DELETE", `/api/memory/items/${id}`),
+  clearMemories: () => request<{ deleted: number }>("DELETE", "/api/memory/items?confirm=true"),
+  searchEpisodes: (q: string) => request<{ query: string; hits: EpisodeHit[] }>("GET", `/api/memory/episodes?q=${encodeURIComponent(q)}`),
+
   previewVoice: (engine?: "piper" | "macos") =>
     request<{ engine: string; duration_s: number }>("POST", "/api/voice/preview", engine ? { engine } : {}, 30000),
 };

@@ -14,6 +14,8 @@
 - First-run setup: compatibility, Ollama runtime, approval-gated model install with progress and
   checksums, local reuse of existing Whisper weights, microphone test.
 - The living AI core, with state colours driven by real audio levels.
+- Core identity (persistent and settings-only) and long-term learning memory: explicit and background
+  learning, episodic search across conversations, a management UI, and schema migrations.
 
 **Needs manual confirmation** (see TESTING.md): real-microphone recognition quality in your room,
 speaker playback, macOS permission prompts in the bundled app, and long-session FPS in the native
@@ -42,7 +44,9 @@ window.
 - **Inference:**
   - evaluate the GGUF `qwen3.5:9b-q4_K_M` (llama.cpp runner) and MTP variants for faster prefill;
   - an optional direct MLX-LM backend behind `LLMBackend`;
-  - a smarter context: retrieval over past conversations, saved user facts ("memory").
+  - optional local embeddings (e.g. a small multilingual embedding model) for semantic memory recall,
+    if FTS5 with category hints proves insufficient;
+  - periodic consolidation of related memories into one, and memory "decay" for unused entries.
 - **Research:** result caching, a page-quality score, follow-up searches when sources disagree, and
   an inline "read more" mode for one source.
 - **Packaging:** embed a relocatable Python runtime (or a PyInstaller sidecar) for a self-contained,

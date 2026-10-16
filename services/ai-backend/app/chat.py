@@ -25,7 +25,9 @@ from app.inference.prompts import (
     WEB_SEARCH_TOOL,
     build_system_prompt,
 )
-from app.research.router import build_search_query, route
+from app.memory.intent import is_episodic, is_forget, is_remember
+from app.memory.service import SEARCH_MEMORY_TOOL, MemoryService, TurnMemory
+from app.research.router import RouteDecision, build_search_query, route
 from app.research.service import ResearchResult, ResearchService, parse_tool_args
 from app.speech.audio_io import AudioPlayer
 from app.speech.speaker import SpeechSession
@@ -34,6 +36,7 @@ from app.speech.tts import TTSManager
 log = logging.getLogger("lazos.chat")
 
 MAX_SEARCHES_PER_TURN = 2
+MAX_TOOL_ROUNDS = 3
 _CITE = re.compile(r"\[(\d+)\]")
 
 FRIENDLY_ERRORS = {
@@ -76,8 +79,10 @@ class ChatService:
         player: AudioPlayer,
         metrics: MetricsLog,
         settings: Callable[[], UserSettings],
+        memory: MemoryService | None = None,
     ) -> None:
         self.store = store
+        self.memory = memory
         self.llm = llm
         self.research = research
         self.hub = hub
@@ -98,7 +103,23 @@ class ChatService:
     def busy(self) -> bool:
         return self._turn is not None and not self._turn.done()
 
+    def tools_for(self, settings: UserSettings) -> list[dict[str, Any]] | None:
+        """Tool set offered to the model. Kept identical across turns so the prompt prefix stays cached."""
+        tools: list[dict[str, Any]] = []
+        if settings.research_mode != "off":
+            tools.append(WEB_SEARCH_TOOL)
+        if self.memory and settings.memory_enabled:
+            tools.append(SEARCH_MEMORY_TOOL)
+        return tools or None
+
+    def system_prompt(self, *, voice: bool, has_tools: bool) -> str:
+        if self.memory:
+            return self.memory.system_prompt(voice=voice, has_tools=has_tools)
+        return build_system_prompt(voice=voice, has_tools=has_tools)
+
     async def submit(self, req: TurnRequest) -> asyncio.Task[None]:
+        if self.memory:
+            self.memory.on_turn_start()
         await self.cancel()
         if self._summarizer and not self._summarizer.done():
             self._summarizer.cancel()
@@ -156,12 +177,23 @@ class ChatService:
         parts: list[str] = []
         research: ResearchResult | None = None
         status = "complete"
+        turn_memory: TurnMemory | None = None
         try:
+            if self.memory:
+                if is_remember(req.text) or is_forget(req.text):
+                    self.state.set(AIState.THINKING, "memory", force=True)
+                turn_memory = await self.memory.prepare_turn(
+                    text=req.text, conversation_id=conv.id, message=user_msg, recent=history[-4:]
+                )
+                self.state.set(AIState.THINKING, force=True)
+
             decision = route(req.text, settings.research_mode)
-            tools = [WEB_SEARCH_TOOL] if settings.research_mode != "off" else None
+            if self.memory and (is_episodic(req.text) or self.memory.is_identity_question(req.text)):
+                decision = RouteDecision("none", "answered from memory/identity")
+            tools = self.tools_for(settings)
             log.info("turn routed", extra={"action": decision.action, "reason": decision.reason})
 
-            system = build_system_prompt(voice=req.origin == "voice", has_tools=bool(tools))
+            system = self.system_prompt(voice=req.origin == "voice", has_tools=settings.research_mode != "off")
             stamped = stamp(req.text, datetime.fromtimestamp(user_msg.created_at).astimezone())
             plan = build_context(
                 system_prompt=system,
@@ -179,7 +211,11 @@ class ChatService:
                 keep_alive_minutes=settings.keep_alive_minutes,
             )
 
+            if turn_memory and turn_memory.tool_content:
+                messages += self._exchange("search_memory", {"query": req.text[:200]}, turn_memory.tool_content)
+
             searches = 0
+            tool_rounds = 0
             if decision.action == "search":
                 query = build_search_query(req.text)
                 research = await self._do_research(query, assistant_id, settings, metrics)
@@ -204,16 +240,23 @@ class ChatService:
                         if chunk.eval_count and chunk.eval_duration_ms:
                             metrics.tokens_per_s = round(chunk.eval_count / (chunk.eval_duration_ms / 1000), 1)
 
-                call = next((c for c in tool_calls if c.name == "web_search"), None)
-                if call and searches < MAX_SEARCHES_PER_TURN and not "".join(parts).strip():
+                call = next((c for c in tool_calls if c.name in ("web_search", "search_memory")), None)
+                answered = bool("".join(parts).strip())
+                if call and not answered and tool_rounds < MAX_TOOL_ROUNDS:
+                    tool_rounds += 1
                     args = parse_tool_args(call.arguments)
                     query = args.query if args else req.text[:200]
-                    research = await self._do_research(query, assistant_id, settings, metrics)
-                    messages += self._tool_exchange(query, research)
-                    searches += 1
-                    continue
-                if call and not "".join(parts).strip():
-                    # Search budget exhausted: answer with what we have, without tools.
+                    if call.name == "search_memory" and self.memory:
+                        found = await self.memory.search_tool(query, conv.id)
+                        messages += self._exchange("search_memory", {"query": query}, found)
+                        continue
+                    if call.name == "web_search" and searches < MAX_SEARCHES_PER_TURN:
+                        research = await self._do_research(query, assistant_id, settings, metrics)
+                        messages += self._tool_exchange(query, research)
+                        searches += 1
+                        continue
+                if call and not answered:
+                    # Tool budget exhausted: answer with what we have, without tools.
                     tools = None
                     continue
                 break
@@ -250,6 +293,10 @@ class ChatService:
             # the turn metrics include real time-to-first-audio.
             await speech.wait_first_audio(timeout=5.0)
         await self._finalize(conv.id, assistant_id, parts, research, metrics, req, status)
+        if self.memory:
+            self.memory.after_turn(
+                conversation_id=conv.id, message=user_msg, handled=bool(turn_memory and turn_memory.handled_explicitly)
+            )
 
         if speech:
             try:
@@ -311,6 +358,13 @@ class ChatService:
         self.hub.publish({"type": "chat.done", "message_id": message_id, "status": status, "message": msg.to_dict()})
         self.hub.publish({"type": "metrics", "turn": data})
         return msg
+
+    @staticmethod
+    def _exchange(name: str, arguments: dict[str, Any], content: str) -> list[dict[str, Any]]:
+        return [
+            {"role": "assistant", "content": "", "tool_calls": [{"function": {"name": name, "arguments": arguments}}]},
+            {"role": "tool", "tool_name": name, "content": content},
+        ]
 
     @staticmethod
     def _tool_exchange(query: str, research: ResearchResult) -> list[dict[str, Any]]:

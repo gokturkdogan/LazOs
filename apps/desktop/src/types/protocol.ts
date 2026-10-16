@@ -80,8 +80,64 @@ export interface UserSettings {
   vad_silence_ms: number;
   input_device: string | null;
   output_device: string | null;
+  memory_enabled: boolean;
+  memory_auto_learn: boolean;
   reduced_motion: boolean;
   visual_quality: "auto" | "high" | "low";
+}
+
+// ── identity & memory ─────────────────────────────────────────────────────
+export interface CoreIdentity {
+  name: string;
+  creator_name: string;
+  origin: string;
+  purpose: string;
+  creator_description: string;
+  identity_description: string;
+}
+
+export type MemoryCategory =
+  | "user_identity"
+  | "preference"
+  | "communication"
+  | "project"
+  | "interest"
+  | "decision"
+  | "knowledge";
+
+export interface MemoryItem {
+  id: string;
+  category: MemoryCategory;
+  category_label: string;
+  content: string;
+  origin: "auto" | "explicit" | "manual";
+  sensitive: boolean;
+  source_conversation_id: string | null;
+  source_message_id: string | null;
+  history: { content: string; until: number }[];
+  created_at: number;
+  updated_at: number;
+  use_count: number;
+  last_used_at: number | null;
+}
+
+export interface MemoryOverview {
+  identity: CoreIdentity;
+  default_identity: CoreIdentity;
+  categories: Record<MemoryCategory, string>;
+  profile_categories: MemoryCategory[];
+  memories: MemoryItem[];
+  stats: { memories: number; by_category: Partial<Record<MemoryCategory, number>>; conversations: number; indexed_messages: number };
+  pending_learning: number;
+}
+
+export interface EpisodeHit {
+  conversation_id: string;
+  conversation_title: string;
+  message_id: string;
+  role: "user" | "assistant";
+  content: string;
+  created_at: number;
 }
 
 export interface SystemStatus {
@@ -157,6 +213,13 @@ export type ServerEvent =
   | { type: "chat.done"; message_id: string; status: string; message: ChatMessage | null }
   | { type: "chat.error"; message_id?: string; code: string; message: string }
   | { type: "metrics"; turn: TurnMetrics }
+  | {
+      type: "memory.changed";
+      change: "added" | "updated" | "deleted" | "cleared";
+      origin: "auto" | "explicit" | "manual";
+      memory: MemoryItem | null;
+    }
+  | { type: "identity.changed"; identity: CoreIdentity }
   | { type: "error"; code: string; message: string };
 
 // ── client → server messages ──────────────────────────────────────────────

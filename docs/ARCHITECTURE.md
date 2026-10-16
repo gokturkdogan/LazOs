@@ -59,6 +59,13 @@ captured or handed to the output device, and the AI core visualises those.
 | `research/fetch.py` | SSRF guard (public IPs only, re-checked after redirects), size cap, trafilatura extraction |
 | `models/manager.py` | Detect, approve-then-install, progress events, size + SHA-256 verification, Ollama pull |
 | `models/whisper_convert.py` | Converts an existing OpenAI Whisper `.pt` to MLX, with strict key/shape validation |
+| `memory/identity.py` | `CoreIdentity` (name, creator, origin, purpose, descriptions), defaults, and how it is written into the system prompt |
+| `memory/store.py` | Identity table; learned memories (category, origin, sensitivity, source references, version history, usage); duplicate merging; FTS5 search over memories and messages |
+| `memory/text.py` | Turkish folding (İ/ı, ş, ğ…), stopwords, prefix stemming for FTS queries, similarity measure for duplicates |
+| `memory/intent.py` | Deterministic signals: remember, forget, persistent instruction, hypothetical, episodic, learnable, sensitive, secret, time windows |
+| `memory/learner.py` | The local model proposes `update_memory` tool calls; rules decide what is applied; background worker that pauses for user turns |
+| `memory/service.py` | Entry point used by the chat pipeline: system profile, per-turn retrieval, explicit operations, episodic search, learning queue |
+| `api/memory.py` | Owner-only management of identity, memories and episode search |
 
 ## WebSocket contract (`/ws?token=…`)
 
@@ -110,6 +117,49 @@ The HTTP routes are `/health` (public), plus `/api/status`, `/api/setup`, `/api/
 Cancellation (Stop/Esc, a new message, or the mic during an answer) cancels the asyncio task. That
 closes the HTTP stream so Ollama stops generating, saves the partial text as `interrupted`, and
 silences TTS.
+
+## Identity and long-term memory
+
+**Storage.** The database uses schema version 2, tracked with `PRAGMA user_version`; databases from
+before this change upgrade in place and existing messages are backfilled into the index. It adds:
+- `core_identity`: a single row;
+- `memories`: category, content, origin `auto|explicit|manual`, sensitivity flag, source
+  conversation and message IDs, history of previous versions, usage counters;
+- two FTS5 indexes (`memories_fts`, `messages_fts`) over Turkish-folded text.
+
+**Every turn:**
+1. **System prompt** = core identity + behaviour + the *profile*: user identity, communication and
+   personal-preference memories, capped at 24 entries / 1,600 chars. It changes only when those
+   memories change, so the cached prompt prefix survives.
+2. **Explicit commands** ("hatırla", "bundan sonra…", "…unut") run the memory model **before**
+   answering, about 1–3 s, which lets LAZOS confirm exactly what it saved or deleted.
+3. **Retrieval** (local, milliseconds):
+   - FTS for topical memories (projects, interests, decisions, knowledge), plus category hints
+     ("hangi projeden…" → projects);
+   - for questions about the past, matching messages from *other* conversations, filtered by
+     relative time windows ("dün", "geçen hafta", "geçen ay"), falling back to the latest
+     conversations;
+   - results are injected as a `search_memory` tool result with a "do not invent" rule. The model
+     can also call `search_memory` itself.
+4. **Learning** after the answer: if the user message looks like a durable first-person statement
+   and isn't hypothetical, it's queued. A background worker waits until LAZOS is idle, sends the
+   message plus four messages of context and candidate memories (shown to the model as `m1`, `m2`, …)
+   to the local Qwen, and is cancelled and re-queued as soon as a new turn starts. Measured: this
+   call does not evict the chat prompt cache (the next turn's first token arrived in 121 ms).
+
+**Guard rails applied after the model's proposal:**
+- deletes happen only on an explicit "forget" request;
+- sensitive facts need explicit permission;
+- secrets are never stored;
+- facts about LAZOS's own identity are rejected;
+- near-duplicates (Jaccard ≥ 0.75) refresh the existing entry;
+- updates keep the previous text in the entry's history.
+
+Identity and episodic questions never trigger web research.
+
+**Embeddings.** None are used. At personal scale (hundreds of memories, thousands of messages),
+Turkish-folded FTS5 with prefix stemming plus category hints is fast and accurate enough. Semantic
+embeddings are on the roadmap if recall proves insufficient.
 
 ## Context management and prompt caching
 

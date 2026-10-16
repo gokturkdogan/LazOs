@@ -32,6 +32,8 @@ export interface LiveState {
   lastTurn: TurnMetrics | null;
   caption: string;
   toasts: Toast[];
+  /** Bumped on every memory/identity change so open views can refresh. */
+  memoryRevision: number;
 }
 
 export const initialLiveState: LiveState = {
@@ -49,6 +51,7 @@ export const initialLiveState: LiveState = {
   lastTurn: null,
   caption: "",
   toasts: [],
+  memoryRevision: 0,
 };
 
 let toastSeq = 0;
@@ -168,6 +171,15 @@ export function reduceEvent(s: LiveState, e: ServerEvent): Partial<LiveState> | 
     }
     case "metrics":
       return { lastTurn: e.turn };
+    case "memory.changed": {
+      const revision = { memoryRevision: s.memoryRevision + 1 };
+      // Manual edits come from the user; only announce what LAZOS learned or changed on its own.
+      if (e.origin === "manual" || !e.memory) return revision;
+      const verb = e.change === "added" ? "Öğrendim" : e.change === "updated" ? "Hafızamı güncelledim" : "Unuttum";
+      return { ...revision, toasts: [...s.toasts, makeToast("info", `${verb}: ${e.memory.content}`)].slice(-4) };
+    }
+    case "identity.changed":
+      return { memoryRevision: s.memoryRevision + 1 };
     case "error":
       return { toasts: [...s.toasts, makeToast("error", e.message)].slice(-4) };
     default:

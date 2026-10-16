@@ -1,4 +1,4 @@
-import { History, MessageSquareText, PanelRightClose, Settings2 } from "lucide-react";
+import { Brain, History, MessageSquareText, PanelRightClose, Settings2 } from "lucide-react";
 
 import { useApp } from "../../stores/app";
 import { stateLabel } from "../ai-core/palette";
@@ -91,6 +91,9 @@ export function TopBar() {
         <div className="mx-1 h-4 w-px bg-white/10" />
         <IconButton title="Geçmiş konuşmalar" active={ui.historyOpen} onClick={() => setUi({ historyOpen: !ui.historyOpen })}>
           <History size={15} />
+        </IconButton>
+        <IconButton title="Hafıza ve kimlik" active={ui.memoryOpen} onClick={() => setUi({ memoryOpen: !ui.memoryOpen })}>
+          <Brain size={15} />
         </IconButton>
         <IconButton title="Ayarlar" active={ui.settingsOpen} onClick={() => setUi({ settingsOpen: !ui.settingsOpen })}>
           <Settings2 size={15} />

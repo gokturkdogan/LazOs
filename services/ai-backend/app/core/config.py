@@ -91,6 +91,9 @@ class UserSettings(BaseModel):
     input_device: str | None = None
     output_device: str | None = None
 
+    memory_enabled: bool = True  # use identity profile, learned memories and past conversations in answers
+    memory_auto_learn: bool = True  # learn durable facts from conversations in the background
+
     reduced_motion: bool = False
     visual_quality: Literal["auto", "high", "low"] = "auto"
 

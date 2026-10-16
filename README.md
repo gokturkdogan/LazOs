@@ -15,6 +15,15 @@ LAZOS does.
 - **Web research with real sources:** search runs only when a question needs it. Answers cite
   numbered, clickable sources, and web content is treated as untrusted data.
 - **Private history:** conversations are stored in a local SQLite database and never synced.
+- **Identity:** LAZOS always knows it is LAZOS, created by Göktürk Doğan. This core identity is part
+  of every conversation, survives restarts, and can only be changed in the Memory panel, never
+  through chat.
+- **Learning memory:** LAZOS gradually learns durable facts about you: identity, preferences,
+  communication style, projects, interests and decisions.
+  - "Bunu hatırla", "bundan sonra…" and "…unut" act immediately.
+  - Other durable statements are learned in the background after the answer, so learning doesn't
+    slow replies.
+  - It can answer "geçen hafta ne konuşmuştuk?" from real past conversations and never invents them.
 
 | State | Core colour | Meaning |
 |---|---|---|
@@ -71,6 +80,12 @@ Models live in `~/Library/Application Support/LAZOS/models`. Ollama keeps its ow
 - **SESLİ MOD:** hands-free conversation. LAZOS goes listen → understand → think → speak → listen
   again. Click the mic during an answer to interrupt and speak.
 - **History (clock icon):** open, rename, delete or search past conversations.
+- **Memory (brain icon):** five tabs.
+  - *Core identity* and *Creator profile*: edits need a second click to confirm.
+  - *Learned memories*: add, edit, delete or clear everything. Each entry shows its source and
+    previous versions.
+  - *Conversation memory*: search past conversations.
+  - *Memory settings*: turn automatic learning on or off, and choose whether memory is used in answers.
 - **Settings (sliders icon):** model, context window, voice engine (Piper or macOS Yelda) with a
   preview, speech speed, recognition language, VAD sensitivity, audio devices, research mode, visual
   quality and reduced motion.
@@ -99,6 +114,9 @@ For more detail, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/DEVELOP
 - Web content goes to the model as clearly marked *untrusted data* and must not be followed as
   instructions. A test verifies this against an injected instruction.
 - The connectivity indicator uses a bare TCP connect and sends no data. LAZOS has no telemetry.
+- Memory stays in the local database. Sensitive topics (health, beliefs, politics, finances) are
+  stored only when you explicitly ask. Secrets (passwords, card numbers, IBANs) are never stored.
+  Hypothetical statements aren't learned, and memories are deleted only on an explicit request.
 
 ## Troubleshooting
 

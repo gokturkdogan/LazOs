@@ -3,8 +3,8 @@
 ## Automated tests
 
 ```bash
-scripts/test.sh          # hermetic suite: ruff, 61 backend tests, tsc, 8 frontend tests, cargo check
-scripts/test.sh --all    # adds 10 live tests (real Ollama, web search, speech models, audio device)
+scripts/test.sh          # hermetic suite: ruff, 83 backend tests, tsc, 10 frontend tests, cargo check
+scripts/test.sh --all    # adds 11 live tests (real Ollama incl. the identity/memory scenarios, web search, speech, audio)
 ```
 
 | File | What it covers |
@@ -15,9 +15,11 @@ scripts/test.sh --all    # adds 10 live tests (real Ollama, web search, speech m
 | `tests/test_persistence_models.py` | Conversations, sources, metrics and settings survive a database reopen (application restart); cascade delete; model detection; local Whisper reuse instead of download; checksum and size verification of downloads; Whisper key remapping |
 | `tests/test_voice_pipeline.py` *(models)* | **Real Silero VAD + real Whisper** with a simulated microphone: continuous conversation with the full state sequence `listening → transcribing → thinking → speaking → listening`; push-to-talk back to idle; silence produces no turn; an all-zero microphone (permission denied) reports an error and recovers |
 | `tests/test_live.py` *(integration/network/models)* | Real Turkish streaming answer from `qwen3.5:9b` (no `<think>`, short small talk); real cancellation in under 0.5 s; live research with extracted pages; Piper synthesis faster than real time; macOS Turkish voice; output-device lifecycle (plays inaudible silence) |
+| `tests/test_memory.py` | Identity in every system prompt and across restarts; identity editable only via settings, not via chat; explicit preference persists across restart; forgetting; deletes need an explicit request; updates keep history; background learning with source references; learning can be disabled; hypotheticals and small talk are not learned; sensitive needs permission and secrets are never stored; duplicate merging; relevant-only retrieval; Turkish folding; episodic "last week" search without web research; honest "nothing found"; model-initiated memory search; category hints; migration from the pre-memory database; memory API CRUD; memory on/off |
+| `tests/test_live_memory.py` *(integration)* | **All 7 requested scenarios with the real `qwen3.5:9b`**: "Sen kimsin?", "Seni kim geliştirdi?", "Göktürk Doğan kim?", restart → "Adın ne?", "Bundan sonra bana kısa cevaplar ver." → restart → still short, "Geçen konuşmamızda hangi projeden bahsetmiştim?" → Atlas, "Kısa cevap tercihimi unut." → only that memory removed. Also checks that background learning picked up TypeScript and Atlas, and that the creator is not mentioned in an unrelated coding answer. Passed in 3 of 3 consecutive runs. |
 | `src/stores/reducer.test.ts` | UI event reducer (streaming, research, errors, foreign conversations, voice state); state → colour mapping; citation linking outside code; formatting |
 
-**Last verified run** (M4 Pro, 24 GB): 71 backend tests passed (61 hermetic + 10 live), and 8 of 8
+**Last verified run** (M4 Pro, 24 GB): 94 backend tests passed (83 hermetic + 11 live), and 10 of 10
 frontend tests passed.
 
 ## Manual verification (needs hardware or a human)
@@ -79,7 +81,19 @@ tests can't cover them.
 2. Rename one conversation and delete the other.
    - [ ] The changes persist after another restart.
 
-### 7. Failure handling
+### 7. Identity and memory
+1. Ask "Sen kimsin?" and "Seni kim geliştirdi?".
+   - [ ] Natural answers that name LAZOS and Göktürk Doğan, without repeating the full description.
+2. Say "Ben genellikle TypeScript kullanıyorum."
+   - [ ] Within a few seconds a toast says "Öğrendim: …", and the entry appears under the brain icon › Öğrenilenler.
+3. Say "Bundan sonra bana kısa cevaplar ver.", quit with ⌘Q, relaunch, and ask a question.
+   - [ ] The answer is short.
+4. Say "Kısa cevap tercihimi unut."
+   - [ ] A "Unuttum: …" toast appears and the entry disappears.
+5. In a new conversation ask "Geçen konuşmamızda ne konuşmuştuk?".
+   - [ ] LAZOS answers from the real previous conversation, or says it has no record.
+
+### 8. Failure handling
 1. Quit Ollama while LAZOS is open.
    - [ ] The top-bar chip turns red. Sending a message shows a clear Turkish error, the core briefly
      turns red, then recovers.

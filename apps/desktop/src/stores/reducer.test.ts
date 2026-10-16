@@ -97,6 +97,38 @@ describe("reduceEvent", () => {
   });
 });
 
+describe("memory events", () => {
+  const item = {
+    id: "m1",
+    category: "preference" as const,
+    category_label: "Kişisel tercih",
+    content: "Kullanıcı genellikle TypeScript kullanıyor.",
+    origin: "auto" as const,
+    sensitive: false,
+    source_conversation_id: "c1",
+    source_message_id: "u1",
+    history: [],
+    created_at: 1,
+    updated_at: 1,
+    use_count: 0,
+    last_used_at: null,
+  };
+
+  it("announces what LAZOS learned on its own and bumps the revision", () => {
+    const s = apply(initialLiveState, { type: "memory.changed", change: "added", origin: "auto", memory: item });
+    expect(s.memoryRevision).toBe(1);
+    expect(s.toasts.at(-1)?.message).toBe("Öğrendim: Kullanıcı genellikle TypeScript kullanıyor.");
+    const forgot = apply(s, { type: "memory.changed", change: "deleted", origin: "explicit", memory: item });
+    expect(forgot.toasts.at(-1)?.message.startsWith("Unuttum:")).toBe(true);
+  });
+
+  it("stays quiet about the owner's own manual edits", () => {
+    const s = apply(initialLiveState, { type: "memory.changed", change: "added", origin: "manual", memory: item });
+    expect(s.toasts).toHaveLength(0);
+    expect(s.memoryRevision).toBe(1);
+  });
+});
+
 describe("visual state mapping", () => {
   it("maps internal states to the colour system", () => {
     expect(lookFor("idle").colors[0]).toBe("#00BFFF");

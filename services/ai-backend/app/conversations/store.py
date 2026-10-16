@@ -11,10 +11,11 @@ from typing import Any
 
 import aiosqlite
 
-SCHEMA = """
-PRAGMA journal_mode = WAL;
-PRAGMA foreign_keys = ON;
+from app.memory.text import index_body
 
+# Schema migrations, applied in order and tracked with PRAGMA user_version.
+# Version 1 is the original schema (idempotent, so pre-migration databases upgrade cleanly).
+SCHEMA_V1 = """
 CREATE TABLE IF NOT EXISTS conversations (
     id            TEXT PRIMARY KEY,
     title         TEXT NOT NULL,
@@ -42,6 +43,35 @@ CREATE TABLE IF NOT EXISTS settings (
     key   TEXT PRIMARY KEY,
     value TEXT NOT NULL
 );
+"""
+
+# Version 2: core identity, long-term memory and full-text indexes (Turkish-folded text).
+SCHEMA_V2 = """
+CREATE TABLE IF NOT EXISTS core_identity (
+    id         INTEGER PRIMARY KEY CHECK (id = 1),
+    data       TEXT NOT NULL,
+    updated_at REAL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS memories (
+    seq                    INTEGER PRIMARY KEY AUTOINCREMENT,
+    id                     TEXT NOT NULL UNIQUE,
+    category               TEXT NOT NULL,
+    content                TEXT NOT NULL,
+    origin                 TEXT NOT NULL,              -- auto | explicit | manual
+    sensitive              INTEGER NOT NULL DEFAULT 0,
+    source_conversation_id TEXT,                       -- kept even if the conversation is deleted
+    source_message_id      TEXT,
+    history                TEXT,                       -- JSON list of previous versions
+    created_at             REAL NOT NULL,
+    updated_at             REAL NOT NULL,
+    last_used_at           REAL,
+    use_count              INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_memories_category ON memories(category, updated_at);
+
+CREATE VIRTUAL TABLE IF NOT EXISTS memories_fts USING fts5(body, tokenize = 'unicode61 remove_diacritics 2');
+CREATE VIRTUAL TABLE IF NOT EXISTS messages_fts USING fts5(body, tokenize = 'unicode61 remove_diacritics 2');
 """
 
 
@@ -105,10 +135,33 @@ class ConversationStore:
         try:
             self._db = await aiosqlite.connect(self._path)
             self._db.row_factory = aiosqlite.Row
-            await self._db.executescript(SCHEMA)
-            await self._db.commit()
+            await self._db.execute("PRAGMA journal_mode = WAL")
+            await self._db.execute("PRAGMA foreign_keys = ON")
+            await self._migrate()
         except Exception as exc:  # pragma: no cover - surfaced via status
             raise StoreError(f"cannot open database: {exc}") from exc
+
+    async def _migrate(self) -> None:
+        async with self.db.execute("PRAGMA user_version") as cur:
+            version = (await cur.fetchone())[0]
+        if version < 1:
+            await self.db.executescript(SCHEMA_V1)
+            await self.db.execute("PRAGMA user_version = 1")
+            await self.db.commit()
+        if version < 2:
+            await self.db.executescript(SCHEMA_V2)
+            # Backfill the episodic index with existing conversations.
+            async with self.db.execute("SELECT seq, content FROM messages") as cur:
+                rows = await cur.fetchall()
+            await self.db.executemany(
+                "INSERT INTO messages_fts(rowid, body) VALUES (?, ?)", [(r["seq"], index_body(r["content"])) for r in rows]
+            )
+            await self.db.execute("PRAGMA user_version = 2")
+            await self.db.commit()
+
+    async def schema_version(self) -> int:
+        async with self.db.execute("PRAGMA user_version") as cur:
+            return (await cur.fetchone())[0]
 
     async def close(self) -> None:
         if self._db is not None:
@@ -158,6 +211,9 @@ class ConversationStore:
         return cur.rowcount > 0
 
     async def delete_conversation(self, conv_id: str) -> bool:
+        await self.db.execute(
+            "DELETE FROM messages_fts WHERE rowid IN (SELECT seq FROM messages WHERE conversation_id = ?)", (conv_id,)
+        )
         cur = await self.db.execute("DELETE FROM conversations WHERE id = ?", (conv_id,))
         await self.db.commit()
         return cur.rowcount > 0
@@ -206,6 +262,7 @@ class ConversationStore:
             ),
         )
         msg.seq = cur.lastrowid or 0
+        await self.db.execute("INSERT INTO messages_fts(rowid, body) VALUES (?, ?)", (msg.seq, index_body(content)))
         await self.db.execute("UPDATE conversations SET updated_at = ? WHERE id = ?", (msg.created_at, conv_id))
         await self.db.commit()
         return msg

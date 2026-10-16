@@ -21,7 +21,8 @@ from app.core.metrics import MetricsLog
 from app.core.state import AIState, StateMachine
 from app.inference.base import GenerationOptions, LLMBackend, LLMError
 from app.inference.ollama import OllamaBackend
-from app.inference.prompts import WEB_SEARCH_TOOL, build_system_prompt
+from app.memory.service import MemoryService
+from app.memory.store import MemoryStore
 from app.models.manager import ModelManager
 from app.research.providers.ddgs_provider import DdgsProvider
 from app.research.providers.searxng import SearxngProvider
@@ -108,6 +109,15 @@ class Services:
 
         self.player = AudioPlayer(loop, tts_level)
         self.mic = MicCapture(loop, _throttle(mic_level, 1 / 30))
+        self.memory = MemoryService(
+            store=MemoryStore(self.store),
+            conversations=self.store,
+            llm=self.llm,
+            hub=self.hub,
+            settings=self.settings,
+            # Listening counts as idle: a starting turn cancels in-flight learning anyway.
+            is_busy=lambda: self.chat.busy or self.state.state in (AIState.TRANSCRIBING, AIState.THINKING, AIState.SPEAKING),
+        )
         self.chat = ChatService(
             store=self.store,
             llm=self.llm,
@@ -118,6 +128,7 @@ class Services:
             player=self.player,
             metrics=self.metrics,
             settings=self.settings,
+            memory=self.memory,
         )
         self.voice = VoiceController(
             mic=self.mic,
@@ -129,6 +140,7 @@ class Services:
             settings=self.settings,
         )
         self.hub.publish({"type": "voice.mode", "mode": "off"}, sticky=True)
+        await self.memory.start()
         await self.models.refresh()
         self.hub.publish({"type": "setup.models", "models": self.models.describe()}, sticky=True)
         self._tasks.append(asyncio.create_task(self._monitor(), name="monitor"))
@@ -139,6 +151,7 @@ class Services:
         for task in self._tasks:
             task.cancel()
         try:
+            await self.memory.stop()
             await self.voice.stop()
             await self.chat.cancel()
             self.player.close()
@@ -174,9 +187,9 @@ class Services:
     async def _prime_llm(self) -> None:
         """Generate one token with the exact system prompt + tools used for chat, so Ollama caches that prefix."""
         s = self.user_settings
-        tools = [WEB_SEARCH_TOOL] if s.research_mode != "off" else None
+        tools = self.chat.tools_for(s)
         messages = [
-            {"role": "system", "content": build_system_prompt(voice=False, has_tools=bool(tools))},
+            {"role": "system", "content": self.chat.system_prompt(voice=False, has_tools=s.research_mode != "off")},
             {"role": "user", "content": "Merhaba"},
         ]
         options = GenerationOptions(max_tokens=1, num_ctx=s.num_ctx, keep_alive_minutes=s.keep_alive_minutes)

@@ -1,4 +1,4 @@
-import { HardDrive, Loader2, RefreshCw, Volume2, X } from "lucide-react";
+import { Brain, HardDrive, Loader2, RefreshCw, Volume2, X } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 
@@ -310,6 +310,22 @@ export function SettingsPanel() {
             <Field label="Hareketi azalt" hint="Animasyonları yavaşlatır ve sadeleştirir.">
               <Toggle value={settings.reduced_motion} onChange={(v) => set("reduced_motion", v)} />
             </Field>
+          </Section>
+
+          <Section title="Hafıza">
+            <Field label="Otomatik öğrenme" hint="Konuşmalardan kalıcı bilgileri arka planda öğrenir.">
+              <Toggle value={settings.memory_auto_learn} onChange={(v) => set("memory_auto_learn", v)} />
+            </Field>
+            <Field label="Hafızayı yanıtlarda kullan" hint="Öğrenilenleri ve geçmiş konuşmaları kullanır.">
+              <Toggle value={settings.memory_enabled} onChange={(v) => set("memory_enabled", v)} />
+            </Field>
+            <button
+              type="button"
+              onClick={() => setUi({ settingsOpen: false, memoryOpen: true })}
+              className="flex items-center gap-2 self-start rounded-md border border-white/[0.08] px-3 py-1.5 text-[12px] text-ink-dim transition-colors hover:text-white"
+            >
+              <Brain size={13} /> Çekirdek kimlik ve öğrenilenleri yönet
+            </button>
           </Section>
 
           <Section title="Sistem">
