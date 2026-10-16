@@ -1,0 +1,16 @@
+# dependencies & builds
+node_modules/
+dist/
+apps/desktop/src-tauri/target/
+apps/desktop/src-tauri/gen/
+services/ai-backend/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# local secrets & runtime
+infra/searxng/.env
+.env
+*.log
+.DS_Store

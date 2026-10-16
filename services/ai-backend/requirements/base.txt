@@ -1,0 +1,16 @@
+# LAZOS AI backend — runtime dependencies (Python 3.11+, tested on 3.14 / macOS arm64)
+fastapi>=0.140
+uvicorn[standard]>=0.50
+pydantic>=2.12
+pydantic-settings>=2.12
+httpx>=0.28
+aiosqlite>=0.21
+numpy>=2.3
+# speech
+sounddevice>=0.5
+onnxruntime>=1.23
+mlx-whisper>=0.4.3
+piper-tts>=1.3
+# research
+trafilatura>=2.0
+ddgs>=9.0
