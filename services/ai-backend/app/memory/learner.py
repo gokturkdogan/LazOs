@@ -24,7 +24,7 @@ from app.conversations.store import ConversationStore, Message
 from app.core.config import UserSettings
 from app.core.events import EventHub
 from app.inference.base import GenerationOptions, LLMBackend, LLMError
-from app.memory.intent import contains_secret, is_hypothetical, is_sensitive
+from app.memory.intent import contains_secret, is_hypothetical, is_identity_fact, is_sensitive
 from app.memory.store import CATEGORIES, PROFILE_CATEGORIES, Memory, MemoryStore
 from app.memory.text import fold
 
@@ -99,8 +99,10 @@ Mevcut: [m2] (communication) Kullanıcı kısa cevaplar istiyor.
 KULLANICI: Bu tercihimi unut.
 → {"operations": [{"action": "delete", "id": "m2"}]}"""
 
-_IDENTITY_FACT = re.compile(r"\blazos\w*\s+(adi|ismi|yaratici|kimlig|gelistirici)\w*|\b(senin|asistanin) (adi|ismi|yaratici)\w*")
 _JSON_BLOCK = re.compile(r"\{.*\}", re.DOTALL)
+
+
+_TEMPORARY = re.compile(r"\b(su anda|su an|simdi|bugun|bu aksam|bu sabah|su sira|currently|right now|today)\b")
 
 
 class MemoryOp(BaseModel):
@@ -179,7 +181,9 @@ class MemoryLearner:
         settings: Callable[[], UserSettings],
         is_busy: Callable[[], bool],
         on_change: Callable[[], Any],
+        after_background: Callable[[], Any] | None = None,
     ) -> None:
+        self.after_background = after_background
         self.store = store
         self.conversations = conversations
         self.llm = llm
@@ -262,7 +266,21 @@ class MemoryLearner:
             message=messages[idx], recent=messages[max(0, idx - 4) : idx], explicit=False, forget=False
         )
         self.processed += 1
+        if self.after_background:
+            # The extraction prompt may have displaced the chat prompt in Ollama's cache; re-warm it while idle.
+            self.after_background()
         return outcome
+
+    async def prime(self) -> None:
+        """Cache the extraction prompt prefix so explicit "hatırla/unut" requests answer faster."""
+        settings = self.settings()
+        async for _ in self.llm.stream_chat(
+            settings.llm_model,
+            [{"role": "system", "content": EXTRACTION_PROMPT}, {"role": "user", "content": "Mevcut hafıza:\n(boş)"}],
+            GenerationOptions(temperature=0.1, max_tokens=1, num_ctx=4096, keep_alive_minutes=settings.keep_alive_minutes),
+            [UPDATE_MEMORY_TOOL],
+        ):
+            pass
 
     # ── extraction ─────────────────────────────────────────────────────────
     async def process(self, *, message: Message, recent: list[Message], explicit: bool, forget: bool) -> MemoryOutcome:
@@ -355,7 +373,10 @@ class MemoryLearner:
             if contains_secret(content):  # never stored, even on request
                 outcome.refused.append("secret")
                 continue
-            if _IDENTITY_FACT.search(fold(content)):
+            if not explicit and _TEMPORARY.search(fold(content)):
+                outcome.refused.append("temporary")  # "şu anda …" is a passing state, not a durable fact
+                continue
+            if is_identity_fact(content):
                 outcome.refused.append("identity")
                 continue
             sensitive = op.sensitive or is_sensitive(content)

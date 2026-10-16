@@ -35,16 +35,41 @@ EXPLICIT_SEARCH = _rx(
     r"\bkaynak(ları|lı|larla)?\b.*\b(göster|ver|bul)\w*",
 )
 
-FRESHNESS = _rx(
-    r"\b(bugün|bugünkü|dün|yarın|bu hafta|bu ay|bu yıl|geçen hafta|şu an|şu anda|şimdi|son dakika|en son|son çıkan)\b",
+# Topics that are inherently time-sensitive.
+FRESH_TOPIC = _rx(
+    r"\b(son dakika|en son|son çıkan)\b",
     r"\b(güncel|gündem|haber|haberler|haberleri|gelişme|gelişmeler|açıklandı|duyuruldu|yeni çıkan)\w*",
     r"\b(fiyat|fiyatı|kaç para|kur|kuru|dolar|euro|borsa|bitcoin|altın)\w*\b",
-    r"\b(hava durumu|hava nasıl|sıcaklık)\b",
+    r"\b(hava durumu|hava nasıl|hava nasil|sıcaklık)\b",
     r"\b(maç|skor|puan durumu|kim kazandı|seçim|sonuçları)\w*",
-    r"\b(today|yesterday|tomorrow|this week|latest|recent|current|currently|right now|breaking|news)\b",
-    r"\b(price|stock|exchange rate|weather|score|who won|election)\b",
+    r"\b(latest|breaking|news|price|stock|exchange rate|weather|score|who won|election)\b",
+)
+# Relative time words only count when the user is actually asking for information.
+TIME_WORD = _rx(
+    r"\b(bugün|bugünkü|dün|yarın|bu hafta|bu ay|bu yıl|geçen hafta|şu an|şu anda|şimdi)\b",
+    r"\b(today|yesterday|tomorrow|this week|recent|current|currently|right now)\b",
     r"\b20[2-3]\d\b",
 )
+INFO_SEEKING = _rx(
+    r"\?",
+    r"\b(ne|neler|nedir|nasıl|kaç|kim|hangi|var mı|oldu mu|ne zaman|nerede|anlat|söyle|bilgi ver)\b",
+    r"\b(what|which|who|how|when|where|is there|tell me)\b",
+)
+
+
+# First-person plans/states ("2031'de hangi telefonu alacağım?", "Yarın neyim vardı?"): a date word in a
+# question about the user's own life is not a request for fresh web information. Fresh topics still win.
+PERSONAL = _rx(
+    r"\w+(acağım|eceğim|acak mıyım|ecek miyim|ıyorum|iyorum|uyorum|üyorum|ıyordum|iyordum|uyordum|üyordum|"
+    r"mışım|mişim|muşum|müşüm|malıyım|meliyim)\b",
+    r"\b(neyim|neyimiz|planım|planlarım|randevum|toplantım)\b",
+)
+
+
+def _time_sensitive(text: str) -> bool:
+    if FRESH_TOPIC.search(text):
+        return True
+    return bool(TIME_WORD.search(text) and INFO_SEEKING.search(text) and not PERSONAL.search(text))
 
 SMALL_TALK = _rx(
     r"^\s*(lazos[,!\s]*)?(merhaba|selam|hey|günaydın|iyi akşamlar|iyi geceler|naber|nasılsın|teşekkür(ler)?|"
@@ -74,7 +99,7 @@ def route(text: str, mode: str = "auto") -> RouteDecision:
         return RouteDecision("none", "small talk")
     if MATH.search(t):
         return RouteDecision("none", "math")
-    if FRESHNESS.search(t):
+    if _time_sensitive(t):
         return RouteDecision("search", "time-sensitive")
     if TIMELESS.search(t) and len(t) < 200:
         return RouteDecision("none", "general explanation")
@@ -104,7 +129,7 @@ def build_search_query(text: str, now: datetime | None = None) -> str:
     query = _PUNCT.sub(" ", query)  # keeps decimals like "3.5"
     if _RELATIVE_DAY.search(query):
         query = _RELATIVE_DAY.sub(" ", query) + f" {now.day} {_MONTHS_TR[now.month - 1]} {now.year}"
-    elif FRESHNESS.search(text) and not re.search(r"\b20[2-3]\d\b", query):
+    elif _time_sensitive(text) and not re.search(r"\b20[2-3]\d\b", query):
         query += f" {now.year}"
     query = re.sub(r"\s+", " ", query).strip()
     return query[:200] if len(query) >= 2 else text.strip()[:200]

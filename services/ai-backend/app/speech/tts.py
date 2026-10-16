@@ -11,6 +11,7 @@ import logging
 import shutil
 import tempfile
 import wave
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Protocol
@@ -144,9 +145,14 @@ class MacSayTTS:
 class TTSManager:
     """Selects the configured engine and falls back to macOS speech if the primary one fails."""
 
-    def __init__(self, piper: PiperTTS, mac: MacSayTTS) -> None:
+    def __init__(self, piper: PiperTTS, mac: MacSayTTS, normalizer: Callable[[str, str], str] | None = None) -> None:
         self.engines: dict[str, TTSEngine] = {"piper": piper, "macos": mac}
         self.preferred = "piper"
+        # Applied after the engine is chosen: respellings are engine-specific. Only the *speech input* changes.
+        self.normalizer = normalizer
+
+    def _prepare(self, text: str, engine: TTSEngine) -> str:
+        return self.normalizer(text, engine.name) if self.normalizer else text
 
     def engine(self) -> TTSEngine:
         primary = self.engines.get(self.preferred)
@@ -160,13 +166,13 @@ class TTSManager:
     async def synthesize(self, text: str, speed: float = 1.0) -> tuple[np.ndarray, int, str]:
         engine = self.engine()
         try:
-            return await engine.synthesize(text, speed), engine.sample_rate, engine.name
+            return await engine.synthesize(self._prepare(text, engine), speed), engine.sample_rate, engine.name
         except TTSError:
             fallback = self.engines["macos"]
             if engine is fallback or not fallback.available():
                 raise
             log.warning("primary TTS failed; using macOS fallback", exc_info=True)
-            return await fallback.synthesize(text, speed), fallback.sample_rate, fallback.name
+            return await fallback.synthesize(self._prepare(text, fallback), speed), fallback.sample_rate, fallback.name
 
     def status(self) -> dict:
         return {

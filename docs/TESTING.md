@@ -3,8 +3,8 @@
 ## Automated tests
 
 ```bash
-scripts/test.sh          # hermetic suite: ruff, 83 backend tests, tsc, 10 frontend tests, cargo check
-scripts/test.sh --all    # adds 11 live tests (real Ollama incl. the identity/memory scenarios, web search, speech, audio)
+scripts/test.sh          # hermetic suite: ruff, 151 backend tests, tsc, 11 frontend tests, cargo check
+scripts/test.sh --all    # adds 16 live tests (real Ollama: identity, memory and the V1.2 conversation scenarios; web search; real voices and Whisper; audio)
 ```
 
 | File | What it covers |
@@ -17,10 +17,27 @@ scripts/test.sh --all    # adds 11 live tests (real Ollama incl. the identity/me
 | `tests/test_live.py` *(integration/network/models)* | Real Turkish streaming answer from `qwen3.5:9b` (no `<think>`, short small talk); real cancellation in under 0.5 s; live research with extracted pages; Piper synthesis faster than real time; macOS Turkish voice; output-device lifecycle (plays inaudible silence) |
 | `tests/test_memory.py` | Identity in every system prompt and across restarts; identity editable only via settings, not via chat; explicit preference persists across restart; forgetting; deletes need an explicit request; updates keep history; background learning with source references; learning can be disabled; hypotheticals and small talk are not learned; sensitive needs permission and secrets are never stored; duplicate merging; relevant-only retrieval; Turkish folding; episodic "last week" search without web research; honest "nothing found"; model-initiated memory search; category hints; migration from the pre-memory database; memory API CRUD; memory on/off |
 | `tests/test_live_memory.py` *(integration)* | **All 7 requested scenarios with the real `qwen3.5:9b`**: "Sen kimsin?", "Seni kim geliştirdi?", "Göktürk Doğan kim?", restart → "Adın ne?", "Bundan sonra bana kısa cevaplar ver." → restart → still short, "Geçen konuşmamızda hangi projeden bahsetmiştim?" → Atlas, "Kısa cevap tercihimi unut." → only that memory removed. Also checks that background learning picked up TypeScript and Atlas, and that the creator is not mentioned in an unrelated coding answer. Passed in 3 of 3 consecutive runs. |
-| `src/stores/reducer.test.ts` | UI event reducer (streaming, research, errors, foreign conversations, voice state); state → colour mapping; citation linking outside code; formatting |
+| `tests/test_pronunciation.py` | Per-voice respelling (backend, TypeScript, …) inside Turkish sentences; apostrophe suffixes; word boundaries and case sensitivity; URLs, paths, commands and code blocks never altered; abbreviations and punctuation; custom rules (override, engine scope, disable); dictionary API (add, edit, delete, test); corrections off; **display text, history and memory unchanged end to end**; < 0.5 ms per sentence |
+| `tests/test_conversation.py` | The "· sesli" tag is deterministic and kept in history; the system prompt is identical for voice and text turns; style settings reach the prompt; Turkish suffix helpers; "bugün" alone no longer triggers web research; "az önce" is not episodic; no contradicting "not found" note; short replies don't pull unrelated memories; identity facts kept but unused; brief memory acknowledgement; deep-reasoning detection and generation profiles; speech-recognition vocabulary; punctuation-only transcripts discarded |
+| `tests/test_live_conversation.py` *(integration/models)* | **All 10 V1.2 scenarios with the real model**, checked for behaviour: no clichés or emoji, length limits, identity, continuity, the persisted preference after restart, and corrected pronunciation in the speech input. Also a spoken-style check, deep reasoning solving a word problem, and a real Piper/Yelda → Whisper round trip with the dictionary (Piper 6–7/7 across runs because synthesis is stochastic; Yelda 6/7) |
+| `tests/test_feedback.py` | **V1.2.1 learning:** ratings (save, re-rate, withdraw); corrections keep the original answer; edit/delete; approved examples injected as *data* in the tool result, never in the system prompt; local, factual/pending and blocked corrections never retrieved; unrelated or generic requests get no examples; at most 2; repeated signals create a suggestion but **no memory before approval**, with no duplicates; approve/revoke; contradicting preference replaces the old one and revoke restores it; transcript corrections keep Whisper's original and never touch the TTS dictionary; STT vocabulary suggestion → approve/revoke; temporary states not learned; identity/instruction/secret corrections blocked; deleting a conversation keeps approved examples; v3 → v4 migration idempotent and data-preserving; export privacy (approved style only, no identity/secrets); retrieval switch; streaming unchanged; retrieval < 15 ms with 1,000 corrections; restart persistence; no cloud dependencies; "çıktısı" (output) is not a factual claim; pool / dev / held-out sets are disjoint |
+| `src/stores/reducer.test.ts` | UI event reducer (streaming, research, errors, foreign conversations, voice state, learning events and suggestion toasts); state → colour mapping; citation linking outside code; formatting |
 
-**Last verified run** (M4 Pro, 24 GB): 94 backend tests passed (83 hermetic + 11 live), and 10 of 10
+**Last verified run** (M4 Pro, 24 GB, V1.2.1, 2026-10-16): 167 backend tests passed (151 hermetic + 16 live), and 11 of 11
 frontend tests passed.
+
+## Conversation benchmark (real model)
+
+```bash
+cd services/ai-backend
+.venv/bin/python -m evals.run benchmark --split dev      # 36 scenarios used while fixing
+.venv/bin/python -m evals.run benchmark --split heldout  # 32 scenarios, never tuned on
+.venv/bin/python -m evals.run feedback                   # approved-example retrieval A/B experiment
+```
+
+Each scenario runs in a fresh temporary data directory with a recording fake web search. Results and
+full transcripts go to `evals/results/`. See [LEARNING.md](LEARNING.md#evaluation) for the method
+and the latest numbers.
 
 ## Manual verification (needs hardware or a human)
 
@@ -93,7 +110,30 @@ tests can't cover them.
 5. In a new conversation ask "Geçen konuşmamızda ne konuşmuştuk?".
    - [ ] LAZOS answers from the real previous conversation, or says it has no record.
 
-### 8. Failure handling
+### 8. Natural speech (V1.2) — human listening required
+1. Open Ayarlar › Ses › **Sözlük**, then use *Piper ile dinle* and *Yelda ile dinle* on the sample sentence.
+   - [ ] "backend", "TypeScript", "React", "FastAPI" sound natural.
+2. Check every rule marked **doğrulanmadı**: Docker, JSON, Mac, macOS, MacBook, FastAPI (Yelda), server (Yelda), deployment (Piper).
+   - [ ] Each sounds right; customise any that don't.
+3. In voice mode ask "Backend neden yavaş olabilir?".
+   - [ ] A short spoken answer: no list reading, no "yıldız yıldız".
+4. Say "LAZOS, biraz daha ciddi konuş", then chat for a while.
+   - [ ] The tone changes without any self-introduction.
+
+### 9. Feedback and learning (V1.2.1)
+1. Hover an answer, press 👎, choose "Çok uzun", and save. Repeat on two more answers.
+   - [ ] A toast "Yeni öğrenme önerisi: …" appears; Hafıza › Öğrenme shows it as *bekliyor*.
+   - [ ] Hafıza › Öğrenilmiş anılar has **no** new entry until you press *Onayla*.
+2. Press *Düzelt* on an answer, write a shorter answer, tick *Benzer sorularda örnek olarak kullan*.
+   Then ask a similar question in a new conversation.
+   - [ ] The turn's metrics show `examples: 1`; the answer follows the style but doesn't copy it.
+3. In voice mode, say a technical word that Whisper mishears; fix it with the pen icon. Do it twice
+   for the same word.
+   - [ ] The message shows "düzeltildi" (hover shows Whisper's original); a vocabulary suggestion appears.
+4. Öğrenme › Veriler › *Dışa aktar*: check the preview, untick one record, export.
+   - [ ] The file in `~/Downloads/LAZOS/` contains only the ticked approved records.
+
+### 10. Failure handling
 1. Quit Ollama while LAZOS is open.
    - [ ] The top-bar chip turns red. Sending a message shows a clear Turkish error, the core briefly
      turns red, then recovers.

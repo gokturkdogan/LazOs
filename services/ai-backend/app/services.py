@@ -19,6 +19,7 @@ from app.core.config import BootConfig, UserSettings
 from app.core.events import EventHub
 from app.core.metrics import MetricsLog
 from app.core.state import AIState, StateMachine
+from app.feedback.service import FeedbackService
 from app.inference.base import GenerationOptions, LLMBackend, LLMError
 from app.inference.ollama import OllamaBackend
 from app.memory.service import MemoryService
@@ -28,6 +29,7 @@ from app.research.providers.ddgs_provider import DdgsProvider
 from app.research.providers.searxng import SearxngProvider
 from app.research.service import ResearchService
 from app.speech.audio_io import AudioPlayer, MicCapture
+from app.speech.pronunciation import PronunciationService, PronunciationStore
 from app.speech.stt import WhisperSTT
 from app.speech.tts import MacSayTTS, PiperTTS, TTSManager
 from app.speech.vad import SileroVAD
@@ -72,7 +74,13 @@ class Services:
             llm_model=self.user_settings.llm_model,
         )
         self.stt = WhisperSTT(self.models.whisper_dir)
-        self.tts = TTSManager(PiperTTS(self.models.piper_model), MacSayTTS())
+        self.pronunciation: PronunciationService | None = None
+        self._learned_terms: list[str] = []
+        self.tts = TTSManager(
+            PiperTTS(self.models.piper_model),
+            MacSayTTS(),
+            normalizer=lambda text, engine: self.pronunciation.normalize(text, engine) if self.pronunciation else text,
+        )
         self.online: bool | None = None
         self.search_provider: str | None = None
         self.llm_status: dict[str, Any] = {"reachable": False}
@@ -86,6 +94,19 @@ class Services:
 
     def settings(self) -> UserSettings:
         return self.user_settings
+
+    async def refresh_learned_terms(self) -> None:
+        self._learned_terms = await self.feedback.vocabulary_terms()
+
+    def stt_vocabulary(self) -> str | None:
+        """Whisper prompt: names and technical terms LAZOS is likely to hear (see app/speech/stt.py)."""
+        if not self.user_settings.stt_vocabulary:
+            return None
+        identity = self.memory.identity
+        terms = self.pronunciation.terms() if self.pronunciation else []
+        # Terms the owner approved from speech-recognition corrections (never from the TTS dictionary).
+        terms += [t for t in self._learned_terms if t not in terms]
+        return f"{identity.name}, {identity.creator_name}. " + ", ".join(terms) + "."
 
     # ── lifecycle ──────────────────────────────────────────────────────────
     async def start(self) -> None:
@@ -109,6 +130,7 @@ class Services:
 
         self.player = AudioPlayer(loop, tts_level)
         self.mic = MicCapture(loop, _throttle(mic_level, 1 / 30))
+        self.feedback = FeedbackService(lambda: self.store.db, memory=None, hub=self.hub, settings=self.settings)
         self.memory = MemoryService(
             store=MemoryStore(self.store),
             conversations=self.store,
@@ -117,6 +139,7 @@ class Services:
             settings=self.settings,
             # Listening counts as idle: a starting turn cancels in-flight learning anyway.
             is_busy=lambda: self.chat.busy or self.state.state in (AIState.TRANSCRIBING, AIState.THINKING, AIState.SPEAKING),
+            after_background=self._schedule_reprime,
         )
         self.chat = ChatService(
             store=self.store,
@@ -129,6 +152,7 @@ class Services:
             metrics=self.metrics,
             settings=self.settings,
             memory=self.memory,
+            feedback=self.feedback,
         )
         self.voice = VoiceController(
             mic=self.mic,
@@ -138,9 +162,16 @@ class Services:
             state=self.state,
             hub=self.hub,
             settings=self.settings,
+            vocabulary=self.stt_vocabulary,
         )
         self.hub.publish({"type": "voice.mode", "mode": "off"}, sticky=True)
+        self.pronunciation = PronunciationService(
+            PronunciationStore(self.store.db), enabled=lambda: self.user_settings.pronunciation_enabled
+        )
+        await self.pronunciation.reload()
         await self.memory.start()
+        self.feedback.memory = self.memory
+        self._learned_terms = await self.feedback.vocabulary_terms()
         await self.models.refresh()
         self.hub.publish({"type": "setup.models", "models": self.models.describe()}, sticky=True)
         self._tasks.append(asyncio.create_task(self._monitor(), name="monitor"))
@@ -168,6 +199,7 @@ class Services:
         try:
             if self.models.states["llm"].status == "present":
                 t = time.perf_counter()
+                await self.memory.learner.prime()  # extraction prefix first, chat prefix last (most recent)
                 await self._prime_llm()
                 log.info("llm warm", extra={"ms": round((time.perf_counter() - t) * 1000)})
         except LLMError as exc:
@@ -184,12 +216,23 @@ class Services:
                 log.warning("tts warm-up failed", extra={"engine": engine.name}, exc_info=True)
         self.publish_system()
 
+    def _schedule_reprime(self) -> None:
+        async def reprime() -> None:
+            if self.chat.busy:
+                return
+            try:
+                await self._prime_llm()
+            except LLMError:
+                pass
+
+        asyncio.get_running_loop().create_task(reprime())
+
     async def _prime_llm(self) -> None:
         """Generate one token with the exact system prompt + tools used for chat, so Ollama caches that prefix."""
         s = self.user_settings
         tools = self.chat.tools_for(s)
         messages = [
-            {"role": "system", "content": self.chat.system_prompt(voice=False, has_tools=s.research_mode != "off")},
+            {"role": "system", "content": self.chat.system_prompt(has_tools=s.research_mode != "off")},
             {"role": "user", "content": "Merhaba"},
         ]
         options = GenerationOptions(max_tokens=1, num_ctx=s.num_ctx, keep_alive_minutes=s.keep_alive_minutes)

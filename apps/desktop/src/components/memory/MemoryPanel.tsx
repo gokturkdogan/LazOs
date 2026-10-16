@@ -2,6 +2,7 @@ import {
   Brain,
   Check,
   Fingerprint,
+  GraduationCap,
   History,
   Loader2,
   Lock,
@@ -22,13 +23,15 @@ import { api } from "../../services/api";
 import { useApp } from "../../stores/app";
 import type { CoreIdentity, EpisodeHit, MemoryCategory, MemoryItem, MemoryOverview } from "../../types/protocol";
 import { formatRelativeDay } from "../../utils/format";
+import { LearningTab } from "./LearningTab";
 
-type Tab = "identity" | "creator" | "learned" | "episodes" | "settings";
+type Tab = "identity" | "creator" | "learned" | "learning" | "episodes" | "settings";
 
 const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
   { id: "identity", label: "Çekirdek Kimlik", icon: <Fingerprint size={14} /> },
   { id: "creator", label: "Yaratıcı Profili", icon: <UserRound size={14} /> },
   { id: "learned", label: "Öğrenilenler", icon: <Brain size={14} /> },
+  { id: "learning", label: "Öğrenme", icon: <GraduationCap size={14} /> },
   { id: "episodes", label: "Konuşma Hafızası", icon: <MessagesSquare size={14} /> },
   { id: "settings", label: "Hafıza Ayarları", icon: <SlidersHorizontal size={14} /> },
 ];
@@ -37,6 +40,7 @@ const ORIGIN_LABEL: Record<MemoryItem["origin"], string> = {
   auto: "otomatik öğrenildi",
   explicit: "isteğinle kaydedildi",
   manual: "elle eklendi",
+  feedback: "geri bildirimden onaylandı",
 };
 
 const inputCls =
@@ -592,6 +596,8 @@ export function MemoryPanel() {
               <IdentityEditor overview={overview} section={tab} onSaved={load} />
             ) : tab === "learned" ? (
               <LearnedTab overview={overview} onChanged={load} />
+            ) : tab === "learning" ? (
+              <LearningTab />
             ) : tab === "episodes" ? (
               <EpisodesTab overview={overview} />
             ) : (

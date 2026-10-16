@@ -26,6 +26,8 @@ class TurnMetrics:
     prompt_tokens: int | None = None
     tts_first_audio_ms: float | None = None
     total_ms: float | None = None
+    reasoning: bool | None = None  # thinking mode used for this answer
+    examples: int | None = None  # approved feedback examples shown to the model
 
     def mark_first_token(self) -> None:
         if self.ttft_ms is None:

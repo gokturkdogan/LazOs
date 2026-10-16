@@ -77,6 +77,8 @@ export function lookFor(state: AIState): CoreLook {
 export function stateLabel(state: AIState, detail: string | null): string {
   if (state === "transcribing") return "ÇÖZÜMLÜYOR";
   if (state === "thinking" && detail === "research") return "ARAŞTIRIYOR";
+  if (state === "thinking" && detail === "reasoning") return "DERİN DÜŞÜNÜYOR";
+  if (state === "thinking" && detail === "memory") return "HATIRLIYOR";
   if (state === "thinking") return "DÜŞÜNÜYOR";
   return lookFor(state).label;
 }

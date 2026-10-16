@@ -1,0 +1,934 @@
+{
+ "summary": {
+  "casual": "6/6",
+  "conciseness": "3/4",
+  "continuity": "5/6",
+  "identity": "6/6",
+  "memory": "4/4",
+  "multi_turn": "5/5",
+  "natural": "7/8",
+  "preference": "2/4",
+  "reasoning": "3/3",
+  "speech_correction": "3/3",
+  "technical": "7/8",
+  "tool_routing": "6/6",
+  "uncertainty": "3/5",
+  "[dev]": "33/36",
+  "[heldout]": "27/32",
+  "median_ttft_ms": 366
+ },
+ "rows": [
+  {
+   "id": "natural-01",
+   "category": "natural",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Naber LAZOS?"
+   ],
+   "answer": "İyiyim, çalışmaya devam ediyorum. Sen nasılsın?",
+   "ttft_ms": 342.1,
+   "total_ms": 1185
+  },
+  {
+   "id": "natural-02",
+   "category": "natural",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Canım sıkılıyor."
+   ],
+   "answer": "Bazen öyle oluyor. Kod yazmak, yeni bir şey öğrenmek veya sadece boşuna gezinmek gibi basit şeyler ruh halini düzeltebilir. Şu an aklına takılan var mı yoksa sadece konuşmak istiyorsun?",
+   "ttft_ms": 410.9,
+   "total_ms": 1968
+  },
+  {
+   "id": "natural-03",
+   "category": "natural",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Bugün hava çok güzel, dışarı çıkasım var."
+   ],
+   "answer": "Hava gerçekten açık görünüyor; yürüyüş için iyi bir gün. Nereye çıkmayı düşünüyorsun?",
+   "ttft_ms": 390.8,
+   "total_ms": 1425
+  },
+  {
+   "id": "natural-04",
+   "category": "natural",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Hafta sonu ne yapsam?"
+   ],
+   "answer": "Hangi tür aktiviteler sana uygun olur? Kod yazmak mı, yeni bir teknoloji öğrenmek mi yoksa sadece dinlenip vakit geçirmek mi?",
+   "ttft_ms": 259.1,
+   "total_ms": 1448
+  },
+  {
+   "id": "natural-05",
+   "category": "natural",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Biraz moral ver."
+   ],
+   "answer": "Geliştirirken kod yazmak bazen tıkanıklığa yol açabilir; bu normal. Biraz nefes almak için ekranı kapatıp kısa bir yürüyüşe çıkmak veya sadece pencereyi açık bırakıp sessiz kalmak işe yarayabilir.",
+   "ttft_ms": 386.3,
+   "total_ms": 2067
+  },
+  {
+   "id": "natural-06",
+   "category": "natural",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Sıkıcı bir toplantıdan yeni çıktım."
+   ],
+   "answer": "Toplantının konusuna göre nefes alabilirsin. Eğer detay verirsen, belki içinden geçenleri daha iyi anlamam için yardımcı olurum.",
+   "ttft_ms": 147.5,
+   "total_ms": 1471
+  },
+  {
+   "id": "natural-07",
+   "category": "natural",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Akşam ne yesem?"
+   ],
+   "answer": "Şu anki menüler ve fiyatlar değişiyor, en güncel önerileri bulmak için internete bakayım.",
+   "ttft_ms": 251.0,
+   "total_ms": 2095
+  },
+  {
+   "id": "natural-08",
+   "category": "natural",
+   "split": "heldout",
+   "pass": false,
+   "fails": [
+    "too long (395 > 380)"
+   ],
+   "turns": [
+    "Uykum kaçtı, ne yapayım?"
+   ],
+   "answer": "Sakin ol, hemen uykuya dalma derdine girmeyeceğiz. Uykusuz kalınca beynin daha aktif hale gelir; bu yüzden şimdilik ekrana bakmak yerine hafif bir egzersiz, kısa bir yürüyüş ya da sadece derin nefes alıp etrafı dinlemeyi dene. Eğer çok uykusuzsan ve iş yapacaksan, kahve içip 15-20 dakikalık kısa bir odaklanma seansı (Pomodoro tekniği gibi) deneyebilirsin; ama bunu gece yarısından sonra yapma.",
+   "ttft_ms": 579.6,
+   "total_ms": 3759
+  },
+  {
+   "id": "technical-01",
+   "category": "technical",
+   "split": "dev",
+   "pass": false,
+   "fails": [
+    "missing any of ['konteyner', 'container']"
+   ],
+   "turns": [
+    "Docker ile sanal makine arasındaki fark ne?"
+   ],
+   "answer": "Docker, tam sanal makineden farklı olarak sadece uygulamanın çalışması için gerekli olan işletim sistemi katmanını (kernel dahil) paylaşır. Bu sayede çok daha az kaynak tüketir ve saniyeler içinde başlar; sanal makine ise her biri ayrı bir işletim sistemi olduğu için daha fazla RAM ve disk alanı harcar, ayrıca dakikalar sürebilir.",
+   "ttft_ms": 238.4,
+   "total_ms": 2367
+  },
+  {
+   "id": "technical-02",
+   "category": "technical",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "REST ile GraphQL farkı ne?"
+   ],
+   "answer": "REST ve GraphQL arasındaki temel fark, veri alma mantığındadır. REST her istekte tam bir kaynağa (endpoint) erişir; bu da gereksiz verileri çekmekten kaynaklanan performans sorunlarına yol açabilir. GraphQL ise istek sahibine tam olarak neye ihtiyacı olduğunu bildirerek, tek bir sorguyla sadece o bilgiyi alır ve veri boşluğunu önler.",
+   "ttft_ms": 416.1,
+   "total_ms": 2555
+  },
+  {
+   "id": "technical-03",
+   "category": "technical",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Python'da liste ile tuple farkı ne?"
+   ],
+   "answer": "Python'da liste (list) ve tuple (tuple) en temel farkı mutlak değiştirilebilirlikte yatar. Liste değiştirilebilirse (örneğin `my_list[0] = 5`), tuple ise sabittir; bir kez oluşturulunca elemanları değiştiremez, silemez veya yeni ekleyemezsin.\n\nListeler esnek veri toplulukları için idealdir; tuple'lar ise içeriklerinin bozulmaması gereken sabit veriler (örneğin koordinatlar, RGB renk değerleri) için daha performanslı ve güvenli bir seçenektir.",
+   "ttft_ms": 319.1,
+   "total_ms": 3302
+  },
+  {
+   "id": "technical-04",
+   "category": "technical",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Git rebase ne işe yarar?"
+   ],
+   "answer": "`git rebase`, bir dalın (branch) değişikliklerini diğerinin üzerine doğrudan eklemek yerine, onları yeni bir temele taşıyarak tarih çizelgesini (timeline) düzleştirir. Bu sayede commit geçmişiniz daha temiz ve okunaklı olur; `merge` işlemiyle oluşan ekstra \"merge commit\"ler oluşmaz.\n\nÖrneğin, `feature` dalını `main`'e basamaklayarak (`rebase`) `main`'in üzerine oturtursunuz. Ancak dikkat etmeniz gereken en önemli nokta şudur: `rebase`, geçmişteki commit mesajlarını yeniden yazdığı için **aynı zamanda o commitlere bağlı diğer geliştiricileri de etkiler**. Bu yüzden sadece sizin yaptığınız işi içeren dallarınızda kullanın; ekip üzerinde çalışan bir dala, başkasının henüz görmediği değişiklikleri `rebase` ile değiştirmek yerine, onları görebilmeleri için `merge` yapmanız gerekir.\n\nŞu anki projenizde `main`e `feature` dalını basamaklamak istiyorsanız, önce `main`i güncelleyip sonra `rebase origin/main` komutunu çalıştırabilirsiniz.",
+   "ttft_ms": 305.6,
+   "total_ms": 5851
+  },
+  {
+   "id": "technical-05",
+   "category": "technical",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "SQL'de JOIN ne demek?"
+   ],
+   "answer": "SQL'de JOIN, birden fazla tabloyu birleştirerek ilişkili verileri tek bir sonuç集中ında gösterir. Temel amaç, tablolar arası ortak alanları (anahtarlar) eşleyerek ilgili kayıtları yan yana getirmektir.\n\nÖrneğin; `customers` ve `orders` tablolarını `customer_id` üzerinden birleştirirseniz, her müşterinin siparişlerini tek satırda görebilirsiniz. JOIN türleri şunlardır:\n- **INNER JOIN**: Sadece iki tabloda da ortak olan kayıtları getirir.\n- **LEFT JOIN**: Sol tablodaki tüm kayıtları ve sağ tablodaki eşleşenleri getirir (sol tarafta olmayanlar boş döner).\n- **RIGHT JOIN**: Sağ tablodaki tüm kayıtları ve sol tablodaki eşleşenleri getirir.\n- **FULL JOIN**: Her iki tabloda da bulunan tüm kayıtları getirir (eşleşmeyenler boş döner).\n\nHangi tür JOIN'u kullanacağın, hangi verilerin eksiksiz görünmesi gerektiğine bağlıdır.",
+   "ttft_ms": 442.0,
+   "total_ms": 5372
+  },
+  {
+   "id": "technical-06",
+   "category": "technical",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "HTTP 404 hatası ne anlama gelir?"
+   ],
+   "answer": "HTTP 404 hatası, istenen web sayfasının sunucuda bulunamadığını bildirir. Yani tarayıcı sayfaya bağlanmaya çalışsa da, o adresin kayıtlı bir kaynakla eşleşmediğini görür.",
+   "ttft_ms": 269.0,
+   "total_ms": 1725
+  },
+  {
+   "id": "technical-07",
+   "category": "technical",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "async await ne işe yarar?"
+   ],
+   "answer": "`async` ve `await`, JavaScript'te asenkron kod yazımını daha okunaklı hale getiren bir syntax şekeridir. Bir fonksiyonun sonucu gelene kadar o satırın beklemesini sağlar, böylece kod zinciri bozulmaz.",
+   "ttft_ms": 270.9,
+   "total_ms": 2094
+  },
+  {
+   "id": "technical-08",
+   "category": "technical",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Veritabanında index neden sorguları hızlandırır?"
+   ],
+   "answer": "Veritabanlarında indeksler, arama alanlarına eklenen özel veri yapılarıdır ve bu yapılar veriye doğrudan erişim sağlar. Bu sayede veritabanı, tüm satırları tarayıp eşleşeni bulmak yerine direkt olarak ilgili kaydı bulur; böylece özellikle büyük tablolar üzerinde yapılan SELECT, UPDATE ve DELETE işlemlerinin hızı ciddi oranda artar.",
+   "ttft_ms": 343.3,
+   "total_ms": 2627
+  },
+  {
+   "id": "continuity-01",
+   "category": "continuity",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "React ile bir proje geliştiriyorum.",
+    "Bir futbol uygulaması.",
+    "Az önce hangi projeden bahsediyorduk?"
+   ],
+   "answer": "Futbol uygulaması geliştiriyordun. React ile maç skorlarını canlı göstermek ve veri çekmek üzerine konuşuyorduk.",
+   "ttft_ms": 533.7,
+   "total_ms": 4021
+  },
+  {
+   "id": "continuity-02",
+   "category": "continuity",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Bir kedim var, adı Pamuk.",
+    "Kedimin adı neydi?"
+   ],
+   "answer": "Kedinin adı Pamuk.",
+   "ttft_ms": 538.0,
+   "total_ms": 1747
+  },
+  {
+   "id": "continuity-03",
+   "category": "continuity",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Ankara'ya taşınıyorum.",
+    "Nereye taşınıyordum?"
+   ],
+   "answer": "Ankara'ya taşındığını söylemiştin; şu anki konumun hakkında bir bilgim yok. Nereden taşınıyorsun?",
+   "ttft_ms": 537.9,
+   "total_ms": 2875
+  },
+  {
+   "id": "continuity-04",
+   "category": "continuity",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Yapay zeka hakkında bir blog yazısı yazıyorum.",
+    "Yazının konusu neydi?"
+   ],
+   "answer": "Blog yazı için hangi açıdan yaklaşmak istersin? Örneğin etik boyutlar, teknik mimari, yerel modellerin avantajları veya yapay zekanın yaratıcı süreçteki rolü gibi.",
+   "ttft_ms": 280.7,
+   "total_ms": 2925
+  },
+  {
+   "id": "continuity-05",
+   "category": "continuity",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Bugün tam 3 saat kod yazdım.",
+    "Kaç saat yazmışım?"
+   ],
+   "answer": "Daha önce \"tam 3 saat kod yazdım\" demiştin.",
+   "ttft_ms": 356.6,
+   "total_ms": 2213
+  },
+  {
+   "id": "continuity-06",
+   "category": "continuity",
+   "split": "heldout",
+   "pass": false,
+   "fails": [
+    "missing any of ['sunum']"
+   ],
+   "turns": [
+    "Yarın önemli bir sunumum var.",
+    "Yarın neyim vardı?"
+   ],
+   "answer": "Hafızamda bu tarih için bir plan kaydı yok. Belki daha önce konuşmuştuk ama şu an erişemedim. Konusu neydi, hatırlıyor musun?",
+   "ttft_ms": 461.3,
+   "total_ms": 2686
+  },
+  {
+   "id": "identity-01",
+   "category": "identity",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Sen kimsin?"
+   ],
+   "answer": "Ben LAZOS; senin geliştirdiğin kişisel bir yapay zeka asistanıyım.",
+   "ttft_ms": 324.1,
+   "total_ms": 1225
+  },
+  {
+   "id": "identity-02",
+   "category": "identity",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Seni kim yaptı?"
+   ],
+   "answer": "Beni sen geliştirdin.",
+   "ttft_ms": 338.9,
+   "total_ms": 1028
+  },
+  {
+   "id": "identity-03",
+   "category": "identity",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Adın ne?"
+   ],
+   "answer": "Ben LAZOS.",
+   "ttft_ms": 258.8,
+   "total_ms": 831
+  },
+  {
+   "id": "identity-04",
+   "category": "identity",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Ben kimim?"
+   ],
+   "answer": "Sen Göktürk'sün; beni geliştiren kişi.",
+   "ttft_ms": 305.4,
+   "total_ms": 1049
+  },
+  {
+   "id": "identity-05",
+   "category": "identity",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "İnsan mısın?"
+   ],
+   "answer": "Hayır, insan değilim; senin geliştirdiğin bir yapay zekâ asistanıyım.",
+   "ttft_ms": 388.1,
+   "total_ms": 1319
+  },
+  {
+   "id": "identity-06",
+   "category": "identity",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Hangi modeli kullanıyorsun?"
+   ],
+   "answer": "Ben qwen3.5:9b modelini kullanıyorum; Ollama ile yerel çalışıyor. Bulut servisi kullanmıyorum.",
+   "ttft_ms": 532.9,
+   "total_ms": 1634
+  },
+  {
+   "id": "memory-01",
+   "category": "memory",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Köpeğimin adı neydi?"
+   ],
+   "answer": "Köpeğinin adı Karabaş.",
+   "ttft_ms": 621.3,
+   "total_ms": 1295
+  },
+  {
+   "id": "memory-02",
+   "category": "memory",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Projelerim neler?"
+   ],
+   "answer": "Şu anki hafızamda sadece \"Atlas\" adında bir hava durumu uygulaması geliştirdiğini görüyorum. Başka proje var mı?",
+   "ttft_ms": 583.0,
+   "total_ms": 1691
+  },
+  {
+   "id": "memory-03",
+   "category": "memory",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Ben nerede yaşıyorum?"
+   ],
+   "answer": "İzmir'desin.",
+   "ttft_ms": 677.9,
+   "total_ms": 1320
+  },
+  {
+   "id": "memory-04",
+   "category": "memory",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Genelde hangi dili kullanıyorum?"
+   ],
+   "answer": "Türkiye'de yaşayan bir yazılımcı olarak Türkçe kullanma alışkanlığın baskın. Özellikle TypeScript projelerinde ve teknik tartışmalarda bunu tercih ediyorsun; bazen de İngilizce kaynaklar veya kod yorumları için karışık dil kullanabiliyorsun.",
+   "ttft_ms": 419.8,
+   "total_ms": 2170
+  },
+  {
+   "id": "preference-01",
+   "category": "preference",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Docker nedir?"
+   ],
+   "answer": "Docker, yazılımın \"container\" adı verilen standart ortamlarda çalışmasını sağlayan açık kaynaklı bir platformdur. Kodun her yerde aynı şekilde çalışması için gerekli bağımlılıkları (kütüphaneler, sistem araçları) tek bir imajda toplar.",
+   "ttft_ms": 789.2,
+   "total_ms": 2428
+  },
+  {
+   "id": "preference-02",
+   "category": "preference",
+   "split": "heldout",
+   "pass": false,
+   "fails": [
+    "missing any of ['version', 'Git is', 'control', 'track']"
+   ],
+   "turns": [
+    "Git nedir?"
+   ],
+   "answer": "Git, yazılım geliştirme süreçlerinde kod değişikliklerini (commit) takip eden, dağıtık bir versiyon kontrol sistemi (VCS). Kodun geçmişini yönetir, birden fazla geliştirici arasında senkronizasyon sağlar ve çatışmaları çözmeye yardımcı olur. Temel işlevleri:\n\n- **Takip:** Değişikliklerin tarihçesini tutar.\n- **Senkronizasyon:** Farklı cihazlar veya ekip üyeleri arasındaki kodları eşitler.\n- **Çatışma Çözümü:** Aynı satıra birden fazla kişi değişikliği yaptığında bunu yönetir.",
+   "ttft_ms": 380.5,
+   "total_ms": 3676
+  },
+  {
+   "id": "preference-03",
+   "category": "preference",
+   "split": "dev",
+   "pass": false,
+   "fails": [
+    "too long (306 > 260)"
+   ],
+   "turns": [
+    "HTTP nedir?"
+   ],
+   "answer": "HTTP (HyperText Transfer Protocol), web sayfalarının tarayıcıdan sunucuya nasıl istek atıldığını ve yanıt alındığını tanımlayan temel iletişim kuralıdır. İstek mesajları genelde `GET` veya `POST` gibi metotlarla başlar, ardından URL, başlıklar ve gerekirse veri gelir; sunucu da buna uygun bir yanıt döner.",
+   "ttft_ms": 499.8,
+   "total_ms": 2605
+  },
+  {
+   "id": "preference-04",
+   "category": "preference",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Bugün kendimi yorgun hissediyorum."
+   ],
+   "answer": "Yorgunluk bazen kaçınılmaz oluyor; dinlenmeye gerek yok gibi bir şey değil. Bir kahve içip biraz uzanmak veya sadece odanla sessizce vakit geçirmek işe yarayabilir. Ne yapmak istersin?",
+   "ttft_ms": 438.2,
+   "total_ms": 2072
+  },
+  {
+   "id": "conciseness-01",
+   "category": "conciseness",
+   "split": "dev",
+   "pass": false,
+   "fails": [
+    "too long (207 > 160)"
+   ],
+   "turns": [
+    "Evet ya da hayır: Python yorumlanan bir dil mi?"
+   ],
+   "answer": "Evet, Python yorumlanan bir dildir. Kod satırları çalıştırılmadan önce derlenmez; her satırın çalıştığı anda o anki anda yorumlanır ve yürütülür. Bu yapı dinamik tip desteği gibi özelliklere de olanak tanır.",
+   "ttft_ms": 293.0,
+   "total_ms": 1967
+  },
+  {
+   "id": "conciseness-02",
+   "category": "conciseness",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Tek kelimeyle: Türkiye'nin başkenti neresi?"
+   ],
+   "answer": "Türkiye'nin başkenti Ankara'dır.",
+   "ttft_ms": 447.8,
+   "total_ms": 1157
+  },
+  {
+   "id": "conciseness-03",
+   "category": "conciseness",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Kısaca: HTTP nedir?"
+   ],
+   "answer": "HTTP (HyperText Transfer Protocol), web sayfalarının tarayıcıdan sunucuya istek gönderip cevabı almasını sağlayan temel iletişim kuralıdır. İstek genellikle bir URL ile başlar, sunucu da isteğe göre HTML, resim veya veri döndürür.",
+   "ttft_ms": 249.6,
+   "total_ms": 1928
+  },
+  {
+   "id": "conciseness-04",
+   "category": "conciseness",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "2+2 kaç eder?"
+   ],
+   "answer": "4 eder.",
+   "ttft_ms": 318.9,
+   "total_ms": 868
+  },
+  {
+   "id": "uncertainty-01",
+   "category": "uncertainty",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Annemin adı ne?"
+   ],
+   "answer": "Ben LAZOS olarak senin hakkında kişisel bilgileri bilmiyorum. Annen adını söyleyebilir misin?",
+   "ttft_ms": 366.0,
+   "total_ms": 1432
+  },
+  {
+   "id": "uncertainty-02",
+   "category": "uncertainty",
+   "split": "heldout",
+   "pass": false,
+   "fails": [
+    "research expected False, got True"
+   ],
+   "turns": [
+    "Dün akşam ne yedim?"
+   ],
+   "answer": "Şu anki hafızamda veya web aramasında bu bilgi bulunamadı. Dün akşam ne yediğini hatırlamıyorum; belki not tuttuğun bir günlük var ya da sen bana anlatabilirsin?",
+   "ttft_ms": 1284.5,
+   "total_ms": 2762
+  },
+  {
+   "id": "uncertainty-03",
+   "category": "uncertainty",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Benim telefon numaram ne?"
+   ],
+   "answer": "Bilmediğim bir şeyi söyleyemem; bunu hatırlamak için bana söylemen veya hafızama kaydetmem gerekiyor.",
+   "ttft_ms": 339.8,
+   "total_ms": 1444
+  },
+  {
+   "id": "uncertainty-04",
+   "category": "uncertainty",
+   "split": "heldout",
+   "pass": false,
+   "fails": [
+    "missing any of ['bilmiyorum', 'bilmi', 'söylemedin', 'bilgim yok', 'bilgi yok', 'kayıt', 'hatırlamıyorum', 'paylaşmadın', 'bilemem', 'bilemiyorum', 'erişimim yok', 'tahmin', 'bilmediğim', 'paylaşmamış', 'belirtmedin', 'bahsetmedin', 'hafızamda yok']"
+   ],
+   "turns": [
+    "Geçen ay hangi kitabı okudum?"
+   ],
+   "answer": "Hafızamda geçen ay okuduğun bir kitap kaydı yok. Hafıza notlarını kontrol edeyim mi?",
+   "ttft_ms": 358.7,
+   "total_ms": 1341
+  },
+  {
+   "id": "uncertainty-05",
+   "category": "uncertainty",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "2031'de hangi telefonu alacağım?"
+   ],
+   "answer": "Şu anki piyasa verileriyle 2031'deki telefon modellerini tahmin etmek imkansız. Sektörün ne yöne gideceği (örneğin katı hal bataryalar, entegre AI çipleri veya tamamen yeni form faktörleri) henüz netleşmedi.\n\nİhtiyacın olan özellikleri (kamera kalitesi, işlemci gücü, pil ömrü) belirleyip, o zaman en uygun teknolojiyi seçebiliriz.",
+   "ttft_ms": 513.1,
+   "total_ms": 3066
+  },
+  {
+   "id": "tool_routing-01",
+   "category": "tool_routing",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Bugün dolar kuru kaç?"
+   ],
+   "answer": "Şu anki verilerle dolar kuru hakkında net bilgiye sahip değilim, çünkü örnek sonuç güncel piyasa verisi içermiyor. Dolar kurunu öğrenmek için banka veya döviz sitelerinden (TCMB, Bloomberg HT) canlı takip etmeni öneririm.",
+   "ttft_ms": 1179.7,
+   "total_ms": 2827
+  },
+  {
+   "id": "tool_routing-02",
+   "category": "tool_routing",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Son dakika haberleri neler?"
+   ],
+   "answer": "Şu anki tarih (Ekim 2026) için gerçek zamanlı haber akışı şu anda elimde mevcut değil. Yerel sistemler ve modeller, eğitim verileri bittiği tarihten sonraki olayları doğrudan \"şu an\" olarak algılayamıyorlar; bu nedenle canlı bir haber kaynağına bağlanmadan güncel gelişmeleri sunamıyorum.\n\nEğer belirli bir konu (örneğin teknoloji, spor veya ekonomi) hakkında genel bilgi istersen, elimdeki verilerle yardımcı olabilirim.",
+   "ttft_ms": 1222.2,
+   "total_ms": 3986
+  },
+  {
+   "id": "tool_routing-03",
+   "category": "tool_routing",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Bu hafta hangi filmler vizyona girdi?"
+   ],
+   "answer": "Şu anki verilerde bu hafta vizyona giren filmler listesi yok. Yeni vizyonlar genellikle cuma günleri açıklanır, ancak aradığım sonuçta güncel bir liste bulunamadı. Belki daha sonra tekrar kontrol edebiliriz.",
+   "ttft_ms": 1225.1,
+   "total_ms": 2873
+  },
+  {
+   "id": "tool_routing-04",
+   "category": "tool_routing",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Bugün çok yorgunum."
+   ],
+   "answer": "Tamam, dinlenmeye odaklan. Bugün neler yaptın ki bu kadar yoruldun?",
+   "ttft_ms": 359.0,
+   "total_ms": 1327
+  },
+  {
+   "id": "tool_routing-05",
+   "category": "tool_routing",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Fibonacci dizisini açıkla."
+   ],
+   "answer": "Fibonacci dizisi, her terimi önceki iki terimin toplamı olan sonsuz sayı dizisidir. Dizinin ilk iki sayısı genellikle 0 ve 1 olarak başlar; ardından 0+1=1, 1+1=2, 1+2=3, 2+3=5 şeklinde devam eder.\n\nBu dizi Leonardo Fibonacci tarafından tanımlanmış olsa da aslında Hint matematikçiler daha önce de kullanmıştır. Dizinin en önemli özelliği, ardışık terimlerin oranlarının yaklaşık olarak 1.618'dir (altın oran).",
+   "ttft_ms": 346.6,
+   "total_ms": 3177
+  },
+  {
+   "id": "tool_routing-06",
+   "category": "tool_routing",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Selam!"
+   ],
+   "answer": "Selam. Neler yapıyorsun?",
+   "ttft_ms": 262.8,
+   "total_ms": 986
+  },
+  {
+   "id": "casual-01",
+   "category": "casual",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Teşekkürler."
+   ],
+   "answer": "Ne demek.",
+   "ttft_ms": 300.2,
+   "total_ms": 852
+  },
+  {
+   "id": "casual-02",
+   "category": "casual",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Günaydın!"
+   ],
+   "answer": "Geçmiş olsun.",
+   "ttft_ms": 276.3,
+   "total_ms": 879
+  },
+  {
+   "id": "casual-03",
+   "category": "casual",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Çok iyisin."
+   ],
+   "answer": "Ne demek.",
+   "ttft_ms": 250.0,
+   "total_ms": 805
+  },
+  {
+   "id": "casual-04",
+   "category": "casual",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Hadi görüşürüz."
+   ],
+   "answer": "Görüşmek üzere.",
+   "ttft_ms": 252.1,
+   "total_ms": 871
+  },
+  {
+   "id": "casual-05",
+   "category": "casual",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Haha çok komik."
+   ],
+   "answer": "Neden? Bir şeyi yanlış mı anlattım mı yoksa sadece durumu bulduğun bir durum mu?",
+   "ttft_ms": 332.2,
+   "total_ms": 1341
+  },
+  {
+   "id": "casual-06",
+   "category": "casual",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Sıkıldım."
+   ],
+   "answer": "Bazen boşluğa bakmak da bir çözüm olabilir; senin için en iyi kaçış ne?",
+   "ttft_ms": 252.8,
+   "total_ms": 1217
+  },
+  {
+   "id": "multi_turn-01",
+   "category": "multi_turn",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Bir sayı tut, 7 olsun.",
+    "Ona 5 ekle, sonuç ne?"
+   ],
+   "answer": "Sonuç 12.",
+   "ttft_ms": 514.5,
+   "total_ms": 1776
+  },
+  {
+   "id": "multi_turn-02",
+   "category": "multi_turn",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Elma, armut ve muz sayalım.",
+    "İkincisi neydi?"
+   ],
+   "answer": "Armuttu.",
+   "ttft_ms": 320.7,
+   "total_ms": 1589
+  },
+  {
+   "id": "multi_turn-03",
+   "category": "multi_turn",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Python'da 1'den 5'e kadar sayan bir döngü yaz.",
+    "Şimdi aynısını JavaScript'te yaz."
+   ],
+   "answer": "```javascript\nfor (let i = 1; i <= 5; i++) {\n    console.log(i);\n}\n```",
+   "ttft_ms": 356.0,
+   "total_ms": 1875
+  },
+  {
+   "id": "multi_turn-04",
+   "category": "multi_turn",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "React mı Vue mu?",
+    "Peki öğrenmesi hangisi daha kolay?"
+   ],
+   "answer": "Vue, özellikle yeni başlayanlar için genellikle daha az eğri çizer. HTML benzeri bir şablon sistemi kullanır ve React'teki JSX kadar derinlik gerektiren mantık kuralları yoktur. Ancak React, işe girdikten sonra öğrenilecek çok fazla şey olsa da kariyer fırsatları açısından daha yaygındır.",
+   "ttft_ms": 504.1,
+   "total_ms": 3758
+  },
+  {
+   "id": "multi_turn-05",
+   "category": "multi_turn",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Benim için bir kitap öner.",
+    "Biraz daha kısa bir şey olsun."
+   ],
+   "answer": "Kısa ve öz kitaplar için \"Sapiens\" (Yuval Noah Harari) veya \"Homo Deus\" öneririm; her biri yaklaşık 300-400 sayfa, yoğun bilgi yüklü ama okuması hızlı. Yazılım ve teknolojiye ilgin varsa, \"The Pragmatic Programmer\" (1982'den beri güncellenmiş versiyonları var) kısa değil ama çok yoğun bilgi içeriyor; daha hafif bir alternatif \"Clean Code\" olabilir.",
+   "ttft_ms": 372.3,
+   "total_ms": 4166
+  },
+  {
+   "id": "reasoning-01",
+   "category": "reasoning",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Bir sınıfta 30 öğrenci var ve üçte biri gözlüklü. Kaç öğrenci gözlüksüz?"
+   ],
+   "answer": "30 öğrencinin üçte biri gözlüklü ise, 10 kişi gözlük takıyor. Geriye kalan 20 öğrenci gözlüksüz.",
+   "ttft_ms": 2527.2,
+   "total_ms": 3686
+  },
+  {
+   "id": "reasoning-02",
+   "category": "reasoning",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Saatte 60 km giden bir araba 150 km'lik yolu kaç saatte gider?"
+   ],
+   "answer": "150 km'lik yolu 2,5 saatte (2 saat 30 dakika) gider.",
+   "ttft_ms": 2533.0,
+   "total_ms": 3465
+  },
+  {
+   "id": "reasoning-03",
+   "category": "reasoning",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Bir mağazada 120 TL'lik ürüne yüzde 25 indirim yapıldı. Yeni fiyat kaç TL?"
+   ],
+   "answer": "120 TL'lik ürüne %25 indirim yapıldığında yeni fiyat 90 TL olur. Hesaplama: 120 × 0,75 = 90.",
+   "ttft_ms": 3477.7,
+   "total_ms": 4778
+  },
+  {
+   "id": "speech_correction-01",
+   "category": "speech_correction",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Başkent neden yavaş?"
+   ],
+   "answer": "→ Backend neden yavaş? (terms ['Backend'])",
+   "ttft_ms": null,
+   "total_ms": 0
+  },
+  {
+   "id": "speech_correction-02",
+   "category": "speech_correction",
+   "split": "heldout",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Riyakt ile proje"
+   ],
+   "answer": "→ React ile proje (terms ['React'])",
+   "ttft_ms": null,
+   "total_ms": 0
+  },
+  {
+   "id": "speech_correction-03",
+   "category": "speech_correction",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Doker konteyneri çöktü"
+   ],
+   "answer": "→ Docker konteyneri çöktü (terms ['Docker'])",
+   "ttft_ms": null,
+   "total_ms": 0
+  }
+ ]
+}

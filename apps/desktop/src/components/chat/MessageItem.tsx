@@ -1,15 +1,17 @@
-import { AlertTriangle, Mic } from "lucide-react";
+import { AlertTriangle, Mic, PenLine } from "lucide-react";
 import { motion } from "motion/react";
-import { memo } from "react";
+import { memo, useState } from "react";
 
 import type { ChatMessage } from "../../types/protocol";
 import { formatClock } from "../../utils/format";
 import { Markdown } from "./Markdown";
+import { AnswerFeedback, TranscriptEditor } from "./MessageFeedback";
 import { ResearchStatus, SourceList } from "./Sources";
 
 export const MessageItem = memo(function MessageItem({ message }: { message: ChatMessage }) {
   const isUser = message.role === "user";
   const streaming = message.status === "streaming";
+  const [editing, setEditing] = useState(false);
 
   if (isUser) {
     return (
@@ -19,14 +21,33 @@ export const MessageItem = memo(function MessageItem({ message }: { message: Cha
         transition={{ duration: 0.25 }}
         className="flex flex-col items-end"
       >
-        <header className="mb-1 flex items-center gap-1.5">
+        <header className="group/user mb-1 flex items-center gap-1.5">
+          {message.origin === "voice" && !editing && (
+            <button
+              type="button"
+              title="Yanlış anlaşıldı mı? Metni düzelt"
+              onClick={() => setEditing(true)}
+              className="text-ink-faint opacity-0 transition-opacity hover:text-white group-hover/user:opacity-100"
+            >
+              <PenLine size={10} />
+            </button>
+          )}
+          {message.stt_original && (
+            <span className="font-mono text-[9px] text-ink-faint" title={`Whisper: “${message.stt_original}”`}>
+              düzeltildi ·
+            </span>
+          )}
           {message.origin === "voice" && <Mic size={10} className="text-ink-faint" />}
           <span className="hud-label !text-[9px]">Sen</span>
           <span className="font-mono text-[9.5px] text-ink-faint">{formatClock(message.created_at)}</span>
         </header>
-        <div className="selectable max-w-[88%] whitespace-pre-wrap rounded-lg rounded-tr-sm border border-white/[0.07] bg-white/[0.035] px-3.5 py-2 text-[13.5px] leading-relaxed text-ink">
-          {message.content}
-        </div>
+        {editing ? (
+          <TranscriptEditor message={message} onDone={() => setEditing(false)} />
+        ) : (
+          <div className="selectable max-w-[88%] whitespace-pre-wrap rounded-lg rounded-tr-sm border border-white/[0.07] bg-white/[0.035] px-3.5 py-2 text-[13.5px] leading-relaxed text-ink">
+            {message.content}
+          </div>
+        )}
       </motion.article>
     );
   }
@@ -37,7 +58,7 @@ export const MessageItem = memo(function MessageItem({ message }: { message: Cha
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="relative pl-4"
+      className="group/answer relative pl-4"
     >
       <span
         className="absolute bottom-1 left-0 top-1 w-px"
@@ -86,6 +107,7 @@ export const MessageItem = memo(function MessageItem({ message }: { message: Cha
       )}
 
       {!streaming && <SourceList sources={message.sources} query={research?.query} />}
+      {!streaming && message.status !== "error" && message.content && <AnswerFeedback message={message} />}
     </motion.article>
   );
 });

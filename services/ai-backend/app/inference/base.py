@@ -48,6 +48,8 @@ class GenerationOptions:
     max_tokens: int = 1536
     keep_alive_minutes: int = 30
     think: bool = False
+    repeat_penalty: float | None = None  # None → model default
+    presence_penalty: float | None = None  # None → model default (Qwen3.5 Modelfile: 1.5)
 
 
 @dataclass

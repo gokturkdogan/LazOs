@@ -95,6 +95,19 @@ describe("reduceEvent", () => {
     expect(s.userSpeaking).toBe(true);
     expect(apply(s, { type: "voice.mode", mode: "off" }).userSpeaking).toBe(false);
   });
+
+  it("refreshes the learning panel and surfaces suggestions without auto-approving them", () => {
+    const s = apply(
+      initialLiveState,
+      { type: "learning.changed", what: "feedback" },
+      { type: "learning.suggestion", kind: "preference", proposal: "Kullanıcı kısa cevap istiyor." },
+    );
+    expect(s.learningRevision).toBe(2);
+    expect(s.memoryRevision).toBe(initialLiveState.memoryRevision);
+    expect(s.toasts.at(-1)?.message).toContain("Yeni öğrenme önerisi: Kullanıcı kısa cevap istiyor.");
+    const stt = apply(s, { type: "learning.suggestion", kind: "stt_term", proposal: "Kubernetes" });
+    expect(stt.toasts.at(-1)?.message).toContain("Yeni ses tanıma önerisi: Kubernetes");
+  });
 });
 
 describe("memory events", () => {

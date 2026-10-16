@@ -65,13 +65,16 @@ class WhisperSTT:
         await asyncio.get_running_loop().run_in_executor(self._executor, self._load)
         log.info("whisper ready", extra={"load_ms": round((time.perf_counter() - t) * 1000)})
 
-    def _transcribe_sync(self, audio: np.ndarray, language: str | None) -> dict:
+    def _transcribe_sync(self, audio: np.ndarray, language: str | None, prompt: str | None = None) -> dict:
         import mlx_whisper
 
         return mlx_whisper.transcribe(
             audio,
             path_or_hf_repo=str(self.model_dir),
             language=language,
+            # Vocabulary hint (names, technical terms). Measured on Turkish-accented technical sentences:
+            # 11/16 → 15/16 (Yelda) and 13/16 → 16/16 (Piper) terms recognised, +3 ms latency.
+            initial_prompt=prompt,
             temperature=(0.0, 0.2, 0.4),
             condition_on_previous_text=False,
             no_speech_threshold=0.6,
@@ -80,17 +83,17 @@ class WhisperSTT:
             verbose=None,
         )
 
-    async def transcribe(self, audio: np.ndarray, language: str = "auto") -> Transcript:
+    async def transcribe(self, audio: np.ndarray, language: str = "auto", prompt: str | None = None) -> Transcript:
         if not self.available():
             raise STTError("Konuşma tanıma modeli yüklü değil")
         t = time.perf_counter()
         lang = None if language == "auto" else language
 
         def run() -> dict:
-            result = self._transcribe_sync(audio, lang)
+            result = self._transcribe_sync(audio, lang, prompt)
             # LAZOS supports Turkish and English; re-run as Turkish if detection picked something else.
             if lang is None and result.get("language") not in ("tr", "en"):
-                result = self._transcribe_sync(audio, "tr")
+                result = self._transcribe_sync(audio, "tr", prompt)
             self._loaded = True
             return result
 
@@ -99,7 +102,7 @@ class WhisperSTT:
         except Exception as exc:
             raise STTError(f"Konuşma tanıma başarısız: {exc}") from exc
         text = (result.get("text") or "").strip()
-        if _HALLUCINATIONS.search(text):
+        if _HALLUCINATIONS.search(text) or not re.search(r"\w", text):
             log.info("discarded probable hallucination", extra={"text": text})
             text = ""
         return Transcript(

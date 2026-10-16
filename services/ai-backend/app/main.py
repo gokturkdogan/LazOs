@@ -10,7 +10,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import __version__
-from app.api import http, memory, ws
+from app.api import feedback, http, memory, pronunciation, ws
 from app.core.config import BootConfig, get_boot_config
 from app.core.logging import setup_logging
 from app.core.security import ALLOWED_ORIGINS, load_or_create_token
@@ -44,6 +44,8 @@ def create_app(boot: BootConfig | None = None, *, services_factory: Callable[[Bo
     app.include_router(http.public)
     app.include_router(http.api)
     app.include_router(memory.router)
+    app.include_router(pronunciation.router)
+    app.include_router(feedback.router)
     app.include_router(ws.router)
     return app
 

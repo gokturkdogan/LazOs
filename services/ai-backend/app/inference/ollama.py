@@ -85,7 +85,8 @@ class OllamaBackend:
                 "top_k": options.top_k,
                 "num_ctx": options.num_ctx,
                 "num_predict": options.max_tokens,
-                "repeat_penalty": 1.05,
+                **({"repeat_penalty": options.repeat_penalty} if options.repeat_penalty is not None else {}),
+                **({"presence_penalty": options.presence_penalty} if options.presence_penalty is not None else {}),
             },
         }
         if tools:

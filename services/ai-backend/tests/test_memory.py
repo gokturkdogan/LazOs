@@ -12,7 +12,7 @@ from typing import Any
 import pytest
 from fastapi.testclient import TestClient
 
-from app.conversations.store import SCHEMA_V1, ConversationStore, Message
+from app.conversations.store import SCHEMA_V1, SCHEMA_VERSION, ConversationStore, Message
 from app.core.config import BootConfig
 from app.main import create_app
 from app.memory.store import MemoryStore
@@ -72,16 +72,16 @@ def test_identity_is_in_every_system_prompt_and_survives_restart(boot: BootConfi
         done = ask(c, "Sen kimsin?")
         assert done["type"] == "chat.done"
         system = chat_call(llm)[0]["content"]
-        assert "Adın: LAZOS." in system and "Yaratıcın: Göktürk Doğan." in system
+        assert "Adın LAZOS." in system and "Seni geliştiren kişi Göktürk Doğan." in system
         assert "zeki, çılgın, yaratıcı ve teknolojiye tutkuyla bağlı Laz bir yazılım geliştiricidir" in system
-        assert "Bilinç, gerçek duygular ya da insan olduğunu iddia etme" in system
+        assert "bilinç ya da gerçek duygular iddia etmezsin" in system
         assert c.get("/api/memory").json()["identity"]["creator_name"] == "Göktürk Doğan"
 
     # Restart: a brand-new conversation, no history — identity still loaded.
     llm2 = FakeLLM([text("Adım LAZOS."), text("Göktürk Doğan beni geliştirdi.")])
     with running(boot, llm2, search) as c:
         ask(c, "Adın ne?")
-        assert "Adın: LAZOS." in chat_call(llm2)[0]["content"]
+        assert "Adın LAZOS." in chat_call(llm2)[0]["content"]
         assert len(chat_call(llm2)) == 2  # system + this question only: identity does not come from history
         ask(c, "Göktürk Doğan kim?")
     assert search.queries == [], "identity questions must not trigger web research"
@@ -134,7 +134,7 @@ def test_explicit_preference_persists_across_restart(boot: BootConfig) -> None:
     with running(boot, llm2) as c:
         ask(c, "Merhaba")
         system = chat_call(llm2)[0]["content"]
-        assert "Kullanıcı hakkında bildiklerin" in system and "- Kullanıcı kısa cevaplar istiyor." in system
+        assert "KULLANICI HAKKINDA BİLDİKLERİN" in system and "- Kullanıcı kısa cevaplar istiyor." in system
 
 
 def test_forget_preference(boot: BootConfig) -> None:
@@ -316,7 +316,7 @@ def test_model_can_search_memory_itself(boot: BootConfig) -> None:
     with running(boot, llm) as c:
         c.post("/api/memory/items", json={"category": "project", "content": "Kullanıcı Atlas adında bir hava durumu uygulaması geliştiriyor."})
         llm.scripts = [tool_call("hava durumu uygulaması", name="search_memory"), text("Atlas uygulamandan söz ediyorsun.")]
-        done = ask(c, "Şu uygulamam vardı ya, onu hatırla bakalım nasıldı")
+        done = ask(c, "Şu geliştirdiğim şey vardı ya, neydi o?")
         assert done["type"] == "chat.done"
         calls = [c_ for c_ in llm.calls if c_["tools"][0]["function"]["name"] != "update_memory"]
         assert any("Atlas" in r for r in tool_results(calls[-1]["messages"], "search_memory"))
@@ -339,7 +339,7 @@ def test_migration_from_pre_memory_database(tmp_path: Path) -> None:
     async def run() -> None:
         store = ConversationStore(path)
         await store.open()
-        assert await store.schema_version() == 2
+        assert await store.schema_version() == SCHEMA_VERSION  # upgraded to the latest schema
         hits = await MemoryStore(store).search_messages("kuantum projesi")
         assert [h.message_id for h in hits] == ["m1"]
         await store.delete_conversation("c1")

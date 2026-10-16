@@ -19,6 +19,7 @@ import re
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
+from typing import Any
 
 from app.conversations.store import ConversationStore, Message
 from app.core.config import UserSettings
@@ -26,10 +27,19 @@ from app.core.events import EventHub
 from app.inference.base import LLMBackend
 from app.inference.prompts import build_system_prompt, turkish_datetime
 from app.memory.identity import CoreIdentity
-from app.memory.intent import is_episodic, is_forget, is_learnable, is_remember, time_window, wants_latest_conversation
+from app.memory.intent import (
+    asks_about_own_things,
+    is_episodic,
+    is_forget,
+    is_identity_fact,
+    is_learnable,
+    is_remember,
+    time_window,
+    wants_latest_conversation,
+)
 from app.memory.learner import MemoryLearner, MemoryOutcome, run_with_timeout
 from app.memory.store import PROFILE_CATEGORIES, Memory, MemoryStore
-from app.memory.text import fold
+from app.memory.text import distinctive_overlap, fold
 
 log = logging.getLogger("lazos.memory")
 
@@ -109,6 +119,7 @@ class MemoryService:
         hub: EventHub,
         settings: Callable[[], UserSettings],
         is_busy: Callable[[], bool],
+        after_background: Callable[[], Any] | None = None,
     ) -> None:
         self.store = store
         self.hub = hub
@@ -123,6 +134,7 @@ class MemoryService:
             settings=settings,
             is_busy=is_busy,
             on_change=self._schedule_profile_refresh,
+            after_background=after_background,
         )
 
     async def start(self) -> None:
@@ -152,14 +164,24 @@ class MemoryService:
         # Communication preferences first: they shape every answer.
         ordered = sorted(self.profile, key=lambda m: PROFILE_CATEGORIES.index(m.category))
         for mem in ordered:
+            if is_identity_fact(mem.content):
+                continue  # identity comes from the Core Identity, never from learned memories
             if total + len(mem.content) > PROFILE_CHARS:
                 break
             lines.append(mem.content)
             total += len(mem.content)
         return lines
 
-    def system_prompt(self, *, voice: bool, has_tools: bool) -> str:
-        return build_system_prompt(voice=voice, has_tools=has_tools, identity=self.identity, profile=self.profile_lines())
+    def system_prompt(self, *, has_tools: bool, voice: bool = False) -> str:
+        s = self.settings()
+        return build_system_prompt(
+            has_tools=has_tools,
+            identity=self.identity,
+            profile=self.profile_lines(),
+            llm_model=s.llm_model,
+            conversation_style=s.conversation_style,
+            voice_style=s.voice_style,
+        )
 
     def is_identity_question(self, text: str) -> bool:
         folded = fold(text)
@@ -186,7 +208,10 @@ class MemoryService:
             if is_episodic(text):
                 sections.append(await self.episodic_context(text, conversation_id))
         if turn.outcome is not None:
-            sections.append(f"Az önce yapılan hafıza işlemi (yanıtında bunu kısaca ve doğru biçimde onayla):\n{turn.outcome.summary()}.")
+            sections.append(
+                f"Hafıza işlemi tamamlandı: {turn.outcome.summary()}.\nKullanıcıya bunu tek kısa ve doğal cümleyle onayla "
+                "(örneğin \"Tamam.\" ya da \"Unuttum.\"); hafıza veya kayıt ayrıntısına girme."
+            )
         if sections:
             turn.tool_content = (
                 "Uzun süreli hafıza sonuçları. Geçmiş hakkında YALNIZCA bunlara dayan; burada olmayan bir konuşmayı veya "
@@ -206,8 +231,15 @@ class MemoryService:
         return "Hafıza arama sonuçları (yalnızca bunlara dayan, uydurma):\n\n" + "\n\n".join(sections)
 
     async def _relevant(self, text: str, *, exclude: tuple[str, ...], limit: int = 4) -> list[Memory]:
-        found = await self.store.search_memories(text, limit=limit, exclude_categories=exclude)
-        hinted = [c for c in hinted_categories(text) if c not in exclude]
+        found = [
+            m
+            for m in await self.store.search_memories(text, limit=limit * 2, exclude_categories=exclude)
+            if distinctive_overlap(text, m.content)
+        ][:limit]
+        # Category hints only for questions about the user's own things or the past — otherwise a message like
+        # "Bir futbol uygulaması." would drag unrelated project memories into the answer.
+        use_hints = asks_about_own_things(text) or is_episodic(text)
+        hinted = [c for c in hinted_categories(text) if c not in exclude] if use_hints else []
         if hinted:
             for mem in (await self.store.list_memories(tuple(hinted)))[:6]:
                 if all(m.id != mem.id for m in found):
@@ -247,7 +279,10 @@ class MemoryService:
                         lines.append(f"{who}: {m['content'][:300]}")
                     blocks.append("\n".join(lines))
                 return f"İlgili zaman aralığındaki son konuşmalar{scope}:\n\n" + "\n\n".join(blocks)
-        return f"Geçmiş konuşmalarda{scope} bununla ilgili bir kayıt bulunamadı. Bunu kullanıcıya dürüstçe söyle; tahmin yürütme."
+        return (
+            f"Önceki konuşmalarda{scope} bununla ilgili bir kayıt bulunamadı. Bu konuşmadaki mesajlar zaten önünde; cevap "
+            "oradaysa onu kullan. Değilse hatırlamadığını dürüstçe söyle; tahmin yürütme."
+        )
 
     def after_turn(self, *, conversation_id: str, message: Message, handled: bool) -> None:
         settings = self.settings()

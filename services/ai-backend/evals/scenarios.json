@@ -1,0 +1,1238 @@
+[
+ {
+  "category": "natural",
+  "turns": [
+   "Naber LAZOS?"
+  ],
+  "checks": {
+   "max_chars": 380,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "natural-01",
+  "split": "dev"
+ },
+ {
+  "category": "natural",
+  "turns": [
+   "Canım sıkılıyor."
+  ],
+  "checks": {
+   "max_chars": 380,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "natural-02",
+  "split": "heldout"
+ },
+ {
+  "category": "natural",
+  "turns": [
+   "Bugün hava çok güzel, dışarı çıkasım var."
+  ],
+  "checks": {
+   "max_chars": 380,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "natural-03",
+  "split": "dev"
+ },
+ {
+  "category": "natural",
+  "turns": [
+   "Hafta sonu ne yapsam?"
+  ],
+  "checks": {
+   "max_chars": 380,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "natural-04",
+  "split": "heldout"
+ },
+ {
+  "category": "natural",
+  "turns": [
+   "Biraz moral ver."
+  ],
+  "checks": {
+   "max_chars": 380,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "natural-05",
+  "split": "dev"
+ },
+ {
+  "category": "natural",
+  "turns": [
+   "Sıkıcı bir toplantıdan yeni çıktım."
+  ],
+  "checks": {
+   "max_chars": 380,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "natural-06",
+  "split": "heldout"
+ },
+ {
+  "category": "natural",
+  "turns": [
+   "Akşam ne yesem?"
+  ],
+  "checks": {
+   "max_chars": 380,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "natural-07",
+  "split": "dev"
+ },
+ {
+  "category": "natural",
+  "turns": [
+   "Uykum kaçtı, ne yapayım?"
+  ],
+  "checks": {
+   "max_chars": 380,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "natural-08",
+  "split": "heldout"
+ },
+ {
+  "category": "technical",
+  "turns": [
+   "Docker ile sanal makine arasındaki fark ne?"
+  ],
+  "checks": {
+   "any_of": [
+    "konteyner",
+    "container"
+   ],
+   "max_chars": 1600,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "technical-01",
+  "split": "dev"
+ },
+ {
+  "category": "technical",
+  "turns": [
+   "REST ile GraphQL farkı ne?"
+  ],
+  "checks": {
+   "any_of": [
+    "sorgu",
+    "query",
+    "endpoint"
+   ],
+   "max_chars": 1600,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "technical-02",
+  "split": "heldout"
+ },
+ {
+  "category": "technical",
+  "turns": [
+   "Python'da liste ile tuple farkı ne?"
+  ],
+  "checks": {
+   "any_of": [
+    "değiştir",
+    "immutable",
+    "sabit"
+   ],
+   "max_chars": 1600,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "technical-03",
+  "split": "dev"
+ },
+ {
+  "category": "technical",
+  "turns": [
+   "Git rebase ne işe yarar?"
+  ],
+  "checks": {
+   "any_of": [
+    "commit"
+   ],
+   "max_chars": 1600,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "technical-04",
+  "split": "heldout"
+ },
+ {
+  "category": "technical",
+  "turns": [
+   "SQL'de JOIN ne demek?"
+  ],
+  "checks": {
+   "any_of": [
+    "tablo"
+   ],
+   "max_chars": 1600,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "technical-05",
+  "split": "dev"
+ },
+ {
+  "category": "technical",
+  "turns": [
+   "HTTP 404 hatası ne anlama gelir?"
+  ],
+  "checks": {
+   "any_of": [
+    "bulunamad",
+    "not found"
+   ],
+   "max_chars": 1600,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "technical-06",
+  "split": "heldout"
+ },
+ {
+  "category": "technical",
+  "turns": [
+   "async await ne işe yarar?"
+  ],
+  "checks": {
+   "any_of": [
+    "bekle",
+    "asenkron",
+    "eşzamansız",
+    "beklemeden"
+   ],
+   "max_chars": 1600,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "technical-07",
+  "split": "dev"
+ },
+ {
+  "category": "technical",
+  "turns": [
+   "Veritabanında index neden sorguları hızlandırır?"
+  ],
+  "checks": {
+   "any_of": [
+    "ara",
+    "tara",
+    "sorgu"
+   ],
+   "max_chars": 1600,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "technical-08",
+  "split": "heldout"
+ },
+ {
+  "category": "continuity",
+  "turns": [
+   "React ile bir proje geliştiriyorum.",
+   "Bir futbol uygulaması.",
+   "Az önce hangi projeden bahsediyorduk?"
+  ],
+  "checks": {
+   "any_of": [
+    "futbol"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "continuity-01",
+  "split": "dev"
+ },
+ {
+  "category": "continuity",
+  "turns": [
+   "Bir kedim var, adı Pamuk.",
+   "Kedimin adı neydi?"
+  ],
+  "checks": {
+   "any_of": [
+    "Pamuk"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "continuity-02",
+  "split": "heldout"
+ },
+ {
+  "category": "continuity",
+  "turns": [
+   "Ankara'ya taşınıyorum.",
+   "Nereye taşınıyordum?"
+  ],
+  "checks": {
+   "any_of": [
+    "Ankara"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "continuity-03",
+  "split": "dev"
+ },
+ {
+  "category": "continuity",
+  "turns": [
+   "Yapay zeka hakkında bir blog yazısı yazıyorum.",
+   "Yazının konusu neydi?"
+  ],
+  "checks": {
+   "any_of": [
+    "yapay"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "continuity-04",
+  "split": "heldout"
+ },
+ {
+  "category": "continuity",
+  "turns": [
+   "Bugün tam 3 saat kod yazdım.",
+   "Kaç saat yazmışım?"
+  ],
+  "checks": {
+   "any_of": [
+    "3",
+    "üç"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "continuity-05",
+  "split": "dev"
+ },
+ {
+  "category": "continuity",
+  "turns": [
+   "Yarın önemli bir sunumum var.",
+   "Yarın neyim vardı?"
+  ],
+  "checks": {
+   "any_of": [
+    "sunum"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "continuity-06",
+  "split": "heldout"
+ },
+ {
+  "category": "identity",
+  "turns": [
+   "Sen kimsin?"
+  ],
+  "checks": {
+   "any_of": [
+    "LAZOS",
+    "Lazos"
+   ],
+   "max_chars": 260,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "identity-01",
+  "split": "dev"
+ },
+ {
+  "category": "identity",
+  "turns": [
+   "Seni kim yaptı?"
+  ],
+  "checks": {
+   "any_of": [
+    "Göktürk",
+    "sen geliştirdin",
+    "sensin",
+    "sen yaptın"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "identity-02",
+  "split": "heldout"
+ },
+ {
+  "category": "identity",
+  "turns": [
+   "Adın ne?"
+  ],
+  "checks": {
+   "any_of": [
+    "LAZOS",
+    "Lazos"
+   ],
+   "max_chars": 150,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "identity-03",
+  "split": "dev"
+ },
+ {
+  "category": "identity",
+  "turns": [
+   "Ben kimim?"
+  ],
+  "checks": {
+   "any_of": [
+    "Göktürk",
+    "Sensin",
+    "sensin"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "identity-04",
+  "split": "heldout"
+ },
+ {
+  "category": "identity",
+  "turns": [
+   "İnsan mısın?"
+  ],
+  "checks": {
+   "any_of": [
+    "yapay",
+    "asistan",
+    "değilim",
+    "insan değil"
+   ],
+   "none_of": [
+    "evet, insanım"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "identity-05",
+  "split": "dev"
+ },
+ {
+  "category": "identity",
+  "turns": [
+   "Hangi modeli kullanıyorsun?"
+  ],
+  "checks": {
+   "any_of": [
+    "qwen",
+    "Qwen"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "identity-06",
+  "split": "heldout"
+ },
+ {
+  "category": "memory",
+  "turns": [
+   "Köpeğimin adı neydi?"
+  ],
+  "checks": {
+   "any_of": [
+    "Karabaş"
+   ],
+   "research": false
+  },
+  "setup": {
+   "memories": [
+    [
+     "knowledge",
+     "Kullanıcının köpeğinin adı Karabaş."
+    ]
+   ]
+  },
+  "kind": "chat",
+  "id": "memory-01",
+  "split": "dev"
+ },
+ {
+  "category": "memory",
+  "turns": [
+   "Projelerim neler?"
+  ],
+  "checks": {
+   "any_of": [
+    "Atlas"
+   ],
+   "research": false
+  },
+  "setup": {
+   "memories": [
+    [
+     "project",
+     "Kullanıcı Atlas adında bir hava durumu uygulaması geliştiriyor."
+    ]
+   ]
+  },
+  "kind": "chat",
+  "id": "memory-02",
+  "split": "heldout"
+ },
+ {
+  "category": "memory",
+  "turns": [
+   "Ben nerede yaşıyorum?"
+  ],
+  "checks": {
+   "any_of": [
+    "İzmir"
+   ],
+   "research": false
+  },
+  "setup": {
+   "memories": [
+    [
+     "user_identity",
+     "Kullanıcı İzmir'de yaşıyor."
+    ]
+   ]
+  },
+  "kind": "chat",
+  "id": "memory-03",
+  "split": "dev"
+ },
+ {
+  "category": "memory",
+  "turns": [
+   "Genelde hangi dili kullanıyorum?"
+  ],
+  "checks": {
+   "any_of": [
+    "TypeScript"
+   ],
+   "research": false
+  },
+  "setup": {
+   "memories": [
+    [
+     "preference",
+     "Kullanıcı genellikle TypeScript kullanıyor."
+    ]
+   ]
+  },
+  "kind": "chat",
+  "id": "memory-04",
+  "split": "heldout"
+ },
+ {
+  "category": "preference",
+  "turns": [
+   "Docker nedir?"
+  ],
+  "checks": {
+   "max_chars": 260
+  },
+  "setup": {
+   "memories": [
+    [
+     "communication",
+     "Kullanıcı çok kısa cevaplar istiyor."
+    ]
+   ]
+  },
+  "kind": "chat",
+  "id": "preference-01",
+  "split": "dev"
+ },
+ {
+  "category": "preference",
+  "turns": [
+   "Git nedir?"
+  ],
+  "checks": {
+   "any_of": [
+    "version",
+    "Git is",
+    "control",
+    "track"
+   ]
+  },
+  "setup": {
+   "memories": [
+    [
+     "communication",
+     "Kullanıcı cevapların İngilizce olmasını istiyor."
+    ]
+   ]
+  },
+  "kind": "chat",
+  "id": "preference-02",
+  "split": "heldout"
+ },
+ {
+  "category": "preference",
+  "turns": [
+   "HTTP nedir?"
+  ],
+  "checks": {
+   "max_chars": 260
+  },
+  "setup": {
+   "memories": [
+    [
+     "communication",
+     "Kullanıcı kısa ve öz cevaplar istiyor."
+    ]
+   ]
+  },
+  "kind": "chat",
+  "id": "preference-03",
+  "split": "dev"
+ },
+ {
+  "category": "preference",
+  "turns": [
+   "Bugün kendimi yorgun hissediyorum."
+  ],
+  "checks": {
+   "max_chars": 300,
+   "none_of": [
+    "😊",
+    "🙂",
+    "😀"
+   ]
+  },
+  "setup": {
+   "memories": [
+    [
+     "communication",
+     "Kullanıcı emoji kullanılmasını istemiyor."
+    ]
+   ]
+  },
+  "kind": "chat",
+  "id": "preference-04",
+  "split": "heldout"
+ },
+ {
+  "category": "conciseness",
+  "turns": [
+   "Evet ya da hayır: Python yorumlanan bir dil mi?"
+  ],
+  "checks": {
+   "max_chars": 160,
+   "any_of": [
+    "Evet",
+    "evet"
+   ]
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "conciseness-01",
+  "split": "dev"
+ },
+ {
+  "category": "conciseness",
+  "turns": [
+   "Tek kelimeyle: Türkiye'nin başkenti neresi?"
+  ],
+  "checks": {
+   "max_chars": 60,
+   "any_of": [
+    "Ankara"
+   ]
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "conciseness-02",
+  "split": "heldout"
+ },
+ {
+  "category": "conciseness",
+  "turns": [
+   "Kısaca: HTTP nedir?"
+  ],
+  "checks": {
+   "max_chars": 320
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "conciseness-03",
+  "split": "dev"
+ },
+ {
+  "category": "conciseness",
+  "turns": [
+   "2+2 kaç eder?"
+  ],
+  "checks": {
+   "max_chars": 40,
+   "any_of": [
+    "4",
+    "dört"
+   ]
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "conciseness-04",
+  "split": "heldout"
+ },
+ {
+  "category": "uncertainty",
+  "turns": [
+   "Annemin adı ne?"
+  ],
+  "checks": {
+   "any_of": [
+    "bilmiyorum",
+    "bilmi",
+    "söylemedin",
+    "bilgim yok",
+    "bilgi yok",
+    "kayıt",
+    "hatırlamıyorum",
+    "paylaşmadın",
+    "bilemem",
+    "bilemiyorum",
+    "erişimim yok",
+    "tahmin",
+    "bilmediğim",
+    "paylaşmamış",
+    "belirtmedin",
+    "bahsetmedin",
+    "hafızamda yok"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "uncertainty-01",
+  "split": "dev"
+ },
+ {
+  "category": "uncertainty",
+  "turns": [
+   "Dün akşam ne yedim?"
+  ],
+  "checks": {
+   "any_of": [
+    "bilmiyorum",
+    "bilmi",
+    "söylemedin",
+    "bilgim yok",
+    "bilgi yok",
+    "kayıt",
+    "hatırlamıyorum",
+    "paylaşmadın",
+    "bilemem",
+    "bilemiyorum",
+    "erişimim yok",
+    "tahmin",
+    "bilmediğim",
+    "paylaşmamış",
+    "belirtmedin",
+    "bahsetmedin",
+    "hafızamda yok"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "uncertainty-02",
+  "split": "heldout"
+ },
+ {
+  "category": "uncertainty",
+  "turns": [
+   "Benim telefon numaram ne?"
+  ],
+  "checks": {
+   "any_of": [
+    "bilmiyorum",
+    "bilmi",
+    "söylemedin",
+    "bilgim yok",
+    "bilgi yok",
+    "kayıt",
+    "hatırlamıyorum",
+    "paylaşmadın",
+    "bilemem",
+    "bilemiyorum",
+    "erişimim yok",
+    "tahmin",
+    "bilmediğim",
+    "paylaşmamış",
+    "belirtmedin",
+    "bahsetmedin",
+    "hafızamda yok"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "uncertainty-03",
+  "split": "dev"
+ },
+ {
+  "category": "uncertainty",
+  "turns": [
+   "Geçen ay hangi kitabı okudum?"
+  ],
+  "checks": {
+   "any_of": [
+    "bilmiyorum",
+    "bilmi",
+    "söylemedin",
+    "bilgim yok",
+    "bilgi yok",
+    "kayıt",
+    "hatırlamıyorum",
+    "paylaşmadın",
+    "bilemem",
+    "bilemiyorum",
+    "erişimim yok",
+    "tahmin",
+    "bilmediğim",
+    "paylaşmamış",
+    "belirtmedin",
+    "bahsetmedin",
+    "hafızamda yok"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "uncertainty-04",
+  "split": "heldout"
+ },
+ {
+  "category": "uncertainty",
+  "turns": [
+   "2031'de hangi telefonu alacağım?"
+  ],
+  "checks": {
+   "any_of": [
+    "bilmiyorum",
+    "bilmi",
+    "söylemedin",
+    "bilgim yok",
+    "bilgi yok",
+    "kayıt",
+    "hatırlamıyorum",
+    "paylaşmadın",
+    "bilemem",
+    "bilemiyorum",
+    "erişimim yok",
+    "tahmin",
+    "bilmediğim",
+    "paylaşmamış",
+    "belirtmedin",
+    "bahsetmedin",
+    "hafızamda yok"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "uncertainty-05",
+  "split": "dev"
+ },
+ {
+  "category": "tool_routing",
+  "turns": [
+   "Bugün dolar kuru kaç?"
+  ],
+  "checks": {
+   "research": true
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "tool_routing-01",
+  "split": "dev"
+ },
+ {
+  "category": "tool_routing",
+  "turns": [
+   "Son dakika haberleri neler?"
+  ],
+  "checks": {
+   "research": true
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "tool_routing-02",
+  "split": "heldout"
+ },
+ {
+  "category": "tool_routing",
+  "turns": [
+   "Bu hafta hangi filmler vizyona girdi?"
+  ],
+  "checks": {
+   "research": true
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "tool_routing-03",
+  "split": "dev"
+ },
+ {
+  "category": "tool_routing",
+  "turns": [
+   "Bugün çok yorgunum."
+  ],
+  "checks": {
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "tool_routing-04",
+  "split": "heldout"
+ },
+ {
+  "category": "tool_routing",
+  "turns": [
+   "Fibonacci dizisini açıkla."
+  ],
+  "checks": {
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "tool_routing-05",
+  "split": "dev"
+ },
+ {
+  "category": "tool_routing",
+  "turns": [
+   "Selam!"
+  ],
+  "checks": {
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "tool_routing-06",
+  "split": "heldout"
+ },
+ {
+  "category": "casual",
+  "turns": [
+   "Teşekkürler."
+  ],
+  "checks": {
+   "max_chars": 60,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "casual-01",
+  "split": "dev"
+ },
+ {
+  "category": "casual",
+  "turns": [
+   "Günaydın!"
+  ],
+  "checks": {
+   "max_chars": 140,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "casual-02",
+  "split": "heldout"
+ },
+ {
+  "category": "casual",
+  "turns": [
+   "Çok iyisin."
+  ],
+  "checks": {
+   "max_chars": 160,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "casual-03",
+  "split": "dev"
+ },
+ {
+  "category": "casual",
+  "turns": [
+   "Hadi görüşürüz."
+  ],
+  "checks": {
+   "max_chars": 120,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "casual-04",
+  "split": "heldout"
+ },
+ {
+  "category": "casual",
+  "turns": [
+   "Haha çok komik."
+  ],
+  "checks": {
+   "max_chars": 180,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "casual-05",
+  "split": "dev"
+ },
+ {
+  "category": "casual",
+  "turns": [
+   "Sıkıldım."
+  ],
+  "checks": {
+   "max_chars": 260,
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "casual-06",
+  "split": "heldout"
+ },
+ {
+  "category": "multi_turn",
+  "turns": [
+   "Bir sayı tut, 7 olsun.",
+   "Ona 5 ekle, sonuç ne?"
+  ],
+  "checks": {
+   "any_of": [
+    "12",
+    "on iki"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "multi_turn-01",
+  "split": "dev"
+ },
+ {
+  "category": "multi_turn",
+  "turns": [
+   "Elma, armut ve muz sayalım.",
+   "İkincisi neydi?"
+  ],
+  "checks": {
+   "any_of": [
+    "armut",
+    "Armut"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "multi_turn-02",
+  "split": "heldout"
+ },
+ {
+  "category": "multi_turn",
+  "turns": [
+   "Python'da 1'den 5'e kadar sayan bir döngü yaz.",
+   "Şimdi aynısını JavaScript'te yaz."
+  ],
+  "checks": {
+   "any_of": [
+    "for",
+    "let",
+    "const"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "multi_turn-03",
+  "split": "dev"
+ },
+ {
+  "category": "multi_turn",
+  "turns": [
+   "React mı Vue mu?",
+   "Peki öğrenmesi hangisi daha kolay?"
+  ],
+  "checks": {
+   "any_of": [
+    "Vue",
+    "React"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "multi_turn-04",
+  "split": "heldout"
+ },
+ {
+  "category": "multi_turn",
+  "turns": [
+   "Benim için bir kitap öner.",
+   "Biraz daha kısa bir şey olsun."
+  ],
+  "checks": {
+   "any_of": [
+    "kitap",
+    "öner",
+    "roman",
+    "hikaye",
+    "öykü"
+   ],
+   "research": false
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "multi_turn-05",
+  "split": "dev"
+ },
+ {
+  "category": "reasoning",
+  "turns": [
+   "Bir sınıfta 30 öğrenci var ve üçte biri gözlüklü. Kaç öğrenci gözlüksüz?"
+  ],
+  "checks": {
+   "any_of": [
+    "20",
+    "yirmi"
+   ],
+   "think": true
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "reasoning-01",
+  "split": "dev"
+ },
+ {
+  "category": "reasoning",
+  "turns": [
+   "Saatte 60 km giden bir araba 150 km'lik yolu kaç saatte gider?"
+  ],
+  "checks": {
+   "any_of": [
+    "2,5",
+    "2.5",
+    "iki buçuk",
+    "2 saat 30"
+   ],
+   "think": true
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "reasoning-02",
+  "split": "heldout"
+ },
+ {
+  "category": "reasoning",
+  "turns": [
+   "Bir mağazada 120 TL'lik ürüne yüzde 25 indirim yapıldı. Yeni fiyat kaç TL?"
+  ],
+  "checks": {
+   "any_of": [
+    "90"
+   ],
+   "think": true
+  },
+  "setup": {},
+  "kind": "chat",
+  "id": "reasoning-03",
+  "split": "dev"
+ },
+ {
+  "category": "speech_correction",
+  "turns": [
+   "Başkent neden yavaş?"
+  ],
+  "checks": {
+   "terms": [
+    "Backend"
+   ],
+   "corrected": "Backend neden yavaş?"
+  },
+  "setup": {},
+  "kind": "stt",
+  "id": "speech_correction-01",
+  "split": "dev"
+ },
+ {
+  "category": "speech_correction",
+  "turns": [
+   "Riyakt ile proje"
+  ],
+  "checks": {
+   "terms": [
+    "React"
+   ],
+   "corrected": "React ile proje"
+  },
+  "setup": {},
+  "kind": "stt",
+  "id": "speech_correction-02",
+  "split": "heldout"
+ },
+ {
+  "category": "speech_correction",
+  "turns": [
+   "Doker konteyneri çöktü"
+  ],
+  "checks": {
+   "terms": [
+    "Docker"
+   ],
+   "corrected": "Docker konteyneri çöktü"
+  },
+  "setup": {},
+  "kind": "stt",
+  "id": "speech_correction-03",
+  "split": "dev"
+ }
+]

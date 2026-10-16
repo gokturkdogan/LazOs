@@ -82,9 +82,15 @@ class UserSettings(BaseModel):
     max_sources: int = Field(3, ge=1, le=8)
 
     stt_language: SttLanguage = "auto"
+    stt_vocabulary: bool = True  # bias Whisper towards technical terms and names (measured: 11-13/16 → 15-16/16)
     tts_engine: TtsEngineName = "piper"
     tts_speed: float = Field(1.0, ge=0.6, le=1.6)
     speak_text_replies: bool = False
+    pronunciation_enabled: bool = True  # apply the pronunciation dictionary to speech (never to displayed text)
+
+    conversation_style: Literal["natural", "professional", "concise"] = "natural"
+    reasoning_mode: Literal["fast", "auto", "deep"] = "auto"  # model thinking: never / multi-step only / always
+    voice_style: Literal["natural", "detailed"] = "natural"
 
     vad_threshold: float = Field(0.5, ge=0.2, le=0.9)
     vad_silence_ms: int = Field(700, ge=300, le=2500)
@@ -93,6 +99,7 @@ class UserSettings(BaseModel):
 
     memory_enabled: bool = True  # use identity profile, learned memories and past conversations in answers
     memory_auto_learn: bool = True  # learn durable facts from conversations in the background
+    feedback_examples_enabled: bool = True  # show approved correction examples to the model (see docs/LEARNING.md)
 
     reduced_motion: bool = False
     visual_quality: Literal["auto", "high", "low"] = "auto"

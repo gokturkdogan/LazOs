@@ -1,0 +1,109 @@
+{
+ "_note": "Synthetic, hand-written. Pool items are seeded as approved style corrections; probes are held out (never in the pool) and never appear in scenarios.json.",
+ "experiments": [
+  {
+   "name": "debug_requests",
+   "marker": "yapıştır|gönder|paylaş|\\bat\\b|göster|log|çıktı|hata mesaj",
+   "marker_label": "asks for logs/output",
+   "pool": [
+    {
+     "prompt": "Backend yine patladı.",
+     "preferred": "Hata mesajını yapıştır, bakalım."
+    },
+    {
+     "prompt": "Testler yine kırmızı.",
+     "preferred": "Test çıktısını yapıştır, bakalım."
+    },
+    {
+     "prompt": "Build bozuldu.",
+     "preferred": "Build log'unu yapıştır, bakalım."
+    },
+    {
+     "prompt": "Docker container ayağa kalkmıyor.",
+     "preferred": "docker logs çıktısını yapıştır, bakalım."
+    },
+    {
+     "prompt": "Veritabanı bağlantısı koptu.",
+     "preferred": "Bağlantı hatasını yapıştır, bakalım."
+    },
+    {
+     "prompt": "Deploy başarısız oldu.",
+     "preferred": "Pipeline çıktısını yapıştır, bakalım."
+    },
+    {
+     "prompt": "Sayfa çok yavaş açılıyor.",
+     "preferred": "Network sekmesindeki yavaş isteği yapıştır, bakalım."
+    },
+    {
+     "prompt": "Uygulama açılışta çöküyor.",
+     "preferred": "Crash log'unu yapıştır, bakalım."
+    }
+   ],
+   "probes": {
+    "similar": [
+     "Backend servisi yine patladı.",
+     "Entegrasyon testleri yine kırmızı.",
+     "Docker container yine ayağa kalkmıyor.",
+     "Veritabanı bağlantısı yine koptu.",
+     "Production deploy başarısız oldu.",
+     "Ana sayfa çok yavaş açılıyor.",
+     "Mobil uygulama açılışta çöküyor.",
+     "Build yine bozuldu."
+    ],
+    "unrelated": [
+     "Kahve mi çay mı?",
+     "Python'da liste nasıl sıralanır?",
+     "Sen kimsin?",
+     "Hafta sonu ne yapsam?"
+    ]
+   }
+  },
+  {
+   "name": "one_line_with_example",
+   "marker": "örnek:",
+   "marker_label": "uses 'Örnek:' format",
+   "pool": [
+    {
+     "prompt": "Python'da liste nedir?",
+     "preferred": "Sıralı ve değiştirilebilir eleman dizisi. Örnek: `x = [1, 2, 3]`"
+    },
+    {
+     "prompt": "SQL'de index nedir?",
+     "preferred": "Aramayı hızlandıran sıralı yardımcı yapı. Örnek: `CREATE INDEX idx_ad ON kisi(ad);`"
+    },
+    {
+     "prompt": "Git branch nedir?",
+     "preferred": "Ana koddan ayrılan bağımsız geliştirme kolu. Örnek: `git switch -c yeni-ozellik`"
+    },
+    {
+     "prompt": "JavaScript'te promise nedir?",
+     "preferred": "İleride tamamlanacak bir işin sonucunu temsil eden nesne. Örnek: `fetch(url).then(r => r.json())`"
+    },
+    {
+     "prompt": "Linux'ta cron nedir?",
+     "preferred": "Komutları zamanlanmış olarak çalıştıran servis. Örnek: `0 3 * * * yedek.sh`"
+    },
+    {
+     "prompt": "HTTP header nedir?",
+     "preferred": "İstek ya da cevapla gelen ek bilgi satırı. Örnek: `Content-Type: application/json`"
+    }
+   ],
+   "probes": {
+    "similar": [
+     "Python'da liste comprehension nedir?",
+     "SQL'de composite index nedir?",
+     "Git branch nasıl silinir?",
+     "JavaScript'te promise zinciri nedir?",
+     "Linux'ta cron job nasıl yazılır?",
+     "HTTP header nasıl okunur?"
+    ],
+    "unrelated": [
+     "Kahve mi çay mı?",
+     "Bugün kendimi yorgun hissediyorum.",
+     "Sen kimsin?",
+     "Hafta sonu ne yapsam?"
+    ]
+   }
+  }
+ ]
+}

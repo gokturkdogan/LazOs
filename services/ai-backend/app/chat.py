@@ -16,6 +16,7 @@ from app.core.config import UserSettings
 from app.core.events import EventHub
 from app.core.metrics import MetricsLog, TurnMetrics, now_ms
 from app.core.state import AIState, StateMachine
+from app.feedback.service import FeedbackService
 from app.inference.base import GenerationOptions, LLMBackend, LLMError, LLMUnavailable, ModelMissing, ToolCall
 from app.inference.context import build_context, estimate_tokens, stamp
 from app.inference.prompts import (
@@ -25,6 +26,7 @@ from app.inference.prompts import (
     WEB_SEARCH_TOOL,
     build_system_prompt,
 )
+from app.inference.reasoning import needs_deep_reasoning
 from app.memory.intent import is_episodic, is_forget, is_remember
 from app.memory.service import SEARCH_MEMORY_TOOL, MemoryService, TurnMemory
 from app.research.router import RouteDecision, build_search_query, route
@@ -80,9 +82,11 @@ class ChatService:
         metrics: MetricsLog,
         settings: Callable[[], UserSettings],
         memory: MemoryService | None = None,
+        feedback: FeedbackService | None = None,
     ) -> None:
         self.store = store
         self.memory = memory
+        self.feedback = feedback
         self.llm = llm
         self.research = research
         self.hub = hub
@@ -112,10 +116,14 @@ class ChatService:
             tools.append(SEARCH_MEMORY_TOOL)
         return tools or None
 
-    def system_prompt(self, *, voice: bool, has_tools: bool) -> str:
+    def system_prompt(self, *, has_tools: bool) -> str:
+        """Identical for text and voice turns (the mode travels in the turn tag), so the prompt cache survives."""
         if self.memory:
-            return self.memory.system_prompt(voice=voice, has_tools=has_tools)
-        return build_system_prompt(voice=voice, has_tools=has_tools)
+            return self.memory.system_prompt(has_tools=has_tools)
+        s = self.settings()
+        return build_system_prompt(
+            has_tools=has_tools, llm_model=s.llm_model, conversation_style=s.conversation_style, voice_style=s.voice_style
+        )
 
     async def submit(self, req: TurnRequest) -> asyncio.Task[None]:
         if self.memory:
@@ -193,8 +201,8 @@ class ChatService:
             tools = self.tools_for(settings)
             log.info("turn routed", extra={"action": decision.action, "reason": decision.reason})
 
-            system = self.system_prompt(voice=req.origin == "voice", has_tools=settings.research_mode != "off")
-            stamped = stamp(req.text, datetime.fromtimestamp(user_msg.created_at).astimezone())
+            system = self.system_prompt(has_tools=settings.research_mode != "off")
+            stamped = stamp(req.text, datetime.fromtimestamp(user_msg.created_at).astimezone(), voice=req.origin == "voice")
             plan = build_context(
                 system_prompt=system,
                 summary=conv.summary,
@@ -204,15 +212,47 @@ class ChatService:
                 reserve_for_answer=settings.max_response_tokens + 1800,  # room for research results
             )
             messages = plan.messages
-            options = GenerationOptions(
-                temperature=settings.temperature,
-                num_ctx=settings.num_ctx,
-                max_tokens=settings.max_response_tokens,
-                keep_alive_minutes=settings.keep_alive_minutes,
+            think = settings.reasoning_mode == "deep" or (
+                settings.reasoning_mode == "auto" and needs_deep_reasoning(req.text)
             )
+            if think:
+                # Qwen3.5 thinking profile; the hidden reasoning needs a larger token budget.
+                options = GenerationOptions(
+                    temperature=0.6,
+                    top_p=0.95,
+                    num_ctx=settings.num_ctx,
+                    max_tokens=max(settings.max_response_tokens, 6144),
+                    keep_alive_minutes=settings.keep_alive_minutes,
+                    think=True,
+                    repeat_penalty=1.0,
+                    presence_penalty=1.5,
+                )
+                self.state.set(AIState.THINKING, "reasoning", force=True)
+                metrics.reasoning = True
+            else:
+                # Qwen3.5 non-thinking profile (chosen after a controlled comparison, see docs/CONVERSATION.md).
+                options = GenerationOptions(
+                    temperature=settings.temperature,
+                    top_p=0.8,
+                    top_k=20,
+                    num_ctx=settings.num_ctx,
+                    max_tokens=settings.max_response_tokens,
+                    keep_alive_minutes=settings.keep_alive_minutes,
+                    repeat_penalty=1.0,
+                    presence_penalty=1.5,
+                )
+            log.info("generation profile", extra={"think": think})
 
-            if turn_memory and turn_memory.tool_content:
-                messages += self._exchange("search_memory", {"query": req.text[:200]}, turn_memory.tool_content)
+            # Lowest priority context: approved style examples from the owner's corrections (data, not instructions).
+            examples = await self.feedback.examples_for(req.text) if self.feedback else []
+            if examples:
+                metrics.examples = len(examples)
+            memory_block = turn_memory.tool_content if turn_memory else None
+            if examples:
+                rendered = self.feedback.render_examples(examples)  # type: ignore[union-attr]
+                memory_block = f"{memory_block}\n\n{rendered}" if memory_block else rendered
+            if memory_block:
+                messages += self._exchange("search_memory", {"query": req.text[:200]}, memory_block)
 
             searches = 0
             tool_rounds = 0

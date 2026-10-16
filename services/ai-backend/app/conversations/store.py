@@ -13,6 +13,8 @@ import aiosqlite
 
 from app.memory.text import index_body
 
+SCHEMA_VERSION = 4  # latest schema; bump together with a new additive migration below
+
 # Schema migrations, applied in order and tracked with PRAGMA user_version.
 # Version 1 is the original schema (idempotent, so pre-migration databases upgrade cleanly).
 SCHEMA_V1 = """
@@ -74,6 +76,80 @@ CREATE VIRTUAL TABLE IF NOT EXISTS memories_fts USING fts5(body, tokenize = 'uni
 CREATE VIRTUAL TABLE IF NOT EXISTS messages_fts USING fts5(body, tokenize = 'unicode61 remove_diacritics 2');
 """
 
+# Version 3: user-defined pronunciation rules for speech output.
+SCHEMA_V3 = """
+CREATE TABLE IF NOT EXISTS pronunciation_rules (
+    id             TEXT PRIMARY KEY,
+    term           TEXT NOT NULL,
+    replacement    TEXT NOT NULL,
+    engine         TEXT NOT NULL DEFAULT 'all',   -- all | piper | macos
+    case_sensitive INTEGER NOT NULL DEFAULT 0,
+    enabled        INTEGER NOT NULL DEFAULT 1,
+    created_at     REAL NOT NULL,
+    updated_at     REAL NOT NULL
+);
+"""
+
+# Version 4: feedback & adaptive learning (additive). Applied inside one transaction.
+SCHEMA_V4 = """
+CREATE TABLE IF NOT EXISTS response_feedback (
+    id              TEXT PRIMARY KEY,
+    message_id      TEXT NOT NULL UNIQUE REFERENCES messages(id) ON DELETE CASCADE,   -- one rating per answer
+    conversation_id TEXT NOT NULL,
+    rating          INTEGER NOT NULL CHECK (rating IN (-1, 1)),
+    reasons         TEXT NOT NULL DEFAULT '[]',
+    note            TEXT,
+    model           TEXT,
+    mode            TEXT,               -- JSON: origin, reasoning, styles at the time of the answer
+    used_as_evidence INTEGER NOT NULL DEFAULT 0,
+    created_at      REAL NOT NULL,
+    updated_at      REAL NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_feedback_rating ON response_feedback(rating, created_at);
+
+CREATE TABLE IF NOT EXISTS response_corrections (
+    id                 TEXT PRIMARY KEY,
+    message_id         TEXT UNIQUE REFERENCES messages(id) ON DELETE SET NULL,  -- kept as an example if the chat is deleted
+    conversation_id    TEXT,
+    user_prompt        TEXT NOT NULL,
+    original_response  TEXT NOT NULL,
+    preferred_response TEXT NOT NULL,
+    kind               TEXT NOT NULL DEFAULT 'style',   -- style | local | factual
+    status             TEXT NOT NULL DEFAULT 'pending', -- pending | approved | rejected
+    blocked_reason     TEXT,
+    created_at         REAL NOT NULL,
+    updated_at         REAL NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_corrections_status ON response_corrections(status, kind);
+CREATE VIRTUAL TABLE IF NOT EXISTS corrections_fts USING fts5(correction_id UNINDEXED, body, tokenize = 'unicode61 remove_diacritics 2');
+
+CREATE TABLE IF NOT EXISTS transcription_corrections (
+    id                TEXT PRIMARY KEY,
+    message_id        TEXT REFERENCES messages(id) ON DELETE SET NULL,
+    original_text     TEXT NOT NULL,
+    corrected_text    TEXT NOT NULL,
+    language          TEXT,
+    terms             TEXT NOT NULL DEFAULT '[]',
+    stt_config        TEXT,
+    created_at        REAL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS learning_suggestions (
+    id          TEXT PRIMARY KEY,
+    kind        TEXT NOT NULL,                  -- preference | stt_term
+    signal      TEXT NOT NULL,                  -- e.g. too_long, stt:backend
+    proposal    TEXT NOT NULL,
+    category    TEXT,
+    evidence    TEXT NOT NULL DEFAULT '[]',
+    status      TEXT NOT NULL DEFAULT 'pending',-- pending | approved | rejected | revoked | superseded
+    memory_id   TEXT,
+    note        TEXT,
+    created_at  REAL NOT NULL,
+    updated_at  REAL NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_suggestions_status ON learning_suggestions(status, kind);
+"""
+
 
 @dataclass
 class Message:
@@ -87,9 +163,11 @@ class Message:
     status: str = "complete"
     sources: list[dict[str, Any]] = field(default_factory=list)
     metrics: dict[str, Any] | None = None
+    stt_original: str | None = None  # set when a voice transcript was corrected by the user
 
     def to_dict(self) -> dict[str, Any]:
         return {
+            "stt_original": self.stt_original,
             "id": self.id,
             "conversation_id": self.conversation_id,
             "role": self.role,
@@ -158,6 +236,15 @@ class ConversationStore:
             )
             await self.db.execute("PRAGMA user_version = 2")
             await self.db.commit()
+        if version < 3:
+            await self.db.executescript(SCHEMA_V3)
+            await self.db.execute("PRAGMA user_version = 3")
+            await self.db.commit()
+        if version < 4:
+            # One transaction: either every V4 object exists or none does.
+            await self.db.executescript(
+                "BEGIN;\n" + SCHEMA_V4 + "\nALTER TABLE messages ADD COLUMN stt_original TEXT;\nPRAGMA user_version = 4;\nCOMMIT;"
+            )
 
     async def schema_version(self) -> int:
         async with self.db.execute("PRAGMA user_version") as cur:
@@ -313,4 +400,5 @@ class ConversationStore:
             status=row["status"],
             sources=json.loads(row["sources"]) if row["sources"] else [],
             metrics=json.loads(row["metrics"]) if row["metrics"] else None,
+            stt_original=row["stt_original"] if "stt_original" in row.keys() else None,
         )

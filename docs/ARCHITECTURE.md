@@ -66,6 +66,9 @@ captured or handed to the output device, and the AI core visualises those.
 | `memory/learner.py` | The local model proposes `update_memory` tool calls; rules decide what is applied; background worker that pauses for user turns |
 | `memory/service.py` | Entry point used by the chat pipeline: system profile, per-turn retrieval, explicit operations, episodic search, learning queue |
 | `api/memory.py` | Owner-only management of identity, memories and episode search |
+| `feedback/policy.py` | Feedback reasons, correction classification (style/local/factual), blocking (secrets, identity, instructions), PII warnings, preference conflicts |
+| `feedback/service.py` | Ratings, corrections, approved-example retrieval (≤ 2, lexical), speech-recognition corrections, suggestions (approve/reject/revoke), local export |
+| `api/feedback.py` | Owner-only feedback, learning and export API (`/api/feedback`) |
 
 ## WebSocket contract (`/ws?token=…`)
 
@@ -120,7 +123,7 @@ silences TTS.
 
 ## Identity and long-term memory
 
-**Storage.** The database uses schema version 2, tracked with `PRAGMA user_version`; databases from
+**Storage.** (Schema v4 since V1.2.1 adds the feedback tables; see [LEARNING.md](LEARNING.md).) The database uses schema version 2, tracked with `PRAGMA user_version`; databases from
 before this change upgrade in place and existing messages are backfilled into the index. It adds:
 - `core_identity`: a single row;
 - `memories`: category, content, origin `auto|explicit|manual`, sensitivity flag, source

@@ -15,15 +15,17 @@ CHARS_PER_TOKEN = 3.2
 MESSAGE_OVERHEAD_TOKENS = 6
 
 
-def stamp(text: str, when: datetime | None = None) -> str:
-    """Prefix a user turn with the time it was sent. The same stamp is reproduced for history messages,
-    so earlier turns render identically on every request and stay in Ollama's prompt cache."""
-    return f"[Şu an: {turkish_datetime(when)}]\n{text}"
+def stamp(text: str, when: datetime | None = None, *, voice: bool = False) -> str:
+    """Prefix a user turn with the time it was sent and, for spoken turns, a "sesli" tag that switches the
+    model to its spoken style. The same tag is reproduced for history messages, so earlier turns render
+    identically on every request and stay in Ollama's prompt cache."""
+    mode = " · sesli" if voice else ""
+    return f"[Şu an: {turkish_datetime(when)}{mode}]\n{text}"
 
 
 def render_history(msg: Message) -> str:
     if msg.role == "user":
-        return stamp(msg.content, datetime.fromtimestamp(msg.created_at).astimezone())
+        return stamp(msg.content, datetime.fromtimestamp(msg.created_at).astimezone(), voice=msg.origin == "voice")
     return msg.content
 
 

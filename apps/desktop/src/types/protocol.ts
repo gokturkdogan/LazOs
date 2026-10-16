@@ -42,6 +42,92 @@ export interface ChatMessage {
   metrics?: TurnMetrics | null;
   research?: ResearchProgress | null;
   error?: string | null;
+  feedback?: MessageFeedback | null;
+  correction?: ResponseCorrection | null;
+  stt_original?: string | null;
+}
+
+// ── adaptive learning (V1.2.1) ────────────────────────────────────────────
+export type FeedbackReason =
+  | "incorrect"
+  | "unnatural_turkish"
+  | "too_long"
+  | "too_short"
+  | "misunderstood"
+  | "lost_context"
+  | "wrong_tone"
+  | "unnecessary_tool"
+  | "other";
+
+export interface MessageFeedback {
+  id: string;
+  message_id: string;
+  rating: 1 | -1;
+  reasons: FeedbackReason[];
+  note: string | null;
+  model: string | null;
+  mode: Record<string, unknown> | null;
+  updated_at: number;
+}
+
+export interface ResponseCorrection {
+  id: string;
+  message_id: string | null;
+  conversation_id: string | null;
+  user_prompt: string;
+  original_response: string;
+  preferred_response: string;
+  kind: "style" | "local" | "factual";
+  status: "pending" | "approved" | "rejected";
+  blocked_reason: string | null;
+  usable_as_example: boolean;
+  updated_at: number;
+}
+
+export interface LearningSuggestion {
+  id: string;
+  kind: "preference" | "stt_term";
+  signal: string;
+  proposal: string;
+  category: string | null;
+  evidence: string[];
+  status: "pending" | "approved" | "rejected" | "revoked" | "superseded";
+  memory_id: string | null;
+  note: string | null;
+  updated_at: number;
+}
+
+export interface TranscriptCorrection {
+  id: string;
+  message_id: string | null;
+  original_text: string;
+  corrected_text: string;
+  terms: string[];
+  created_at: number;
+}
+
+export interface LearningOverview {
+  enabled: boolean;
+  reasons: Record<FeedbackReason, string>;
+  stats: {
+    feedback_total: number;
+    positive: number;
+    negative: number;
+    corrections: number;
+    approved_examples: number;
+    pending_suggestions: number;
+    transcript_corrections: number;
+    reasons: Partial<Record<FeedbackReason, number>>;
+  };
+  corrections: ResponseCorrection[];
+  suggestions: LearningSuggestion[];
+  transcripts: TranscriptCorrection[];
+}
+
+export interface TrainingPreview {
+  records: { id: string; instruction: string; preferred_response: string; warnings: string[] }[];
+  excluded: { id: string; reason: string }[];
+  warnings: number;
 }
 
 export interface ResearchProgress {
@@ -76,17 +162,41 @@ export interface UserSettings {
   tts_engine: "piper" | "macos";
   tts_speed: number;
   speak_text_replies: boolean;
+  pronunciation_enabled: boolean;
+  stt_vocabulary: boolean;
+  conversation_style: "natural" | "professional" | "concise";
+  voice_style: "natural" | "detailed";
+  reasoning_mode: "fast" | "auto" | "deep";
   vad_threshold: number;
   vad_silence_ms: number;
   input_device: string | null;
   output_device: string | null;
   memory_enabled: boolean;
   memory_auto_learn: boolean;
+  feedback_examples_enabled: boolean;
   reduced_motion: boolean;
   visual_quality: "auto" | "high" | "low";
 }
 
 // ── identity & memory ─────────────────────────────────────────────────────
+export interface PronunciationRule {
+  id: string;
+  term: string;
+  replacement: string;
+  engine: "all" | "piper" | "macos";
+  case_sensitive: boolean;
+  enabled: boolean;
+  builtin: boolean;
+  verified: boolean;
+}
+
+export interface PronunciationOverview {
+  enabled: boolean;
+  engines: ("piper" | "macos")[];
+  builtin: PronunciationRule[];
+  custom: PronunciationRule[];
+}
+
 export interface CoreIdentity {
   name: string;
   creator_name: string;
@@ -110,7 +220,7 @@ export interface MemoryItem {
   category: MemoryCategory;
   category_label: string;
   content: string;
-  origin: "auto" | "explicit" | "manual";
+  origin: "auto" | "explicit" | "manual" | "feedback";
   sensitive: boolean;
   source_conversation_id: string | null;
   source_message_id: string | null;
@@ -216,10 +326,12 @@ export type ServerEvent =
   | {
       type: "memory.changed";
       change: "added" | "updated" | "deleted" | "cleared";
-      origin: "auto" | "explicit" | "manual";
+      origin: "auto" | "explicit" | "manual" | "feedback";
       memory: MemoryItem | null;
     }
   | { type: "identity.changed"; identity: CoreIdentity }
+  | { type: "learning.changed"; what: string }
+  | { type: "learning.suggestion"; kind: "preference" | "stt_term"; proposal: string }
   | { type: "error"; code: string; message: string };
 
 // ── client → server messages ──────────────────────────────────────────────

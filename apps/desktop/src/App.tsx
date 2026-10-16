@@ -8,6 +8,7 @@ import { HistoryDrawer } from "./components/history/HistoryDrawer";
 import { HudOverlay } from "./components/layout/HudOverlay";
 import { MemoryPanel } from "./components/memory/MemoryPanel";
 import { TopBar } from "./components/layout/TopBar";
+import { PronunciationPanel } from "./components/settings/PronunciationPanel";
 import { SettingsPanel } from "./components/settings/SettingsPanel";
 import { SetupScreen } from "./components/setup/SetupScreen";
 import { Composer } from "./components/voice/Composer";
@@ -32,6 +33,7 @@ export default function App() {
         <AnimatePresence>{ui.chatOpen && <ChatPanel />}</AnimatePresence>
         <AnimatePresence>{ui.settingsOpen && <SettingsPanel />}</AnimatePresence>
         <AnimatePresence>{ui.memoryOpen && <MemoryPanel />}</AnimatePresence>
+        <AnimatePresence>{ui.pronunciationOpen && <PronunciationPanel />}</AnimatePresence>
         <AnimatePresence>{ui.setupOpen && <SetupScreen />}</AnimatePresence>
       </main>
       <Toasts />

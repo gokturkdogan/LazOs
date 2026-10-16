@@ -4,7 +4,15 @@ import type {
   EpisodeHit,
   MemoryCategory,
   MemoryItem,
+  FeedbackReason,
+  LearningOverview,
+  LearningSuggestion,
   MemoryOverview,
+  MessageFeedback,
+  ResponseCorrection,
+  TrainingPreview,
+  PronunciationOverview,
+  PronunciationRule,
   ConversationDetail,
   ConversationSummary,
   SetupInfo,
@@ -92,6 +100,55 @@ export const api = {
   deleteMemory: (id: string) => request<void>("DELETE", `/api/memory/items/${id}`),
   clearMemories: () => request<{ deleted: number }>("DELETE", "/api/memory/items?confirm=true"),
   searchEpisodes: (q: string) => request<{ query: string; hits: EpisodeHit[] }>("GET", `/api/memory/episodes?q=${encodeURIComponent(q)}`),
+
+  pronunciation: () => request<PronunciationOverview>("GET", "/api/pronunciation"),
+  addPronunciation: (rule: Pick<PronunciationRule, "term" | "replacement" | "engine" | "case_sensitive">) =>
+    request<PronunciationRule>("POST", "/api/pronunciation/rules", rule),
+  updatePronunciation: (id: string, patch: Partial<Pick<PronunciationRule, "term" | "replacement" | "engine" | "case_sensitive" | "enabled">>) =>
+    request<PronunciationRule>("PATCH", `/api/pronunciation/rules/${id}`, patch),
+  deletePronunciation: (id: string) => request<void>("DELETE", `/api/pronunciation/rules/${id}`),
+  testPronunciation: (text: string, engine?: "piper" | "macos", speak = false) =>
+    request<{ original: string; spoken: Record<string, string>; played_with?: string }>(
+      "POST",
+      "/api/pronunciation/test",
+      { text, engine, speak },
+      30000,
+    ),
+
+  rateMessage: (id: string, rating: 1 | -1, reasons: FeedbackReason[] = [], note?: string) =>
+    request<{ feedback: MessageFeedback; suggestions: LearningSuggestion[] }>("POST", `/api/feedback/messages/${id}/rating`, {
+      rating,
+      reasons,
+      note: note || null,
+    }),
+  withdrawRating: (id: string) => request<void>("DELETE", `/api/feedback/messages/${id}/rating`),
+  correctMessage: (id: string, preferred: string, useAsExample: boolean) =>
+    request<{ correction: ResponseCorrection; suggestions: LearningSuggestion[] }>("POST", `/api/feedback/messages/${id}/correction`, {
+      preferred,
+      use_as_example: useAsExample,
+    }),
+  correctTranscript: (id: string, corrected: string) =>
+    request<{ original: string; corrected: string; terms: string[]; suggestions: LearningSuggestion[] }>(
+      "POST",
+      `/api/feedback/messages/${id}/transcript`,
+      { corrected },
+    ),
+  learning: () => request<LearningOverview>("GET", "/api/feedback"),
+  updateCorrection: (id: string, patch: Partial<Pick<ResponseCorrection, "preferred_response" | "kind" | "status">>) =>
+    request<ResponseCorrection>("PATCH", `/api/feedback/corrections/${id}`, {
+      preferred: patch.preferred_response,
+      kind: patch.kind,
+      status: patch.status,
+    }),
+  deleteCorrection: (id: string) => request<void>("DELETE", `/api/feedback/corrections/${id}`),
+  deleteTranscriptCorrection: (id: string) => request<void>("DELETE", `/api/feedback/transcripts/${id}`),
+  decideSuggestion: (id: string, action: "approve" | "reject" | "revoke", proposal?: string) =>
+    request<LearningSuggestion>("POST", `/api/feedback/suggestions/${id}/${action}`, proposal ? { proposal } : {}),
+  editSuggestion: (id: string, proposal: string) => request<LearningSuggestion>("PATCH", `/api/feedback/suggestions/${id}`, { proposal }),
+  clearFeedback: () => request<Record<string, number>>("DELETE", "/api/feedback?confirm=true"),
+  exportPreview: () => request<TrainingPreview>("GET", "/api/feedback/export/preview"),
+  exportFeedback: (kind: "training" | "all", skipIds: string[] = []) =>
+    request<{ path: string; records: number }>("POST", "/api/feedback/export", { kind, skip_ids: skipIds }),
 
   previewVoice: (engine?: "piper" | "macos") =>
     request<{ engine: string; duration_s: number }>("POST", "/api/voice/preview", engine ? { engine } : {}, 30000),

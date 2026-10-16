@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 import { api } from "../services/api";
 import { socket } from "../services/socket";
-import type { ChatMessage, ServerEvent, SetupInfo, UserSettings } from "../types/protocol";
+import type { ChatMessage, FeedbackReason, ServerEvent, SetupInfo, UserSettings } from "../types/protocol";
 import { initialLiveState, type LiveState, makeToast, reduceEvent, type Toast } from "./reducer";
 
 export type ConnStatus = "booting" | "connecting" | "online" | "offline" | "error";
@@ -13,6 +13,7 @@ interface UiState {
   settingsOpen: boolean;
   setupOpen: boolean;
   memoryOpen: boolean;
+  pronunciationOpen: boolean;
 }
 
 interface AppState extends LiveState {
@@ -40,6 +41,11 @@ interface AppState extends LiveState {
   deleteConversation: (id: string) => Promise<void>;
   renameConversation: (id: string, title: string) => Promise<void>;
 
+  rateMessage: (id: string, rating: 1 | -1, reasons?: FeedbackReason[], note?: string) => Promise<void>;
+  withdrawRating: (id: string) => Promise<void>;
+  correctMessage: (id: string, preferred: string, useAsExample: boolean) => Promise<boolean>;
+  correctTranscript: (id: string, corrected: string) => Promise<boolean>;
+
   loadSetup: () => Promise<SetupInfo | null>;
   updateSettings: (patch: Partial<UserSettings>) => Promise<void>;
 }
@@ -49,7 +55,7 @@ export const useApp = create<AppState>((set, get) => ({
   conn: "booting",
   connError: null,
   setup: null,
-  ui: { chatOpen: true, historyOpen: false, settingsOpen: false, setupOpen: false, memoryOpen: false },
+  ui: { chatOpen: true, historyOpen: false, settingsOpen: false, setupOpen: false, memoryOpen: false, pronunciationOpen: false },
 
   setConn: (conn, error = null) => set({ conn, connError: error }),
 
@@ -124,6 +130,50 @@ export const useApp = create<AppState>((set, get) => ({
       set((s) => ({ conversations: s.conversations.map((c) => (c.id === id ? { ...c, title: updated.title } : c)) }));
     } catch (err) {
       get().pushToast("error", `Yeniden adlandırılamadı: ${(err as Error).message}`);
+    }
+  },
+
+  rateMessage: async (id, rating, reasons = [], note) => {
+    try {
+      const r = await api.rateMessage(id, rating, reasons, note);
+      set((s) => ({ messages: s.messages.map((m) => (m.id === id ? { ...m, feedback: r.feedback } : m)) }));
+    } catch (err) {
+      get().pushToast("error", `Geri bildirim kaydedilemedi: ${(err as Error).message}`);
+    }
+  },
+  withdrawRating: async (id) => {
+    try {
+      await api.withdrawRating(id);
+      set((s) => ({ messages: s.messages.map((m) => (m.id === id ? { ...m, feedback: null } : m)) }));
+    } catch (err) {
+      get().pushToast("error", (err as Error).message);
+    }
+  },
+  correctMessage: async (id, preferred, useAsExample) => {
+    try {
+      const r = await api.correctMessage(id, preferred, useAsExample);
+      set((s) => ({ messages: s.messages.map((m) => (m.id === id ? { ...m, correction: r.correction } : m)) }));
+      if (r.correction.blocked_reason) {
+        get().pushToast("info", "Düzeltme kaydedildi ama güvenlik nedeniyle örnek olarak kullanılmayacak.");
+      } else if (r.correction.kind === "factual") {
+        get().pushToast("info", "Bilgi düzeltmesi kaydedildi; doğrulanmadığı için örnek olarak kullanılmayacak.");
+      }
+      return true;
+    } catch (err) {
+      get().pushToast("error", `Düzeltme kaydedilemedi: ${(err as Error).message}`);
+      return false;
+    }
+  },
+  correctTranscript: async (id, corrected) => {
+    try {
+      const r = await api.correctTranscript(id, corrected);
+      set((s) => ({
+        messages: s.messages.map((m) => (m.id === id ? { ...m, content: r.corrected, stt_original: m.stt_original ?? r.original } : m)),
+      }));
+      return true;
+    } catch (err) {
+      get().pushToast("error", `Düzeltilemedi: ${(err as Error).message}`);
+      return false;
     }
   },
 

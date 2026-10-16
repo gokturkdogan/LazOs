@@ -45,8 +45,10 @@ class VoiceController:
         state: StateMachine,
         hub: EventHub,
         settings: Callable[[], UserSettings],
+        vocabulary: Callable[[], str | None] = lambda: None,
     ) -> None:
         self.mic = mic
+        self.vocabulary = vocabulary
         self.vad_factory = vad_factory
         self.stt = stt
         self.chat = chat
@@ -134,7 +136,7 @@ class VoiceController:
                         break
                     continue
                 self.state.set(AIState.TRANSCRIBING, force=True)
-                transcript = await self.stt.transcribe(audio, self.settings().stt_language)
+                transcript = await self.stt.transcribe(audio, self.settings().stt_language, prompt=self.vocabulary())
                 if not transcript.text:
                     self._notice("Söylediğini anlayamadım, tekrar eder misin?")
                     if self.mode == "ptt":

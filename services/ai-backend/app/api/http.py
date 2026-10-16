@@ -118,7 +118,8 @@ async def get_conversation(conv_id: str, svc: Services = Depends(services)) -> d
     if conv is None:
         raise HTTPException(status_code=404, detail="conversation not found")
     messages = await svc.store.list_messages(conv_id)
-    return {**conv.to_dict(), "messages": [m.to_dict() for m in messages]}
+    notes = await svc.feedback.annotations(conv_id)
+    return {**conv.to_dict(), "messages": [m.to_dict() | notes.get(m.id, {}) for m in messages]}
 
 
 @api.patch("/conversations/{conv_id}")
@@ -133,6 +134,7 @@ async def rename_conversation(conv_id: str, body: RenameBody, svc: Services = De
 async def delete_conversation(conv_id: str, svc: Services = Depends(services)) -> None:
     if svc.chat.busy and svc.chat.current_conversation_id == conv_id:
         await svc.chat.cancel()
+    await svc.feedback.on_conversation_deleted(conv_id)
     if not await svc.store.delete_conversation(conv_id):
         raise HTTPException(status_code=404, detail="conversation not found")
     if svc.chat.current_conversation_id == conv_id:

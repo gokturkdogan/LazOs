@@ -73,6 +73,21 @@ def fts_query(terms: list[str]) -> str | None:
     return " OR ".join(f'"{s}"*' for s in stems[:12])
 
 
+_PROPER = re.compile(r"(?<![.!?]\s)(?<!^)\b[A-ZÇĞİÖŞÜ][\wçğıöşü'’.-]{2,}")
+
+
+def distinctive_overlap(query: str, content: str) -> bool:
+    """True when a memory is genuinely about the query: at least two shared meaningful stems, or a shared
+    proper noun ("Atlas", "Karabaş", "React"). A single generic word ("uygulama") is not enough."""
+    q = {stem(t) for t in content_terms(query)}
+    c = {stem(t) for t in content_terms(content)}
+    shared = q & c
+    if len(shared) >= 2:
+        return True
+    proper = {stem(t) for word in _PROPER.findall(query) for t in tokens(word) if t not in STOPWORDS}
+    return bool(shared & proper)
+
+
 def similarity(a: str, b: str) -> float:
     """Jaccard similarity over stemmed tokens — used to detect duplicate memories."""
     sa = {stem(t) for t in tokens(a) if t not in STOPWORDS and t != "kullanici"}

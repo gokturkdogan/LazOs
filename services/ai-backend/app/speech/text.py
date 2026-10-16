@@ -31,6 +31,8 @@ def to_speakable(text: str) -> str:
     text = _INLINE_CODE.sub(r"\1", text)
     text = _EMOJI.sub("", text)
     text = text.replace("%", " yüzde ").replace("&", " ve ").replace("→", ", ").replace("—", ", ")
+    text = re.sub(r"\s*\(([^()]{1,80})\)", r", \1,", text)  # parentheses become short spoken pauses
+    text = re.sub(r",\s*([.!?;:])", r"\1", text)
     text = _BRAND.sub("Lazos", text)  # all-caps names get spelled out by the phonemizer
     text = _SPACES.sub(" ", text)
     return text.strip()

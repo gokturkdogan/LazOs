@@ -18,6 +18,13 @@ LAZOS does.
 - **Identity:** LAZOS always knows it is LAZOS, created by Göktürk Doğan. This core identity is part
   of every conversation, survives restarts, and can only be changed in the Memory panel, never
   through chat.
+- **Natural conversation (V1.2):** a composed, JARVIS-inspired tone without clichés or needless
+  self-introductions. LAZOS keeps track of the conversation, uses a spoken style for voice turns, can
+  be set to natural, professional or concise, and switches to deep reasoning for multi-step problems.
+  See [docs/CONVERSATION.md](docs/CONVERSATION.md).
+- **Pronunciation dictionary:** technical terms are respelled *only for speech*, per voice. For
+  example "backend" is spoken as "bek end", while the screen, history and memory keep the original
+  text. You can edit the dictionary under Ayarlar › Ses › Sözlük.
 - **Learning memory:** LAZOS gradually learns durable facts about you: identity, preferences,
   communication style, projects, interests and decisions.
   - "Bunu hatırla", "bundan sonra…" and "…unut" act immediately.
@@ -80,12 +87,17 @@ Models live in `~/Library/Application Support/LAZOS/models`. Ollama keeps its ow
 - **SESLİ MOD:** hands-free conversation. LAZOS goes listen → understand → think → speak → listen
   again. Click the mic during an answer to interrupt and speak.
 - **History (clock icon):** open, rename, delete or search past conversations.
-- **Memory (brain icon):** five tabs.
+- **Feedback:** hover an answer for 👍 / 👎 (with reasons), or *Düzelt* to write the answer you
+  wanted. On a voice message, the pen icon fixes what Whisper heard. Nothing becomes a permanent
+  preference without your approval. See [docs/LEARNING.md](docs/LEARNING.md).
+- **Memory (brain icon):** six tabs.
   - *Core identity* and *Creator profile*: edits need a second click to confirm.
   - *Learned memories*: add, edit, delete or clear everything. Each entry shows its source and
     previous versions.
   - *Conversation memory*: search past conversations.
   - *Memory settings*: turn automatic learning on or off, and choose whether memory is used in answers.
+  - *Öğrenme*: approve or reject learning suggestions, edit or delete corrections, review speech
+    corrections, turn example retrieval off, export (local preview first), or clear feedback.
 - **Settings (sliders icon):** model, context window, voice engine (Piper or macOS Yelda) with a
   preview, speech speed, recognition language, VAD sensitivity, audio devices, research mode, visual
   quality and reduced motion.
@@ -102,7 +114,7 @@ scripts/searxng.sh up|down|status|logs
 ```
 
 For more detail, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md),
-[docs/TESTING.md](docs/TESTING.md) and [docs/ROADMAP.md](docs/ROADMAP.md).
+[docs/TESTING.md](docs/TESTING.md), [docs/LEARNING.md](docs/LEARNING.md) and [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Privacy and security
 
@@ -117,6 +129,9 @@ For more detail, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/DEVELOP
 - Memory stays in the local database. Sensitive topics (health, beliefs, politics, finances) are
   stored only when you explicitly ask. Secrets (passwords, card numbers, IBANs) are never stored.
   Hypothetical statements aren't learned, and memories are deleted only on an explicit request.
+- Feedback is local. LAZOS doesn't fine-tune or retrain the model. Corrections that contain secrets,
+  try to change LAZOS's identity, or contain instructions for the model are blocked. Factual
+  corrections are never used automatically. Exports are written to `~/Downloads/LAZOS/` and never uploaded.
 
 ## Troubleshooting
 

@@ -217,6 +217,44 @@ export function SettingsPanel() {
             </Field>
           </Section>
 
+          <Section title="Konuşma">
+            <Field label="Konuşma tarzı" hint="Doğal: sakin ve samimi. Profesyonel: ölçülü, espri yok. Kısa: yalnızca gereken bilgi.">
+              <Segmented
+                value={settings.conversation_style}
+                options={[
+                  ["natural", "Doğal"],
+                  ["professional", "Profesyonel"],
+                  ["concise", "Kısa"],
+                ]}
+                onChange={(v) => set("conversation_style", v)}
+              />
+            </Field>
+            <Field label="Sesli yanıt tarzı" hint="Sesli konuşmada yanıtların uzunluğu. Ayrıntı istediğinde LAZOS her iki modda da ayrıntılı anlatır.">
+              <Segmented
+                value={settings.voice_style}
+                options={[
+                  ["natural", "Doğal sohbet"],
+                  ["detailed", "Ayrıntılı"],
+                ]}
+                onChange={(v) => set("voice_style", v)}
+              />
+            </Field>
+            <Field
+              label="Düşünme modu"
+              hint="Derin düşünme çok adımlı sorularda doğruluğu belirgin artırır (testte 2/6 → 6/6) ama yanıtı ~8 sn geciktirir. Otomatik: yalnızca gerektiğinde."
+            >
+              <Segmented
+                value={settings.reasoning_mode}
+                options={[
+                  ["fast", "Hızlı"],
+                  ["auto", "Otomatik"],
+                  ["deep", "Derin"],
+                ]}
+                onChange={(v) => set("reasoning_mode", v)}
+              />
+            </Field>
+          </Section>
+
           <Section title="Ses">
             <Field label="Ses motoru" hint="Piper: çok hızlı nöral ses. Yelda: macOS'un yerleşik Türkçe sesi, daha net telaffuz.">
               <Segmented
@@ -243,6 +281,21 @@ export function SettingsPanel() {
                   </button>
                 ))}
               </div>
+            </Field>
+            <Field label="Telaffuz düzeltmeleri" hint="backend, TypeScript gibi terimleri sesli okurken doğru telaffuz eder. Ekrandaki metin değişmez.">
+              <div className="flex items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setUi({ settingsOpen: false, pronunciationOpen: true })}
+                  className="rounded-md border border-white/[0.08] px-2.5 py-1 text-[11px] text-ink-dim transition-colors hover:text-white"
+                >
+                  Sözlük
+                </button>
+                <Toggle value={settings.pronunciation_enabled} onChange={(v) => set("pronunciation_enabled", v)} />
+              </div>
+            </Field>
+            <Field label="Teknik terim tanıma" hint="Konuşma tanımaya teknik terimleri ve adları ipucu olarak verir (testte 13/16 → 16/16 terim).">
+              <Toggle value={settings.stt_vocabulary} onChange={(v) => set("stt_vocabulary", v)} />
             </Field>
             <Field label="Konuşma hızı">
               <Slider value={settings.tts_speed} min={0.7} max={1.4} step={0.05} format={(v) => `${v.toFixed(2)}×`} onChange={(v) => set("tts_speed", v)} />

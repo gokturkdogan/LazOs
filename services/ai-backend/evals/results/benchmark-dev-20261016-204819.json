@@ -1,0 +1,506 @@
+{
+ "summary": {
+  "casual": "3/3",
+  "conciseness": "2/2",
+  "continuity": "2/3",
+  "identity": "3/3",
+  "memory": "2/2",
+  "multi_turn": "3/3",
+  "natural": "4/4",
+  "preference": "1/2",
+  "reasoning": "1/2",
+  "speech_correction": "2/2",
+  "technical": "4/4",
+  "tool_routing": "3/3",
+  "uncertainty": "1/3",
+  "[dev]": "31/36",
+  "median_ttft_ms": 442
+ },
+ "rows": [
+  {
+   "id": "natural-01",
+   "category": "natural",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Naber LAZOS?"
+   ],
+   "answer": "Tamamdır, çalışıyorum. Ne var?",
+   "ttft_ms": 489.8,
+   "total_ms": 1288
+  },
+  {
+   "id": "natural-03",
+   "category": "natural",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Bugün hava çok güzel, dışarı çıkasım var."
+   ],
+   "answer": "16 Ekim 2026, Cuma günü saat 20:47'de hava durumu için güncel bilgiye ihtiyacım var. Şu anki koşulları kontrol edeyim.",
+   "ttft_ms": 755.8,
+   "total_ms": 2862
+  },
+  {
+   "id": "natural-05",
+   "category": "natural",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Biraz moral ver."
+   ],
+   "answer": "Bugün yorgun hissettiğin günler olur, bu normal. Derin bir nefes al, biraz hareket et veya sevdiğin bir şeylerle kendine vakit ayır; zihin dinlenince motivasyon da geri gelir. Neden moral istiyorsun?",
+   "ttft_ms": 613.4,
+   "total_ms": 2268
+  },
+  {
+   "id": "natural-07",
+   "category": "natural",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Akşam ne yesem?"
+   ],
+   "answer": "Tercihine bağlı; hızlıca çözecekseniz pizza ya da makarna iyi gider. Daha hafif bir şey isterseniz salata veya tavuk göğsü ile sebzeler de var. Ne tür yemekler daha çok hoşunuza gidiyor?",
+   "ttft_ms": 317.7,
+   "total_ms": 1987
+  },
+  {
+   "id": "technical-01",
+   "category": "technical",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Docker ile sanal makine arasındaki fark ne?"
+   ],
+   "answer": "Docker bir sanallaştırma katmanıdır (containerization) ve işletim sistemi seviyesinde çalışır; her container aynı host OS çekirdeğini paylaşır. Tam sanal makineler ise (VMware, VirtualBox gibi) her biri kendi tam işletim sistemine sahip bağımsız sanal bilgisayarlar olarak çalışır.\n\nTemel fark: Docker çok daha hafiftir ve hızlı başlatılır, çünkü kernel paylaşır; VM'ler daha ağır ama izole edilmiştir.",
+   "ttft_ms": 360.1,
+   "total_ms": 2882
+  },
+  {
+   "id": "technical-03",
+   "category": "technical",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Python'da liste ile tuple farkı ne?"
+   ],
+   "answer": "Python'da liste (list) esnek ve değiştirilebilir (mutable) bir veri yapısıyken, tuple sabit ve değiştirilemez (immutable)'dır. Yani listeye eleman ekleyebilir veya değiştirebilirsin ama tuple'a aynı işlemleri yapamazsın.",
+   "ttft_ms": 293.6,
+   "total_ms": 1880
+  },
+  {
+   "id": "technical-05",
+   "category": "technical",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "SQL'de JOIN ne demek?"
+   ],
+   "answer": "SQL'de JOIN, birden fazla tablodan ilgili verileri birleştirerek yeni bir sonuç seti oluşturmayı sağlar. Temelde bu işlemler, tablolar arasındaki ortak sütunlara (genellikle anahtarlar) dayanır; örneğin `INNER JOIN` sadece her iki tabloda da bulunan kayıtları seçer.",
+   "ttft_ms": 292.5,
+   "total_ms": 2176
+  },
+  {
+   "id": "technical-07",
+   "category": "technical",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "async await ne işe yarar?"
+   ],
+   "answer": "`await`, bir `async` fonksiyonun içinde çağrılan `Promise`'in tamamlanmasını bekler ve onun dönüş değerini (result) alır. Bu sayede asenkron kodu senkron gibi okuyabilir, zincirleme işlemler için daha temiz bir yapı oluşturursun.\n\nÖrneğin:\n```javascript\nconst data = await fetchData(); // fetchData() Promise dönerse, verisi burada alınır\n```",
+   "ttft_ms": 266.4,
+   "total_ms": 2686
+  },
+  {
+   "id": "continuity-01",
+   "category": "continuity",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "React ile bir proje geliştiriyorum.",
+    "Bir futbol uygulaması.",
+    "Az önce hangi projeden bahsediyorduk?"
+   ],
+   "answer": "React ile geliştirdiğin futbol uygulaması projesinden bahsediyorduk.",
+   "ttft_ms": 372.9,
+   "total_ms": 2783
+  },
+  {
+   "id": "continuity-03",
+   "category": "continuity",
+   "split": "dev",
+   "pass": false,
+   "fails": [
+    "missing any of ['Ankara']"
+   ],
+   "turns": [
+    "Ankara'ya taşınıyorum.",
+    "Nereye taşınıyordum?"
+   ],
+   "answer": "Önceki konumun şu an hafızamda kayıtlı değil. Nereden taşındığını hatırlarsan söyle, belki o bölgeyle ilgili bir şeyler yapabilirim.",
+   "ttft_ms": 391.5,
+   "total_ms": 2638
+  },
+  {
+   "id": "continuity-05",
+   "category": "continuity",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Bugün tam 3 saat kod yazdım.",
+    "Kaç saat yazmışım?"
+   ],
+   "answer": "Üç saat.",
+   "ttft_ms": 406.3,
+   "total_ms": 1752
+  },
+  {
+   "id": "identity-01",
+   "category": "identity",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Sen kimsin?"
+   ],
+   "answer": "Ben LAZOS; senin geliştirdiğin kişisel bir yapay zeka asistanıyım.",
+   "ttft_ms": 243.0,
+   "total_ms": 1115
+  },
+  {
+   "id": "identity-03",
+   "category": "identity",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Adın ne?"
+   ],
+   "answer": "Ben LAZOS; senin geliştirdiğin kişisel bir yapay zekâ asistanıyım.",
+   "ttft_ms": 346.9,
+   "total_ms": 1303
+  },
+  {
+   "id": "identity-05",
+   "category": "identity",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "İnsan mısın?"
+   ],
+   "answer": "Hayır, insan değilim; bir yapay zekâ asistanıyım.",
+   "ttft_ms": 300.1,
+   "total_ms": 1128
+  },
+  {
+   "id": "memory-01",
+   "category": "memory",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Köpeğimin adı neydi?"
+   ],
+   "answer": "Köpeğinin adı Karabaş.",
+   "ttft_ms": 560.1,
+   "total_ms": 1205
+  },
+  {
+   "id": "memory-03",
+   "category": "memory",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Ben nerede yaşıyorum?"
+   ],
+   "answer": "İzmir'desin.",
+   "ttft_ms": 319.9,
+   "total_ms": 962
+  },
+  {
+   "id": "preference-01",
+   "category": "preference",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Docker nedir?"
+   ],
+   "answer": "Docker, yazılımın bir işletim sistemi tabanında çalıştığı sanallaştırma platformudur. Her uygulama kendi bağımlılıklarıyla birlikte paketlenir; böylece farklı ortamlarda aynı şekilde çalışır ve çatışma riski azalır.",
+   "ttft_ms": 442.0,
+   "total_ms": 2092
+  },
+  {
+   "id": "preference-03",
+   "category": "preference",
+   "split": "dev",
+   "pass": false,
+   "fails": [
+    "too long (301 > 260)"
+   ],
+   "turns": [
+    "HTTP nedir?"
+   ],
+   "answer": "HTTP, HyperText Transfer Protocol'un kısaltmasıdır; web tarayıcılarının ve sunucuların birbirleriyle iletişim kurmasını sağlayan temel protokoldür. İstekleri (request) ve yanıtları (response) standart bir formatta taşır; örneğin bir sayfa yüklerken \"GET\" isteği atarsın, sunucu da HTML verisini döner.",
+   "ttft_ms": 442.9,
+   "total_ms": 2641
+  },
+  {
+   "id": "conciseness-01",
+   "category": "conciseness",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Evet ya da hayır: Python yorumlanan bir dil mi?"
+   ],
+   "answer": "Evet, Python yorumlanan (interpreted) bir dildir. Kod satırlarını önceden derlemez; program çalışmaya başladığında her satırı sırayla yorumlayıp çalıştırır.",
+   "ttft_ms": 460.8,
+   "total_ms": 2023
+  },
+  {
+   "id": "conciseness-03",
+   "category": "conciseness",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Kısaca: HTTP nedir?"
+   ],
+   "answer": "HTTP (HyperText Transfer Protocol), web tarayıcısı ile sunucu arasındaki iletişimi sağlayan temel bir kural setidir. İstemci (senin bilgisayarın) sunucudan veri ister, sunucu da bu veriyi belirli bir formatta döndürür.",
+   "ttft_ms": 533.4,
+   "total_ms": 2207
+  },
+  {
+   "id": "uncertainty-01",
+   "category": "uncertainty",
+   "split": "dev",
+   "pass": false,
+   "fails": [
+    "missing any of ['bilmiyorum', 'bilmi', 'söylemedin', 'bilgim yok', 'bilgi yok', 'kayıt', 'hatırlamıyorum', 'paylaşmadın', 'bilemem', 'bilemiyorum', 'erişimim yok', 'tahmin']"
+   ],
+   "turns": [
+    "Annemin adı ne?"
+   ],
+   "answer": "Bilmediğim için cevap veremiyorum. Annen hakkında bilgi paylaşmamıştın; eğer istersen söyleyebilirsin.",
+   "ttft_ms": 375.7,
+   "total_ms": 1496
+  },
+  {
+   "id": "uncertainty-03",
+   "category": "uncertainty",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Benim telefon numaram ne?"
+   ],
+   "answer": "Telefon numaranı hatırlamıyorum; bana daha önce paylaşmadın. Eğer istersen şimdi söyleyebilirim.",
+   "ttft_ms": 418.4,
+   "total_ms": 1481
+  },
+  {
+   "id": "uncertainty-05",
+   "category": "uncertainty",
+   "split": "dev",
+   "pass": false,
+   "fails": [
+    "research expected False, got True"
+   ],
+   "turns": [
+    "2031'de hangi telefonu alacağım?"
+   ],
+   "answer": "Şu an elimizde 2031 yılına ait resmi telefon lansman tarihleri veya modeller yok. Telefon üreticileri genellikle yılın ortalarında yeni modelleri tanıtıyorlar, ancak 2031'e kadar ne zaman çıkacaklarını şu anda bilememek mümkün.\n\nGenel bir tahminle: Büyük üreticiler (Apple, Samsung) her yıl birkaç önemli model çıkarıyor. 2031'de muhtemelen mevcut teknolojinin evrimine dayalı yeni seriler olacak. Ancak hangi spesifik modeli alacağınıza, o yılın piyasa durumuna ve sizin ihtiyaçlarınıza bağlı olarak karar vermeniz gerekecek.\n\nŞimdiden şu anki cihazınızın ömrünü uzatmak için bakımlara önem vermeyi düşünebilirsin.",
+   "ttft_ms": 1230.3,
+   "total_ms": 5322
+  },
+  {
+   "id": "tool_routing-01",
+   "category": "tool_routing",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Bugün dolar kuru kaç?"
+   ],
+   "answer": "Şu anki verilere göre bugün (16 Ekim 2026) dolar kuru hakkında net bir bilgiye ulaşamadım. Genellikle dolar kurunu öğrenmek için TCMB, BDDK veya büyük bankaların günlük piyasa verilerine bakmak en doğru yoldur.",
+   "ttft_ms": 1232.4,
+   "total_ms": 3017
+  },
+  {
+   "id": "tool_routing-03",
+   "category": "tool_routing",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Bu hafta hangi filmler vizyona girdi?"
+   ],
+   "answer": "Şu anki verilere göre bu hafta vizyona giren filmlerin tam listesini bulamadım. Vizyon bilgileri genellikle haftanın ortalarında veya sonlarında güncelleniyor olabilir, o yüzden en net bilgi için Sinema Yazarları Derneği (SİYAD) veya IMDB gibi kaynakları kontrol etmeni öneririm.",
+   "ttft_ms": 1241.0,
+   "total_ms": 3174
+  },
+  {
+   "id": "tool_routing-05",
+   "category": "tool_routing",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Fibonacci dizisini açıkla."
+   ],
+   "answer": "Fibonacci dizisi, her terimi önceki iki terimin toplamı olan sonsuz bir sayı dizisidir. Dizide ilk iki terim genellikle sıfır ve bir olarak alınır (0, 1, 1, 2, 3, 5, 8, 13...), ardından bu kural devam eder.\n\nBu dizinin en bilgin özelliği, ardışık terimler arasındaki oranın yaklaşık 1.618 olan \"Altın Oran\"a yakınsamasıdır; bu oran doğada ve sanatta sıkça görülür.",
+   "ttft_ms": 588.9,
+   "total_ms": 3491
+  },
+  {
+   "id": "casual-01",
+   "category": "casual",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Teşekkürler."
+   ],
+   "answer": "Ne demek.",
+   "ttft_ms": 316.7,
+   "total_ms": 893
+  },
+  {
+   "id": "casual-03",
+   "category": "casual",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Çok iyisin."
+   ],
+   "answer": "Teşekkürler. Şu an ne üzerinde çalışıyorsun?",
+   "ttft_ms": 736.4,
+   "total_ms": 1667
+  },
+  {
+   "id": "casual-05",
+   "category": "casual",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Haha çok komik."
+   ],
+   "answer": "Ne oldu? Bir şeyi yanlış mı anladım mı?",
+   "ttft_ms": 543.9,
+   "total_ms": 1233
+  },
+  {
+   "id": "multi_turn-01",
+   "category": "multi_turn",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Bir sayı tut, 7 olsun.",
+    "Ona 5 ekle, sonuç ne?"
+   ],
+   "answer": "7'ye 5 eklersen 12 olur.",
+   "ttft_ms": 437.8,
+   "total_ms": 2301
+  },
+  {
+   "id": "multi_turn-03",
+   "category": "multi_turn",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Python'da 1'den 5'e kadar sayan bir döngü yaz.",
+    "Şimdi aynısını JavaScript'te yaz."
+   ],
+   "answer": "```javascript\nfor (let i = 1; i <= 5; i++) {\n    console.log(i);\n}\n```\n\nJavaScript'te `<=` operatörü ile 5'i de dahil etmem gerekiyor, çünkü başlangıç değeri 1 ve bitiş koşulu da 5.",
+   "ttft_ms": 491.5,
+   "total_ms": 4173
+  },
+  {
+   "id": "multi_turn-05",
+   "category": "multi_turn",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Benim için bir kitap öner.",
+    "Biraz daha kısa bir şey olsun."
+   ],
+   "answer": "Kısa ve öz kitaplar için \"Dünyanın En Kısa Hikayeleri\" (Anton Çehov) veya \"Yüz Küçük\" (Yahya Kemal Beyatlı) gibi antolojiler uygun olur. Eğer tek bir kısa roman istersen, \"On Altı Yıl Sonra\" (Alphonse Daudet) ya da \"İnsan\" (Anton Çehov) önerilebilir. Hangisi ilgini çekti?",
+   "ttft_ms": 457.7,
+   "total_ms": 4451
+  },
+  {
+   "id": "reasoning-01",
+   "category": "reasoning",
+   "split": "dev",
+   "pass": false,
+   "fails": [
+    "thinking expected True"
+   ],
+   "turns": [
+    "Bir sınıfta 30 öğrenci var ve üçte biri gözlüklü. Kaç öğrenci gözlüksüz?"
+   ],
+   "answer": "30 öğrencinin üçte biri 10 kişi eder; yani 10'u gözlüklü. Geriye kalan 20 öğrenci gözlüksüzdür.",
+   "ttft_ms": 635.4,
+   "total_ms": 2130
+  },
+  {
+   "id": "reasoning-03",
+   "category": "reasoning",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Bir mağazada 120 TL'lik ürüne yüzde 25 indirim yapıldı. Yeni fiyat kaç TL?"
+   ],
+   "answer": "120 TL'lik ürüne %25 indirim yapıldığında, indirim miktarı 30 TL (120 × 0,25) olur ve yeni fiyat **90 TL** olur.",
+   "ttft_ms": 3704.7,
+   "total_ms": 5202
+  },
+  {
+   "id": "speech_correction-01",
+   "category": "speech_correction",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Başkent neden yavaş?"
+   ],
+   "answer": "→ Backend neden yavaş? (terms ['Backend'])",
+   "ttft_ms": null,
+   "total_ms": 0
+  },
+  {
+   "id": "speech_correction-03",
+   "category": "speech_correction",
+   "split": "dev",
+   "pass": true,
+   "fails": [],
+   "turns": [
+    "Doker konteyneri çöktü"
+   ],
+   "answer": "→ Docker konteyneri çöktü (terms ['Docker'])",
+   "ttft_ms": null,
+   "total_ms": 0
+  }
+ ]
+}

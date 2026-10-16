@@ -34,6 +34,7 @@ export interface LiveState {
   toasts: Toast[];
   /** Bumped on every memory/identity change so open views can refresh. */
   memoryRevision: number;
+  learningRevision: number;
 }
 
 export const initialLiveState: LiveState = {
@@ -52,6 +53,7 @@ export const initialLiveState: LiveState = {
   caption: "",
   toasts: [],
   memoryRevision: 0,
+  learningRevision: 0,
 };
 
 let toastSeq = 0;
@@ -180,6 +182,16 @@ export function reduceEvent(s: LiveState, e: ServerEvent): Partial<LiveState> | 
     }
     case "identity.changed":
       return { memoryRevision: s.memoryRevision + 1 };
+    case "learning.changed":
+      return { learningRevision: s.learningRevision + 1 };
+    case "learning.suggestion":
+      return {
+        learningRevision: s.learningRevision + 1,
+        toasts: [
+          ...s.toasts,
+          makeToast("info", `${e.kind === "stt_term" ? "Yeni ses tanıma önerisi" : "Yeni öğrenme önerisi"}: ${e.proposal} — Hafıza › Öğrenme`),
+        ].slice(-4),
+      };
     case "error":
       return { toasts: [...s.toasts, makeToast("error", e.message)].slice(-4) };
     default:

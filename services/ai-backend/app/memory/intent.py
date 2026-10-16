@@ -65,8 +65,28 @@ def is_hypothetical(text: str) -> bool:
     return bool(HYPOTHETICAL.search(fold(text)))
 
 
+# "az önce", "demin", "bu konuşmada" point at the *current* conversation, which is already in context.
+CURRENT_CONVERSATION = _rx(r"\b(az once|biraz once|demin|az evvel|bu konusma|bu sohbet|simdi|just now|earlier in this)\w*")
+IDENTITY_FACT = _rx(
+    r"\blazos\S*\s+((adi|ismi|adinin|isminin)\b|(yaratici|kimlig|gelistirici)\w*)",
+    r"\b(senin|asistanin)\s+(adi|ismi|yaratici)\w*",
+    r"\b(yaraticisi|gelistiricisi)\w*\b.*\blazos|\blazos\S*\s+.*\b(yaraticisi|gelistiricisi)",
+)
+# First-person questions about the user's own things ("projem", "tercihlerim") may use category hints.
+OWN_THINGS = _rx(r"\b(projem|projelerim|projemiz|uygulamam|uygulamalarim|tercihim|tercihlerim|ilgi alanlarim|hobim|hobilerim|kararim|kararlarim|my projects?|my preferences?)\w*")
+
+
 def is_episodic(text: str) -> bool:
-    return bool(EPISODIC.search(fold(text)))
+    folded = fold(text)
+    return bool(EPISODIC.search(folded)) and not CURRENT_CONVERSATION.search(folded)
+
+
+def is_identity_fact(text: str) -> bool:
+    return bool(IDENTITY_FACT.search(fold(text)))
+
+
+def asks_about_own_things(text: str) -> bool:
+    return bool(OWN_THINGS.search(fold(text)))
 
 
 def is_learnable(text: str) -> bool:
