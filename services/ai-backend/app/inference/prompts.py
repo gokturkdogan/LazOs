@@ -99,7 +99,12 @@ RESEARCH_RULES = """Aşağıda bu soru için yapılan web araştırmasının son
 - Kaynaklardan gelen bilgileri köşeli parantezle numaralandırarak belirt, örneğin [1] veya [2][3].
 - Yalnızca listelenen kaynak numaralarını kullan; yeni kaynak, bağlantı veya alıntı uydurma.
 - Kaynaklarda olmayan kendi genel bilgini eklersen bunu açıkça ayır (örneğin "Genel bilgi olarak...").
-- Kaynaklar soruyu yanıtlamaya yetmiyorsa bunu dürüstçe söyle."""
+- "ÇIKARILAN KANIT" bölümü varsa cevap odur: doğrudan, kısa ve doğal Türkçeyle söyle (örneğin "Galatasaray şu anda \
+Süper Lig'de 16 puanla 1. sırada [1]."). Soruyu tekrar etme, uzun giriş ve araştırma özeti yapma; kanıt varken \
+"bulamadım" deme. Kanıttaki sayıları değiştirme, olmayan sayı ekleme.
+- Cevap kaynaklarda açıkça varsa önce onu ver; gereksiz belirsizlik ekleme. Tarihi belli olan eski bir bilgiyi güncelmiş \
+gibi sunma; farklı sezonları, turnuvaları veya tarihleri karıştırma.
+- Kaynaklar soruyu yanıtlamaya gerçekten yetmiyorsa bunu tek cümleyle dürüstçe söyle."""
 
 RESEARCH_FAILED = """Web araştırması denendi ancak başarısız oldu ({reason}). Kullanıcıya güncel bilgiye şu anda \
 ulaşamadığını kısaca söyle; yalnızca genel bilgine dayanarak yanıt verebileceğin kısmı, bunun güncel olmayabileceğini \

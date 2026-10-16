@@ -100,6 +100,7 @@ class UserSettings(BaseModel):
     memory_enabled: bool = True  # use identity profile, learned memories and past conversations in answers
     memory_auto_learn: bool = True  # learn durable facts from conversations in the background
     feedback_examples_enabled: bool = True  # show approved correction examples to the model (see docs/LEARNING.md)
+    research_diagnostics: bool = False  # developer research trace panel (off by default)
 
     reduced_motion: bool = False
     visual_quality: Literal["auto", "high", "low"] = "auto"

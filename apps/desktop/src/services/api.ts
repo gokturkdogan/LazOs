@@ -1,4 +1,5 @@
 import type {
+  ResearchTrace,
   AudioDevice,
   CoreIdentity,
   EpisodeHit,
@@ -146,6 +147,9 @@ export const api = {
     request<LearningSuggestion>("POST", `/api/feedback/suggestions/${id}/${action}`, proposal ? { proposal } : {}),
   editSuggestion: (id: string, proposal: string) => request<LearningSuggestion>("PATCH", `/api/feedback/suggestions/${id}`, { proposal }),
   clearFeedback: () => request<Record<string, number>>("DELETE", "/api/feedback?confirm=true"),
+  researchTraces: (messageId: string) => request<ResearchTrace[]>("GET", `/api/research/traces/${messageId}`),
+  clearResearchTraces: () => request<void>("DELETE", "/api/research/traces"),
+
   exportPreview: () => request<TrainingPreview>("GET", "/api/feedback/export/preview"),
   exportFeedback: (kind: "training" | "all", skipIds: string[] = []) =>
     request<{ path: string; records: number }>("POST", "/api/feedback/export", { kind, skip_ids: skipIds }),

@@ -8,6 +8,7 @@ import { HistoryDrawer } from "./components/history/HistoryDrawer";
 import { HudOverlay } from "./components/layout/HudOverlay";
 import { MemoryPanel } from "./components/memory/MemoryPanel";
 import { TopBar } from "./components/layout/TopBar";
+import { ResearchDebugPanel } from "./components/research/ResearchDebugPanel";
 import { PronunciationPanel } from "./components/settings/PronunciationPanel";
 import { SettingsPanel } from "./components/settings/SettingsPanel";
 import { SetupScreen } from "./components/setup/SetupScreen";
@@ -34,6 +35,7 @@ export default function App() {
         <AnimatePresence>{ui.settingsOpen && <SettingsPanel />}</AnimatePresence>
         <AnimatePresence>{ui.memoryOpen && <MemoryPanel />}</AnimatePresence>
         <AnimatePresence>{ui.pronunciationOpen && <PronunciationPanel />}</AnimatePresence>
+        <AnimatePresence>{ui.researchTraceId && <ResearchDebugPanel messageId={ui.researchTraceId} />}</AnimatePresence>
         <AnimatePresence>{ui.setupOpen && <SetupScreen />}</AnimatePresence>
       </main>
       <Toasts />

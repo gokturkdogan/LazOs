@@ -47,14 +47,14 @@ def _last_vowel(word: str) -> str:
 
 
 def tr_copula(name: str) -> str:
-    """"Göktürk" → "Göktürk'sün", "Ali" → "Ali'sin" (2nd person singular, vowel harmony)."""
+    """ "Göktürk" → "Göktürk'sün", "Ali" → "Ali'sin" (2nd person singular, vowel harmony)."""
     v = _last_vowel(name)
     vowel = ("ü" if v in _ROUNDED else "i") if v in _FRONT else ("u" if v in _ROUNDED else "ı")
     return f"{name}'s{vowel}n"
 
 
 def tr_genitive(name: str) -> str:
-    """"Göktürk Doğan" → "Göktürk Doğan'ın", "Ali" → "Ali'nin"."""
+    """ "Göktürk Doğan" → "Göktürk Doğan'ın", "Ali" → "Ali'nin"."""
     v = _last_vowel(name)
     vowel = ("ü" if v in _ROUNDED else "i") if v in _FRONT else ("u" if v in _ROUNDED else "ı")
     return f"{name}'{'n' if name[-1].lower() in 'aeıioöuü' else ''}{vowel}n"

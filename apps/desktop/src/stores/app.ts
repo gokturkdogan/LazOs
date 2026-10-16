@@ -14,6 +14,7 @@ interface UiState {
   setupOpen: boolean;
   memoryOpen: boolean;
   pronunciationOpen: boolean;
+  researchTraceId: string | null; // assistant message whose research diagnostics are open
 }
 
 interface AppState extends LiveState {
@@ -55,7 +56,7 @@ export const useApp = create<AppState>((set, get) => ({
   conn: "booting",
   connError: null,
   setup: null,
-  ui: { chatOpen: true, historyOpen: false, settingsOpen: false, setupOpen: false, memoryOpen: false, pronunciationOpen: false },
+  ui: { chatOpen: true, historyOpen: false, settingsOpen: false, setupOpen: false, memoryOpen: false, pronunciationOpen: false, researchTraceId: null },
 
   setConn: (conn, error = null) => set({ conn, connError: error }),
 

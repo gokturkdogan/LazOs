@@ -346,6 +346,12 @@ export function SettingsPanel() {
             <Field label="En fazla kaynak">
               <Slider value={settings.max_sources} min={2} max={6} step={1} format={(v) => String(v)} onChange={(v) => set("max_sources", v)} />
             </Field>
+            <Field
+              label="Araştırma tanılaması (geliştirici)"
+              hint="Açıkken araştırmalı yanıtların altında “tanılama” görünür: sorgu, kaynak seçimi, okunan sayfalar, çıkarılan kanıt ve süreler. Yalnızca bellekte tutulur."
+            >
+              <Toggle value={settings.research_diagnostics} onChange={(v) => set("research_diagnostics", v)} />
+            </Field>
           </Section>
 
           <Section title="Görsel">

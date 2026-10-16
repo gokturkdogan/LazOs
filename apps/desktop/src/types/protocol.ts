@@ -28,6 +28,78 @@ export interface TurnMetrics {
   prompt_tokens?: number;
   tts_first_audio_ms?: number;
   total_ms?: number;
+  reasoning?: boolean;
+  examples?: number;
+  evidence?: "verified" | "single_source" | "conflict" | "insufficient";
+}
+
+export interface ResearchCandidate {
+  title: string;
+  url: string;
+  domain: string;
+  published: string | null;
+  snippet: string;
+  score: number;
+  selected: boolean;
+  reasons: string[];
+  rejected: string | null;
+}
+
+export interface ResearchFetch {
+  url: string;
+  status: string;
+  fetch_ms?: number;
+  extract_ms?: number;
+  bytes?: number;
+  tables?: number;
+  json_tables?: number;
+  text_chars?: number;
+  published?: string | null;
+  standings_rows?: number;
+  rejected_tables?: string[];
+}
+
+export interface StandingRow {
+  rank: number;
+  team: string;
+  played: number | null;
+  won: number | null;
+  drawn: number | null;
+  lost: number | null;
+  goal_diff: number | null;
+  points: number | null;
+}
+
+export interface ResearchEvidence {
+  question_type: string;
+  competition: string;
+  season: string;
+  want: string;
+  entity: string | null;
+  status: "verified" | "single_source" | "conflict" | "insufficient";
+  row: StandingRow | null;
+  table: StandingRow[];
+  source_url: string | null;
+  agreeing: string[];
+  notes: string[];
+  retrieved_at: string;
+}
+
+export interface ResearchTrace {
+  request: string;
+  intent: { kind: string; want: string; entity: string | null; competition: string | null; season: string | null };
+  queries: string[];
+  provider: string | null;
+  candidates: ResearchCandidate[];
+  fetches: ResearchFetch[];
+  evidence: ResearchEvidence | null;
+  context: string;
+  answer: string;
+  message_id: string | null;
+  timings_ms: Record<string, number>;
+  fallbacks: string[];
+  errors: string[];
+  created_at: number;
 }
 
 export interface ChatMessage {
@@ -174,6 +246,7 @@ export interface UserSettings {
   memory_enabled: boolean;
   memory_auto_learn: boolean;
   feedback_examples_enabled: boolean;
+  research_diagnostics: boolean;
   reduced_motion: boolean;
   visual_quality: "auto" | "high" | "low";
 }

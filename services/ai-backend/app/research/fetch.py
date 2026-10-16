@@ -11,9 +11,12 @@ import ipaddress
 import logging
 import re
 import socket
+from collections.abc import Awaitable, Callable
 from urllib.parse import urlsplit
 
 import httpx
+
+from app.research.extract import parse_page, select_passages
 
 log = logging.getLogger("lazos.fetch")
 
@@ -40,14 +43,17 @@ async def assert_public_url(url: str) -> None:
             raise UnsafeURL(f"{host} resolves to a non-public address")
 
 
-async def fetch_html(client: httpx.AsyncClient, url: str, timeout: float) -> str | None:
-    await assert_public_url(url)
+async def fetch_html(
+    client: httpx.AsyncClient, url: str, timeout: float, guard: Callable[[str], Awaitable[None]] | None = None
+) -> str | None:
+    guard = guard or assert_public_url
+    await guard(url)
     async with client.stream("GET", url, timeout=timeout, follow_redirects=True) as resp:
         if resp.status_code >= 400:
             return None
         # Re-check the final hop after redirects.
         if str(resp.url) != url:
-            await assert_public_url(str(resp.url))
+            await guard(str(resp.url))
         ctype = resp.headers.get("content-type", "")
         if "html" not in ctype and "text/plain" not in ctype:
             return None
@@ -59,40 +65,28 @@ async def fetch_html(client: httpx.AsyncClient, url: str, timeout: float) -> str
                 break
             chunks.append(chunk)
         raw = b"".join(chunks)
-        encoding = resp.encoding or "utf-8"
-        return raw.decode(encoding, errors="replace")
+        return _decode(raw, resp.headers.get("content-type", ""))
+
+
+_META_CHARSET = re.compile(rb"<meta[^>]+charset=[\"']?([\w-]+)", re.IGNORECASE)
+
+
+def _decode(raw: bytes, content_type: str) -> str:
+    """Header charset, then <meta charset>, then UTF-8, then Windows-1254 (common on older Turkish sites)."""
+    m = re.search(r"charset=([\w-]+)", content_type, re.IGNORECASE)
+    meta = _META_CHARSET.search(raw[:4096])
+    for enc in (m.group(1) if m else None, meta.group(1).decode("ascii", "ignore") if meta else None, "utf-8"):
+        if not enc:
+            continue
+        try:
+            return raw.decode(enc)
+        except (LookupError, UnicodeDecodeError):
+            continue
+    return raw.decode("cp1254", errors="replace")
 
 
 def extract_text(html: str, url: str) -> str:
-    import trafilatura
-
-    text = trafilatura.extract(html, url=url, include_comments=False, include_tables=False, favor_precision=True, deduplicate=True)
-    return (text or "").strip()
+    return parse_page(html, url).text
 
 
-_WORD = re.compile(r"\w{3,}", re.UNICODE)
-
-
-def _terms(text: str) -> set[str]:
-    return {w.casefold()[:6] for w in _WORD.findall(text)}  # crude stemming helps Turkish suffixes
-
-
-def select_passages(text: str, query: str, max_chars: int) -> str:
-    """Pick the paragraphs most related to the query, keeping their original order."""
-    paragraphs = [p.strip() for p in re.split(r"\n+", text) if len(p.strip()) > 40]
-    if not paragraphs:
-        return text[:max_chars]
-    q = _terms(query)
-    scored = [(len(q & _terms(p)) + (0.5 if i < 3 else 0), i, p) for i, p in enumerate(paragraphs)]
-    scored.sort(key=lambda x: (-x[0], x[1]))
-    chosen: list[tuple[int, str]] = []
-    total = 0
-    for _, i, p in scored:
-        if total + len(p) > max_chars and chosen:
-            continue
-        chosen.append((i, p[: max_chars - total]))
-        total += min(len(p), max_chars - total)
-        if total >= max_chars:
-            break
-    chosen.sort()
-    return "\n".join(p for _, p in chosen)
+__all__ = ["USER_AGENT", "UnsafeURL", "assert_public_url", "extract_text", "fetch_html", "select_passages"]

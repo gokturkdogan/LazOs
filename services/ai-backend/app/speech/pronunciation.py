@@ -80,9 +80,7 @@ BUILTIN_RULES: tuple[Rule, ...] = (
 )
 
 # Spans that must never be rewritten: URLs, e-mail addresses, file paths, commands/assignments.
-_PROTECTED = re.compile(
-    r"https?://\S+|www\.\S+|\b[\w.+-]+@[\w-]+\.[\w.]+|(?:~|\.{1,2})?/[\w./-]+|\b\w+[\\/][\w./\\-]+|\S*=\S+|\S+\(\)"
-)
+_PROTECTED = re.compile(r"https?://\S+|www\.\S+|\b[\w.+-]+@[\w-]+\.[\w.]+|(?:~|\.{1,2})?/[\w./-]+|\b\w+[\\/][\w./\\-]+|\S*=\S+|\S+\(\)")
 _REPEATED = re.compile(r"([!?.,;:])\1+")
 _MIXED_END = re.compile(r"[!?]{2,}")
 
@@ -115,8 +113,7 @@ class Pronouncer:
         effective = [
             r
             for r in rules
-            if not r.builtin
-            or not ((r.term.casefold(), r.engine) in custom_terms or (r.term.casefold(), "all") in custom_terms)
+            if not r.builtin or not ((r.term.casefold(), r.engine) in custom_terms or (r.term.casefold(), "all") in custom_terms)
         ]
         self._compiled = {engine: _compile(r for r in effective if r.applies_to(engine)) for engine in ENGINES}
 

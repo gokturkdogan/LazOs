@@ -28,6 +28,7 @@ class TurnMetrics:
     total_ms: float | None = None
     reasoning: bool | None = None  # thinking mode used for this answer
     examples: int | None = None  # approved feedback examples shown to the model
+    evidence: str | None = None  # research evidence status: verified | single_source | conflict | insufficient
 
     def mark_first_token(self) -> None:
         if self.ttft_ms is None:

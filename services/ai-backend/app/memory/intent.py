@@ -73,7 +73,9 @@ IDENTITY_FACT = _rx(
     r"\b(yaraticisi|gelistiricisi)\w*\b.*\blazos|\blazos\S*\s+.*\b(yaraticisi|gelistiricisi)",
 )
 # First-person questions about the user's own things ("projem", "tercihlerim") may use category hints.
-OWN_THINGS = _rx(r"\b(projem|projelerim|projemiz|uygulamam|uygulamalarim|tercihim|tercihlerim|ilgi alanlarim|hobim|hobilerim|kararim|kararlarim|my projects?|my preferences?)\w*")
+OWN_THINGS = _rx(
+    r"\b(projem|projelerim|projemiz|uygulamam|uygulamalarim|tercihim|tercihlerim|ilgi alanlarim|hobim|hobilerim|kararim|kararlarim|my projects?|my preferences?)\w*"
+)
 
 
 def is_episodic(text: str) -> bool:

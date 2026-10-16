@@ -210,7 +210,7 @@ class MemoryService:
         if turn.outcome is not None:
             sections.append(
                 f"Hafıza işlemi tamamlandı: {turn.outcome.summary()}.\nKullanıcıya bunu tek kısa ve doğal cümleyle onayla "
-                "(örneğin \"Tamam.\" ya da \"Unuttum.\"); hafıza veya kayıt ayrıntısına girme."
+                '(örneğin "Tamam." ya da "Unuttum."); hafıza veya kayıt ayrıntısına girme.'
             )
         if sections:
             turn.tool_content = (
@@ -250,9 +250,7 @@ class MemoryService:
         window = time_window(text)
         since, until = (window.since, window.until) if window else (None, None)
         scope = f" ({window.label})" if window else ""
-        hits = await self.store.search_messages(
-            text, since=since, until=until, exclude_conversation=conversation_id, limit=6
-        )
+        hits = await self.store.search_messages(text, since=since, until=until, exclude_conversation=conversation_id, limit=6)
         if hits:
             blocks = []
             for hit in hits:
@@ -265,9 +263,7 @@ class MemoryService:
             return f"Geçmiş konuşmalardan bulunanlar{scope}:\n\n" + "\n\n".join(blocks)
 
         if window or wants_latest_conversation(text) or fallback_recent:
-            convs = await self.store.recent_conversations(
-                since=since, until=until, exclude_conversation=conversation_id, limit=3
-            )
+            convs = await self.store.recent_conversations(since=since, until=until, exclude_conversation=conversation_id, limit=3)
             if convs:
                 blocks = []
                 for conv in convs:

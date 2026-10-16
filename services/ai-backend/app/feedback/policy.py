@@ -39,7 +39,9 @@ TEMPLATES: dict[str, PreferenceTemplate] = {
     ),
     "wrong_tone": PreferenceTemplate("wrong_tone", "Kullanıcı daha sade ve ölçülü bir üslup tercih ediyor.", "communication"),
     "unnecessary_tool": PreferenceTemplate(
-        "unnecessary_tool", "Kullanıcı gereksiz internet aramasından hoşlanmıyor; yalnızca gerçekten gerektiğinde arama yapılmalı.", "communication"
+        "unnecessary_tool",
+        "Kullanıcı gereksiz internet aramasından hoşlanmıyor; yalnızca gerçekten gerektiğinde arama yapılmalı.",
+        "communication",
     ),
 }
 SUGGESTION_THRESHOLD = 3  # independent pieces of evidence before a preference is *suggested*
@@ -59,20 +61,27 @@ _FACTUAL = re.compile(
     r"|\bcikti\b"  # "çıktı" = was released; NOT "çıktısını" (= its output), which is ordinary debugging advice
 )
 # A correction that tries to rename LAZOS or its creator ("Ben Max", "Beni Ali yaptı") must never become an example.
-_IDENTITY_CLAIM = re.compile(r"\b(benim adim|adim|ben)\s+(?!lazos\b)[a-z]{2,}\b.*\b(asistan|yapay zeka)|\b(yaraticim|beni .* (yapti|gelistirdi|yaratti))")
-_ROLE_MARKERS = re.compile(r"(<\|im_(start|end)\|>|</?tool_\w+>|^\s*(system|sistem|assistant|user)\s*:|#{2,}\s*(talimat|instruction))", re.IGNORECASE | re.MULTILINE)
+_IDENTITY_CLAIM = re.compile(
+    r"\b(benim adim|adim|ben)\s+(?!lazos\b)[a-z]{2,}\b.*\b(asistan|yapay zeka)|\b(yaraticim|beni .* (yapti|gelistirdi|yaratti))"
+)
+_ROLE_MARKERS = re.compile(
+    r"(<\|im_(start|end)\|>|</?tool_\w+>|^\s*(system|sistem|assistant|user)\s*:|#{2,}\s*(talimat|instruction))",
+    re.IGNORECASE | re.MULTILINE,
+)
 _INSTRUCTION = re.compile(
     r"\b(onceki|tum|butun)\s+(talimat|kural)\w*\s+(yok say|unut|gormezden gel)|\bignore (all|previous|the above)\b|\bsen artik\b",
 )
 _EMAIL = re.compile(r"\b[\w.+-]+@[\w-]+\.[\w.]+\b")
 _PHONE = re.compile(r"(?<!\d)(\+?90[ -]?)?0?5\d{2}[ -]?\d{3}[ -]?\d{2}[ -]?\d{2}(?!\d)")
 _TCKN = re.compile(r"(?<!\d)[1-9]\d{10}(?!\d)")
-_TOKEN = re.compile(r"\b(sk-[A-Za-z0-9]{16,}|ghp_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|eyJ[\w-]{10,}\.[\w-]{10,}\.[\w-]{10,}|xox[bp]-[\w-]{10,})\b")
+_TOKEN = re.compile(
+    r"\b(sk-[A-Za-z0-9]{16,}|ghp_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|eyJ[\w-]{10,}\.[\w-]{10,}\.[\w-]{10,}|xox[bp]-[\w-]{10,})\b"
+)
 _ADDRESS = re.compile(r"\b(mahallesi|mah\.|sokak|sok\.|cadde|cad\.|apartman|daire|no:)\b", re.IGNORECASE)
 
 
 def classify_correction(preferred: str, reasons: list[str] | None = None) -> str:
-    """"factual" corrections carry claims that may go stale; they are never reused as examples."""
+    """ "factual" corrections carry claims that may go stale; they are never reused as examples."""
     if "incorrect" in (reasons or []) or _FACTUAL.search(fold(preferred)):
         return "factual"
     return "style"

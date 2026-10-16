@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import collections
 import logging
 import re
 import uuid
@@ -29,8 +30,9 @@ from app.inference.prompts import (
 from app.inference.reasoning import needs_deep_reasoning
 from app.memory.intent import is_episodic, is_forget, is_remember
 from app.memory.service import SEARCH_MEMORY_TOOL, MemoryService, TurnMemory
+from app.research.intent import ResearchIntent, classify, followup_intent
 from app.research.router import RouteDecision, build_search_query, route
-from app.research.service import ResearchResult, ResearchService, parse_tool_args
+from app.research.service import ResearchResult, ResearchService, ResearchTrace, parse_tool_args
 from app.speech.audio_io import AudioPlayer
 from app.speech.speaker import SpeechSession
 from app.speech.tts import TTSManager
@@ -101,6 +103,8 @@ class ChatService:
         self._speech: SpeechSession | None = None
         self._summarizer: asyncio.Task[None] | None = None
         self._error_reset: asyncio.TimerHandle | None = None
+        # Developer research diagnostics (only kept when the setting is on; in memory, never persisted).
+        self.research_traces: collections.deque[ResearchTrace] = collections.deque(maxlen=30)
 
     # ── public API ─────────────────────────────────────────────────────────
     @property
@@ -190,16 +194,28 @@ class ChatService:
             if self.memory:
                 if is_remember(req.text) or is_forget(req.text):
                     self.state.set(AIState.THINKING, "memory", force=True)
-                turn_memory = await self.memory.prepare_turn(
-                    text=req.text, conversation_id=conv.id, message=user_msg, recent=history[-4:]
-                )
+                turn_memory = await self.memory.prepare_turn(text=req.text, conversation_id=conv.id, message=user_msg, recent=history[-4:])
                 self.state.set(AIState.THINKING, force=True)
 
             decision = route(req.text, settings.research_mode)
+            if decision.action != "search" and settings.research_mode == "auto":
+                # "Peki Fenerbahçe?" after a standings question inherits that research intent.
+                previous = next((m.content for m in reversed(history) if m.role == "user"), None)
+                prev_intent = classify(previous) if previous else None
+                follow = followup_intent(req.text, prev_intent)
+                if follow and route(previous or "", settings.research_mode).action == "search":
+                    decision = RouteDecision("search", "follow-up of a research question", follow)
             if self.memory and (is_episodic(req.text) or self.memory.is_identity_question(req.text)):
                 decision = RouteDecision("none", "answered from memory/identity")
             tools = self.tools_for(settings)
-            log.info("turn routed", extra={"action": decision.action, "reason": decision.reason})
+            log.info(
+                "turn routed",
+                extra={
+                    "action": decision.action,
+                    "reason": decision.reason,
+                    "intent": decision.intent.describe() if decision.intent else None,
+                },
+            )
 
             system = self.system_prompt(has_tools=settings.research_mode != "off")
             stamped = stamp(req.text, datetime.fromtimestamp(user_msg.created_at).astimezone(), voice=req.origin == "voice")
@@ -212,9 +228,7 @@ class ChatService:
                 reserve_for_answer=settings.max_response_tokens + 1800,  # room for research results
             )
             messages = plan.messages
-            think = settings.reasoning_mode == "deep" or (
-                settings.reasoning_mode == "auto" and needs_deep_reasoning(req.text)
-            )
+            think = settings.reasoning_mode == "deep" or (settings.reasoning_mode == "auto" and needs_deep_reasoning(req.text))
             if think:
                 # Qwen3.5 thinking profile; the hidden reasoning needs a larger token budget.
                 options = GenerationOptions(
@@ -256,9 +270,10 @@ class ChatService:
 
             searches = 0
             tool_rounds = 0
+            traces: list[ResearchTrace] = []
             if decision.action == "search":
-                query = build_search_query(req.text)
-                research = await self._do_research(query, assistant_id, settings, metrics)
+                query = build_search_query(req.text, intent=decision.intent)
+                research = await self._do_research(query, assistant_id, settings, metrics, req.text, decision.intent, traces)
                 messages += self._tool_exchange(query, research)
                 searches += 1
 
@@ -291,7 +306,7 @@ class ChatService:
                         messages += self._exchange("search_memory", {"query": query}, found)
                         continue
                     if call.name == "web_search" and searches < MAX_SEARCHES_PER_TURN:
-                        research = await self._do_research(query, assistant_id, settings, metrics)
+                        research = await self._do_research(query, assistant_id, settings, metrics, req.text, decision.intent, traces)
                         messages += self._tool_exchange(query, research)
                         searches += 1
                         continue
@@ -333,10 +348,14 @@ class ChatService:
             # the turn metrics include real time-to-first-audio.
             await speech.wait_first_audio(timeout=5.0)
         await self._finalize(conv.id, assistant_id, parts, research, metrics, req, status)
+        if traces and settings.research_diagnostics:
+            for trace in traces:
+                trace.message_id = assistant_id
+                trace.answer = "".join(parts).strip()
+                trace.timings_ms["ttft_from_turn_start"] = metrics.ttft_ms or 0
+                self.research_traces.append(trace)
         if self.memory:
-            self.memory.after_turn(
-                conversation_id=conv.id, message=user_msg, handled=bool(turn_memory and turn_memory.handled_explicitly)
-            )
+            self.memory.after_turn(conversation_id=conv.id, message=user_msg, handled=bool(turn_memory and turn_memory.handled_explicitly))
 
         if speech:
             try:
@@ -417,12 +436,25 @@ class ChatService:
             {"role": "tool", "tool_name": "web_search", "content": content},
         ]
 
-    async def _do_research(self, query: str, message_id: str, settings: UserSettings, metrics: TurnMetrics) -> ResearchResult:
+    async def _do_research(
+        self,
+        query: str,
+        message_id: str,
+        settings: UserSettings,
+        metrics: TurnMetrics,
+        request: str,
+        intent: ResearchIntent | None,
+        traces: list[ResearchTrace],
+    ) -> ResearchResult:
         started = now_ms()
         self.state.set(AIState.THINKING, "research", force=True)
         self.hub.publish({"type": "chat.research", "message_id": message_id, "status": "searching", "query": query})
-        result = await self.research.research(query, max_sources=settings.max_sources)
+        result = await self.research.research(query, max_sources=settings.max_sources, intent=intent, request=request)
         metrics.research_ms = round((metrics.research_ms or 0) + now_ms() - started, 1)
+        if result.evidence is not None:
+            metrics.evidence = result.evidence.status
+        if result.trace:
+            traces.append(result.trace)
         self.hub.publish(
             {
                 "type": "chat.research",

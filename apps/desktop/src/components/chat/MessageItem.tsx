@@ -106,7 +106,7 @@ export const MessageItem = memo(function MessageItem({ message }: { message: Cha
         )
       )}
 
-      {!streaming && <SourceList sources={message.sources} query={research?.query} />}
+      {!streaming && <SourceList sources={message.sources} query={research?.query} messageId={message.id} />}
       {!streaming && message.status !== "error" && message.content && <AnswerFeedback message={message} />}
     </motion.article>
   );

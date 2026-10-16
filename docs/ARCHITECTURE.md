@@ -54,8 +54,11 @@ captured or handed to the output device, and the AI core visualises those.
 | `speech/text.py` | Markdown → speakable text, streaming `SentenceSplitter` (decimals, abbreviations, code fences) |
 | `speech/speaker.py` | `SpeechSession`: pipelined synthesis and playback per answer |
 | `speech/voice.py` | `VoiceController`: push-to-talk and continuous modes, microphone fault detection |
-| `research/router.py` | Fast intent routing and a deterministic search-query builder |
-| `research/service.py` | Provider fallback chain, domain diversity, concurrent page fetch, passage selection, validated tool args |
+| `research/intent.py` | Research intent (standings, weather, exchange, version, news, current fact), competition/season/entity, follow-ups |
+| `research/router.py` | Fast intent routing and a deterministic, intent-aware search-query builder |
+| `research/extract.py` | Text, HTML tables (labelled, rows/columns kept) and tables embedded as JSON; boilerplate removal; dates |
+| `research/evidence.py` | Deterministic standings extraction, competition/season validation, cross-source verification, evidence block |
+| `research/service.py` | Staged research: search → rank with reasons → snippets → bounded fetch with early stop → evidence → one fallback query; diagnostics trace (see [WEB_RESEARCH.md](WEB_RESEARCH.md)) |
 | `research/fetch.py` | SSRF guard (public IPs only, re-checked after redirects), size cap, trafilatura extraction |
 | `models/manager.py` | Detect, approve-then-install, progress events, size + SHA-256 verification, Ollama pull |
 | `models/whisper_convert.py` | Converts an existing OpenAI Whisper `.pt` to MLX, with strict key/shape validation |
@@ -69,6 +72,7 @@ captured or handed to the output device, and the AI core visualises those.
 | `feedback/policy.py` | Feedback reasons, correction classification (style/local/factual), blocking (secrets, identity, instructions), PII warnings, preference conflicts |
 | `feedback/service.py` | Ratings, corrections, approved-example retrieval (≤ 2, lexical), speech-recognition corrections, suggestions (approve/reject/revoke), local export |
 | `api/feedback.py` | Owner-only feedback, learning and export API (`/api/feedback`) |
+| `api/research.py` | Owner-only developer research diagnostics (`/api/research/traces`, in memory, off by default) |
 
 ## WebSocket contract (`/ws?token=…`)
 

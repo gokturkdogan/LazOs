@@ -210,9 +210,7 @@ class MemoryStore:
         await self.db.commit()
         return count
 
-    async def search_memories(
-        self, text: str, *, limit: int = 5, exclude_categories: tuple[str, ...] = ()
-    ) -> list[Memory]:
+    async def search_memories(self, text: str, *, limit: int = 5, exclude_categories: tuple[str, ...] = ()) -> list[Memory]:
         query = fts_query(content_terms(text))
         if not query:
             return []

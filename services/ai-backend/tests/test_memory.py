@@ -28,10 +28,10 @@ def running(boot: BootConfig, llm: FakeLLM, search: FakeSearchProvider | None = 
     search = search or FakeSearchProvider()
     research = ResearchService([search], fetch_timeout=0.5, total_timeout=3)
 
-    async def no_fetch(client, url, query):  # type: ignore[no-untyped-def]
-        return ""
+    async def no_fetch(client, url):  # type: ignore[no-untyped-def]
+        return None, {"url": url, "status": "test: no network"}  # never touch the network from unit tests
 
-    research._excerpt = no_fetch  # type: ignore[method-assign]
+    research._fetch_page = no_fetch  # type: ignore[method-assign]
     app = create_app(boot, services_factory=lambda cfg: Services(cfg, llm=llm, research=research))
     with TestClient(app) as c:
         svc: Services = app.state.services

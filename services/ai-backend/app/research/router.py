@@ -13,6 +13,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Literal
 
+from app.research.intent import ResearchIntent, classify
+
 Action = Literal["search", "none", "auto"]
 
 
@@ -20,6 +22,7 @@ Action = Literal["search", "none", "auto"]
 class RouteDecision:
     action: Action
     reason: str
+    intent: ResearchIntent | None = None
 
 
 def _rx(*patterns: str) -> re.Pattern[str]:
@@ -46,7 +49,7 @@ FRESH_TOPIC = _rx(
 )
 # Relative time words only count when the user is actually asking for information.
 TIME_WORD = _rx(
-    r"\b(bugün|bugünkü|dün|yarın|bu hafta|bu ay|bu yıl|geçen hafta|şu an|şu anda|şimdi)\b",
+    r"\b(bugün|bugünkü|dün|yarın|bu hafta|bu ay|bu yıl|geçen hafta|şu an|şu anda|şu anki|şimdi|şimdiki|halihazırda)\b",
     r"\b(today|yesterday|tomorrow|this week|recent|current|currently|right now)\b",
     r"\b20[2-3]\d\b",
 )
@@ -71,6 +74,7 @@ def _time_sensitive(text: str) -> bool:
         return True
     return bool(TIME_WORD.search(text) and INFO_SEEKING.search(text) and not PERSONAL.search(text))
 
+
 SMALL_TALK = _rx(
     r"^\s*(lazos[,!\s]*)?(merhaba|selam|hey|günaydın|iyi akşamlar|iyi geceler|naber|nasılsın|teşekkür(ler)?|"
     r"sağ ol|eyvallah|tamam|peki|anladım|güzel|harika|hello|hi|thanks|thank you|ok|okay)\b[\s\w!?.,']{0,40}$",
@@ -85,25 +89,32 @@ TIMELESS = _rx(
 )
 
 
-def route(text: str, mode: str = "auto") -> RouteDecision:
+# Intents whose answers change over time: searched whenever the router recognises them.
+_LIVE_INTENTS = ("standings", "weather", "exchange", "version", "current")
+
+
+def route(text: str, mode: str = "auto", now: datetime | None = None) -> RouteDecision:
     if mode == "off":
         return RouteDecision("none", "research disabled")
     t = text.strip()
+    intent = classify(t, now) if t else None
     if mode == "always":
-        return RouteDecision("search", "research forced by settings")
+        return RouteDecision("search", "research forced by settings", intent)
     if not t:
         return RouteDecision("none", "empty")
     if EXPLICIT_SEARCH.search(t):
-        return RouteDecision("search", "explicit request")
+        return RouteDecision("search", "explicit request", intent)
     if SMALL_TALK.search(t):
         return RouteDecision("none", "small talk")
     if MATH.search(t):
         return RouteDecision("none", "math")
+    if intent and intent.kind in _LIVE_INTENTS:
+        return RouteDecision("search", f"live data: {intent.kind}", intent)
     if _time_sensitive(t):
-        return RouteDecision("search", "time-sensitive")
+        return RouteDecision("search", "time-sensitive", intent)
     if TIMELESS.search(t) and len(t) < 200:
         return RouteDecision("none", "general explanation")
-    return RouteDecision("auto", "model decides")
+    return RouteDecision("auto", "model decides", intent)
 
 
 _MONTHS_TR = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"]
@@ -118,13 +129,21 @@ _PUNCT = re.compile(r"[?!.,;:]+(?=\s|$)")
 _RELATIVE_DAY = _rx(r"\b(bugün|bugünkü|today|şu an|şu anda|şimdi|right now)\b")
 
 
-def build_search_query(text: str, now: datetime | None = None) -> str:
+def build_search_query(text: str, now: datetime | None = None, intent: ResearchIntent | None = None) -> str:
     """Turn a conversational request into a search query without an extra LLM round-trip.
 
     Keeps the user's wording (search engines handle natural questions well), removes the assistant's
     name and command phrases, and anchors relative dates to the actual date.
     """
     now = now or datetime.now()
+    if intent and intent.kind == "standings" and intent.competition:
+        # A league table answers rank, points and leader for every team; dates pull in match news instead.
+        return f"{intent.competition.name} {intent.season} puan durumu"
+    if intent and intent.kind == "weather" and intent.entity:
+        return f"{intent.entity} hava durumu"  # forecast pages; a date pulls in news articles without numbers
+    if intent and intent.kind == "version" and intent.entity:
+        lts = " LTS" if re.search(r"\blts\b", text, re.IGNORECASE) else ""
+        return f"{intent.entity}{lts} latest version"  # release pages state it in their snippet
     query = _STRIP.sub(" ", text)
     query = _PUNCT.sub(" ", query)  # keeps decimals like "3.5"
     if _RELATIVE_DAY.search(query):

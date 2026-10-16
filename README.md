@@ -99,8 +99,8 @@ Models live in `~/Library/Application Support/LAZOS/models`. Ollama keeps its ow
   - *Öğrenme*: approve or reject learning suggestions, edit or delete corrections, review speech
     corrections, turn example retrieval off, export (local preview first), or clear feedback.
 - **Settings (sliders icon):** model, context window, voice engine (Piper or macOS Yelda) with a
-  preview, speech speed, recognition language, VAD sensitivity, audio devices, research mode, visual
-  quality and reduced motion.
+  preview, speech speed, recognition language, VAD sensitivity, audio devices, research mode, research
+  diagnostics (developer, off by default), visual quality and reduced motion.
 
 ## Development commands
 
@@ -114,7 +114,8 @@ scripts/searxng.sh up|down|status|logs
 ```
 
 For more detail, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md),
-[docs/TESTING.md](docs/TESTING.md), [docs/LEARNING.md](docs/LEARNING.md) and [docs/ROADMAP.md](docs/ROADMAP.md).
+[docs/TESTING.md](docs/TESTING.md), [docs/LEARNING.md](docs/LEARNING.md), [docs/WEB_RESEARCH.md](docs/WEB_RESEARCH.md) and
+[docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Privacy and security
 

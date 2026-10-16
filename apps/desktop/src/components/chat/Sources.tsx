@@ -1,6 +1,7 @@
-import { ExternalLink, Globe, Loader2, SearchX } from "lucide-react";
+import { Bug, ExternalLink, Globe, Loader2, SearchX } from "lucide-react";
 
 import { openExternal } from "../../services/backend";
+import { useApp } from "../../stores/app";
 import type { ResearchProgress, Source } from "../../types/protocol";
 
 export function ResearchStatus({ research, streaming }: { research: ResearchProgress; streaming: boolean }) {
@@ -37,7 +38,9 @@ export function ResearchStatus({ research, streaming }: { research: ResearchProg
   return null;
 }
 
-export function SourceList({ sources, query }: { sources: Source[]; query?: string }) {
+export function SourceList({ sources, query, messageId }: { sources: Source[]; query?: string; messageId?: string }) {
+  const diagnostics = useApp((s) => s.settings?.research_diagnostics ?? false);
+  const setUi = useApp((s) => s.setUi);
   if (!sources.length) return null;
   return (
     <div className="mt-3.5">
@@ -45,6 +48,15 @@ export function SourceList({ sources, query }: { sources: Source[]; query?: stri
         <span className="hud-label !text-[9px] accent-text">Kaynaklar</span>
         <span className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
         {query && <span className="truncate font-mono text-[9.5px] text-ink-faint">“{query}”</span>}
+        {diagnostics && messageId && (
+          <button
+            type="button"
+            onClick={() => setUi({ researchTraceId: messageId })}
+            className="flex shrink-0 items-center gap-1 rounded border border-white/[0.08] px-1.5 py-0.5 font-mono text-[9.5px] text-ink-dim hover:text-white"
+          >
+            <Bug size={10} /> tanılama
+          </button>
+        )}
       </div>
       <div className="grid grid-cols-1 gap-1.5">
         {sources.map((s) => (

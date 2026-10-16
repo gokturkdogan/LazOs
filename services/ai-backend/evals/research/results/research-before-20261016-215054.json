@@ -1,0 +1,1114 @@
+{
+ "summary": {
+  "label": "before",
+  "date": "2026-10-16T21:47",
+  "correct": "18/34",
+  "standings_correct": "4/14",
+  "refusals_on_research": 3,
+  "answers_with_unsupported_numbers": 5,
+  "searched_answers": 24,
+  "unnecessary_searches": 0,
+  "research_ms_mean": 2117,
+  "research_ms_p95": 3439,
+  "total_ms_median_research_questions": 7718,
+  "ttft_ms_median_research": 4962,
+  "context_chars_median": 2569,
+  "prompt_tokens_median_research": 3318
+ },
+ "truth": {
+  "now": {
+   "tables": [
+    [
+     {
+      "rank": 1,
+      "team": "Galatasaray",
+      "played": 7,
+      "points": 16
+     },
+     {
+      "rank": 2,
+      "team": "Beşiktaş",
+      "played": 7,
+      "points": 15
+     },
+     {
+      "rank": 3,
+      "team": "Amed",
+      "played": 7,
+      "points": 14
+     },
+     {
+      "rank": 4,
+      "team": "Fenerbahçe",
+      "played": 7,
+      "points": 13
+     },
+     {
+      "rank": 5,
+      "team": "Trabzonspor",
+      "played": 7,
+      "points": 13
+     },
+     {
+      "rank": 6,
+      "team": "Alanyaspor",
+      "played": 7,
+      "points": 12
+     },
+     {
+      "rank": 7,
+      "team": "Kocaelispor",
+      "played": 7,
+      "points": 12
+     },
+     {
+      "rank": 8,
+      "team": "Çorum",
+      "played": 7,
+      "points": 10
+     },
+     {
+      "rank": 9,
+      "team": "Kasımpaşa",
+      "played": 7,
+      "points": 10
+     },
+     {
+      "rank": 10,
+      "team": "Çaykur Rizespor",
+      "played": 7,
+      "points": 10
+     },
+     {
+      "rank": 11,
+      "team": "İstanbul Başakşehir",
+      "played": 7,
+      "points": 8
+     },
+     {
+      "rank": 12,
+      "team": "Gaziantep",
+      "played": 7,
+      "points": 8
+     },
+     {
+      "rank": 13,
+      "team": "Gençlerbirliği",
+      "played": 7,
+      "points": 8
+     },
+     {
+      "rank": 14,
+      "team": "Erzurumspor",
+      "played": 7,
+      "points": 8
+     },
+     {
+      "rank": 15,
+      "team": "Göztepe",
+      "played": 7,
+      "points": 6
+     },
+     {
+      "rank": 16,
+      "team": "Konyaspor",
+      "played": 7,
+      "points": 5
+     },
+     {
+      "rank": 17,
+      "team": "Samsunspor",
+      "played": 7,
+      "points": 4
+     },
+     {
+      "rank": 18,
+      "team": "Eyüpspor",
+      "played": 7,
+      "points": 3
+     }
+    ],
+    [
+     {
+      "rank": 1,
+      "team": "Galatasaray",
+      "played": 7,
+      "points": 16
+     },
+     {
+      "rank": 2,
+      "team": "Beşiktaş",
+      "played": 7,
+      "points": 15
+     },
+     {
+      "rank": 3,
+      "team": "Amed SK",
+      "played": 7,
+      "points": 14
+     },
+     {
+      "rank": 4,
+      "team": "Fenerbahçe",
+      "played": 7,
+      "points": 13
+     },
+     {
+      "rank": 5,
+      "team": "Trabzonspor",
+      "played": 7,
+      "points": 13
+     },
+     {
+      "rank": 6,
+      "team": "Alanyaspor",
+      "played": 7,
+      "points": 12
+     },
+     {
+      "rank": 7,
+      "team": "Kocaelispor",
+      "played": 7,
+      "points": 12
+     },
+     {
+      "rank": 8,
+      "team": "Çorum FK",
+      "played": 7,
+      "points": 10
+     },
+     {
+      "rank": 9,
+      "team": "Kasımpaşa",
+      "played": 7,
+      "points": 10
+     },
+     {
+      "rank": 10,
+      "team": "Ç. Rizespor",
+      "played": 7,
+      "points": 10
+     },
+     {
+      "rank": 11,
+      "team": "Başakşehir",
+      "played": 7,
+      "points": 8
+     },
+     {
+      "rank": 12,
+      "team": "Gaziantep FK",
+      "played": 7,
+      "points": 8
+     },
+     {
+      "rank": 13,
+      "team": "Gençlerbirliği",
+      "played": 7,
+      "points": 8
+     },
+     {
+      "rank": 14,
+      "team": "Erzurumspor FK",
+      "played": 7,
+      "points": 8
+     },
+     {
+      "rank": 15,
+      "team": "Göztepe",
+      "played": 7,
+      "points": 6
+     },
+     {
+      "rank": 16,
+      "team": "Konyaspor",
+      "played": 7,
+      "points": 5
+     },
+     {
+      "rank": 17,
+      "team": "Samsunspor",
+      "played": 7,
+      "points": 4
+     },
+     {
+      "rank": 18,
+      "team": "Eyüpspor",
+      "played": 7,
+      "points": 3
+     }
+    ]
+   ]
+  },
+  "last": {
+   "tables": [
+    [
+     {
+      "rank": 1,
+      "team": "Galatasaray",
+      "played": 34,
+      "points": 77
+     },
+     {
+      "rank": 2,
+      "team": "Fenerbahçe",
+      "played": 34,
+      "points": 74
+     },
+     {
+      "rank": 3,
+      "team": "Trabzonspor",
+      "played": 34,
+      "points": 69
+     },
+     {
+      "rank": 4,
+      "team": "Beşiktaş",
+      "played": 34,
+      "points": 60
+     },
+     {
+      "rank": 5,
+      "team": "İstanbul Başakşehir",
+      "played": 34,
+      "points": 57
+     },
+     {
+      "rank": 6,
+      "team": "Göztepe",
+      "played": 34,
+      "points": 55
+     },
+     {
+      "rank": 7,
+      "team": "Samsunspor",
+      "played": 34,
+      "points": 51
+     },
+     {
+      "rank": 8,
+      "team": "Çaykur Rizespor",
+      "played": 34,
+      "points": 41
+     },
+     {
+      "rank": 9,
+      "team": "Konyaspor",
+      "played": 34,
+      "points": 40
+     },
+     {
+      "rank": 10,
+      "team": "Kocaelispor",
+      "played": 34,
+      "points": 37
+     },
+     {
+      "rank": 11,
+      "team": "Alanyaspor",
+      "played": 34,
+      "points": 37
+     },
+     {
+      "rank": 12,
+      "team": "Gaziantep",
+      "played": 34,
+      "points": 37
+     },
+     {
+      "rank": 13,
+      "team": "Kasımpaşa",
+      "played": 34,
+      "points": 35
+     },
+     {
+      "rank": 14,
+      "team": "Gençlerbirliği",
+      "played": 34,
+      "points": 34
+     },
+     {
+      "rank": 15,
+      "team": "Eyüpspor",
+      "played": 34,
+      "points": 33
+     },
+     {
+      "rank": 16,
+      "team": "Antalyaspor",
+      "played": 34,
+      "points": 32
+     },
+     {
+      "rank": 17,
+      "team": "Kayserispor",
+      "played": 34,
+      "points": 30
+     },
+     {
+      "rank": 18,
+      "team": "Fatih Karagümrük",
+      "played": 34,
+      "points": 30
+     }
+    ]
+   ]
+  },
+  "versions": {
+   "python": [
+    "3.15",
+    "3.15.0"
+   ],
+   "nodejs": [
+    "24",
+    "24.22.0"
+   ]
+  }
+ },
+ "rows": [
+  {
+   "id": "gs_rank",
+   "answer": "Şu anki verilerle Galatasaray'ın tam sıralamasını göremiyorum. Aranan sonuçlar sadece 8. hafta öncesi hazırlık ve kamp detaylarını içeriyor, güncel puan tablosu vermiyor.\n\nTrendyol Süper Lig'in 2026/2027 sezonu puan durumunu görmek için beIN SPORTS'un lig sayfasını kontrol etmeni öneririm.",
+   "searched": true,
+   "research_ms": 1868.8,
+   "ttft_ms": 4490.7,
+   "total_ms": 7080,
+   "prompt_tokens": 3164,
+   "context_chars": 2441,
+   "sources": [
+    "fanatik.com.tr",
+    "mackolik.com",
+    "beinsports.com.tr"
+   ],
+   "correct": false,
+   "unsupported": [],
+   "refused": false,
+   "truth": [
+    {
+     "rank": 1,
+     "team": "Galatasaray",
+     "played": 7,
+     "points": 16
+    },
+    {
+     "rank": 1,
+     "team": "Galatasaray",
+     "played": 7,
+     "points": 16
+    }
+   ]
+  },
+  {
+   "id": "fb_rank",
+   "answer": "Şu anki verilere göre Fenerbahçe, 13 puana sahip ve üst sıralarda yer alıyor. Ancak kaynaklar 2026-2027 sezonunun başını (7. hafta) veriyor; 16 Ekim'deki güncel durumu tam olarak göstermiyor.\n\nSon maç sonucuyla puanı değişebilir mi, son durum ne?",
+   "searched": true,
+   "research_ms": 2431.5,
+   "ttft_ms": 5867.6,
+   "total_ms": 7723,
+   "prompt_tokens": 3094,
+   "context_chars": 2001,
+   "sources": [
+    "tff.org",
+    "sanayigazetesi.com.tr",
+    "beinsports.com.tr"
+   ],
+   "correct": false,
+   "unsupported": [],
+   "refused": false,
+   "truth": [
+    {
+     "rank": 4,
+     "team": "Fenerbahçe",
+     "played": 7,
+     "points": 13
+    },
+    {
+     "rank": 4,
+     "team": "Fenerbahçe",
+     "played": 7,
+     "points": 13
+    }
+   ]
+  },
+  {
+   "id": "ts_rank",
+   "answer": "Şu anki arama sonuçları Trabzonspor'un 2026-2027 sezonundaki puan durumunu tam olarak göstermiyor; siteler ya \"sonraki hafta\"ya geçiş yapıyor ya da sadece haber içerikleri veriyor. Puan tablosunu görebilmek için beIN SPORTS veya Mackolik'in ilgili sayfalarına bakmam gerekiyor.\n\nEğer 2025-2026 sezonunun kapanışını soruyorsan, o döneme ait güncel bir veri yoksa (çünkü şu anki tarih 16 Ekim 2026 ve sezon henüz tamamlanmamış gibi görünüyor), mevcut lig sıralamasını bulmak için web sitesini kontrol etmem gerekebilir.\n\nÖzetle, aradığın bilgiye ulaşabilmek için ilgili spor sitelerindeki güncel puan tablosuna bakmam lazım; elimdeki sonuçlar bu konuda yeterli değil.",
+   "searched": true,
+   "research_ms": 1505.7,
+   "ttft_ms": 4970.3,
+   "total_ms": 9787,
+   "prompt_tokens": 3155,
+   "context_chars": 2381,
+   "sources": [
+    "beinsports.com.tr",
+    "mackolik.com",
+    "fanatik.com.tr"
+   ],
+   "correct": false,
+   "unsupported": [
+    "16",
+    "2025"
+   ],
+   "refused": false,
+   "truth": [
+    {
+     "rank": 5,
+     "team": "Trabzonspor",
+     "played": 7,
+     "points": 13
+    },
+    {
+     "rank": 5,
+     "team": "Trabzonspor",
+     "played": 7,
+     "points": 13
+    }
+   ]
+  },
+  {
+   "id": "leader",
+   "answer": "Şu an Süper Lig'de lider Galatasaray. [3]",
+   "searched": true,
+   "research_ms": 1674.6,
+   "ttft_ms": 3315.7,
+   "total_ms": 3669,
+   "prompt_tokens": 2818,
+   "context_chars": 1208,
+   "sources": [
+    "beinsports.com.tr",
+    "tff.org",
+    "aa.com.tr"
+   ],
+   "correct": true,
+   "unsupported": [],
+   "refused": false,
+   "truth": [
+    "galatasaray"
+   ]
+  },
+  {
+   "id": "bjk_points",
+   "answer": "16 Ekim 2026'da Beşiktaş'ın Süper Lig'deki puanı şu anki verilerle tam olarak belli değil; çünkü o tarihte oynanacak olan Trabzonspor-Beşiktaş maçı henüz yapılmış bulunmuyor. Maçlar 16, 17, 18 ve 19 Ekim tarihlerinde oynanacak.\n\nSon durum için en güncel bilgiyi maçtan sonra kontrol etmen daha doğru olur.",
+   "searched": true,
+   "research_ms": 1552.1,
+   "ttft_ms": 4683.5,
+   "total_ms": 7895,
+   "prompt_tokens": 3042,
+   "context_chars": 1936,
+   "sources": [
+    "tff.org",
+    "beinsports.com.tr",
+    "fanatik.com.tr"
+   ],
+   "correct": false,
+   "unsupported": [],
+   "refused": false,
+   "truth": [
+    {
+     "rank": 2,
+     "team": "Beşiktaş",
+     "played": 7,
+     "points": 15
+    },
+    {
+     "rank": 2,
+     "team": "Beşiktaş",
+     "played": 7,
+     "points": 15
+    }
+   ]
+  },
+  {
+   "id": "followup",
+   "answer": "Fenerbahçe'nin de güncel sıralamasını şu anki veritabanımda bulamadım. Hem Galatasaray hem Fenerbahçe için lig tablosunu kontrol etmem gerekiyor; hemen SearXNG üzerinden \"Trendyol Süper Lig 2025-2026 puan durumu\" diye arama yapıp sana sonucu vereyim.",
+   "searched": false,
+   "research_ms": null,
+   "ttft_ms": 746.1,
+   "total_ms": 11171,
+   "prompt_tokens": 2459,
+   "context_chars": 0,
+   "sources": [],
+   "correct": false,
+   "unsupported": [
+    "2025"
+   ],
+   "refused": true,
+   "truth": [
+    {
+     "rank": 4,
+     "team": "Fenerbahçe",
+     "played": 7,
+     "points": 13
+    },
+    {
+     "rank": 4,
+     "team": "Fenerbahçe",
+     "played": 7,
+     "points": 13
+    }
+   ]
+  },
+  {
+   "id": "last_season",
+   "answer": "Geçen sezon olan 2025-26 Süper Lig'i Galatasaray kazandı. Liderlik koltuğunu bir daha bırakmadan, toplamda 77 puan toplayarak üst üste dördüncü ve kariyerindeki 26. şampiyonluğa ulaştı [1][3].",
+   "searched": true,
+   "research_ms": 3203.8,
+   "ttft_ms": 6731.2,
+   "total_ms": 9043,
+   "prompt_tokens": 3538,
+   "context_chars": 3285,
+   "sources": [
+    "tr.wikipedia.org",
+    "aa.com.tr",
+    "tff.org"
+   ],
+   "correct": true,
+   "unsupported": [],
+   "refused": false,
+   "truth": [
+    "galatasaray"
+   ]
+  },
+  {
+   "id": "usd",
+   "answer": "Serbest piyasada dolar kuru bugün (16 Ekim 2026) saat 09:30 itibariyle yaklaşık 49,53 TL civarında işlem görüyor [1]. Yılbaşına göre yaklaşık %15 artış var ve dün güne kıyasla küçük bir yükseliş kaydediyor.",
+   "searched": true,
+   "research_ms": 1110.2,
+   "ttft_ms": 4336.9,
+   "total_ms": 5837,
+   "prompt_tokens": 3343,
+   "context_chars": 2569,
+   "sources": [
+    "bloomberght.com",
+    "milatgazetesi.com",
+    "ekonomim.com"
+   ],
+   "correct": false,
+   "unsupported": [
+    "15"
+   ],
+   "refused": false
+  },
+  {
+   "id": "eur",
+   "answer": "Euro/TL kurunu serbest piyasa verilerine göre 55,61 TL (alış) ve 55,65 TL (satış) seviyesinde görüyorum [2]. Bir kaç kaynak arasında küçük farklar var; örneğin birisi 55,67 TL civarında diyor [1], ama genel piyasa ortalaması 55,60'lı rakamlarda.\n\nGüncel veriyi tam olarak almak için anlık kur takip sitelerini kontrol etmen en doğrusu olur.",
+   "searched": true,
+   "research_ms": 2303.6,
+   "ttft_ms": 6758.4,
+   "total_ms": 9483,
+   "prompt_tokens": 3699,
+   "context_chars": 3495,
+   "sources": [
+    "bloomberght.com",
+    "finans.mynet.com",
+    "gecmisdovizkurlari.com"
+   ],
+   "correct": false,
+   "unsupported": [
+    "55.6",
+    "55.67"
+   ],
+   "refused": false
+  },
+  {
+   "id": "weather",
+   "answer": "İstanbul'da 16 Ekim Cuma günü hava çok bulutlu ve sağanak yağışlı olacak. Özellikle Avrupa Yakası ve kuzey ilçelerinde kuvvetli yağışlar bekleniyor; gece saatlerinden itibaren şiddetini artırarak devam edeceği öngörülüyor [1][2].",
+   "searched": true,
+   "research_ms": 3439.3,
+   "ttft_ms": 7207.5,
+   "total_ms": 8567,
+   "prompt_tokens": 3675,
+   "context_chars": 3968,
+   "sources": [
+    "cnnturk.com",
+    "cumhuriyet.com.tr",
+    "hurriyet.com.tr"
+   ],
+   "correct": true,
+   "unsupported": [],
+   "refused": false
+  },
+  {
+   "id": "python_ver",
+   "answer": "Python 3.15, 9 Ekim 2026'da yayımlandı [1]. Ancak resmi kararlı sürüm olarak hala Python 3.14 geçerli [2]. 3.10 artık güvenlik güncellemesi almıyor ve ömrü doldu [1]. Yeni projeler için en güncel kararlı sürümü kullanman öneriliyor [2].",
+   "searched": true,
+   "research_ms": 2649.6,
+   "ttft_ms": 6778.4,
+   "total_ms": 8647,
+   "prompt_tokens": 3578,
+   "context_chars": 3722,
+   "sources": [
+    "remakeizmir.com",
+    "alastyr.com",
+    "evrimagaci.org"
+   ],
+   "correct": true,
+   "unsupported": [],
+   "refused": false,
+   "truth": [
+    "3.15",
+    "3.15.0"
+   ]
+  },
+  {
+   "id": "node_lts",
+   "answer": "Haziran 2026 itibarıyla aktif LTS sürümü Node.js 24, bakım modunda olanı ise Node.js 22 [3]. Ekim 2026'da yeni modelle birlikte Node.js 26'nın da LTS statüsüne geçmesi bekleniyor.",
+   "searched": true,
+   "research_ms": 1641.7,
+   "ttft_ms": 4953.6,
+   "total_ms": 6543,
+   "prompt_tokens": 3449,
+   "context_chars": 3669,
+   "sources": [
+    "nodejs.org",
+    "pkgpulse.com",
+    "alastyr.com"
+   ],
+   "correct": true,
+   "unsupported": [],
+   "refused": false,
+   "truth": [
+    "24",
+    "24.22.0"
+   ]
+  },
+  {
+   "id": "tech_news",
+   "answer": "Sonuçlar biraz eski (Eylül 2026), bu yüzden güncel bir özet sunamıyorum. Ancak genel olarak şu anda AI dünyasında Trump yönetiminin yavaşlatma çağrılarına kulak tıkaması ve ABD ile İngiltere'de yeni yasa tasarılarının hazırlanması gibi politik gelişmeler var. Ayrıca Mistral'ın değerlemesi 21 milyar euroya ulaşmış durumda.\n\nDaha net bir bilgi için şu anki tarih olan Ekim 2026'nın son günlerine özel haberleri aramalıyım.",
+   "searched": true,
+   "research_ms": 1341.9,
+   "ttft_ms": 3434.9,
+   "total_ms": 5977,
+   "prompt_tokens": 3062,
+   "context_chars": 2099,
+   "sources": [
+    "chatgpt.com",
+    "donanimhaber.com",
+    "gemini.google.com"
+   ],
+   "correct": false,
+   "unsupported": [],
+   "refused": false
+  },
+  {
+   "id": "company",
+   "answer": "Tim Cook Apple'ın CEO'sudur.",
+   "searched": false,
+   "research_ms": null,
+   "ttft_ms": 464.4,
+   "total_ms": 638,
+   "prompt_tokens": 2325,
+   "context_chars": 0,
+   "sources": [],
+   "correct": false,
+   "unsupported": [],
+   "refused": false
+  },
+  {
+   "id": "general",
+   "answer": "Python, yüksek seviyeli, yorum satırı (interpreted) ve çok amaçlı bir programlama dilidir. Okunması kolay sözdizimiyle bilinir ve web geliştirme, veri bilimi, yapay zeka ve otomasyon gibi birçok alanda yaygın kullanılır.",
+   "searched": false,
+   "research_ms": null,
+   "ttft_ms": 574.0,
+   "total_ms": 1802,
+   "prompt_tokens": 2317,
+   "context_chars": 0,
+   "sources": [],
+   "correct": true
+  },
+  {
+   "id": "casual",
+   "answer": "Tamam, bugün kod yazma zamanı gelmediyse dinlenmek iyi bir tercih. Zihni dinlendirir, yarın daha taze başlarsın.",
+   "searched": false,
+   "research_ms": null,
+   "ttft_ms": 574.3,
+   "total_ms": 1601,
+   "prompt_tokens": 2322,
+   "context_chars": 0,
+   "sources": [],
+   "correct": true
+  },
+  {
+   "id": "general2",
+   "answer": "Fotosentez, bitkilerin güneş enerjisini kullanarak suyu ve karbondioksiti şeker (glukoz) ve oksijene dönüştürdüğü bir kimyasal reaksiimdir. Bu süreç iki ana aşamadan oluşur: ışıkla çalışan reaksiyonlar ve karanlık reaksiyonlar.\n\nIşık reaksiyonları, güneş enerjisini yakalar ve ATP ile NADPH gibi enerji taşıyıcıları üretirken, karanlık reaksiyonlar bu enerjiyi kullanarak karbondioksidi şeker sentezlemek üzere kullanır.",
+   "searched": false,
+   "research_ms": null,
+   "ttft_ms": 588.5,
+   "total_ms": 3257,
+   "prompt_tokens": 2322,
+   "context_chars": 0,
+   "sources": [],
+   "correct": true
+  },
+  {
+   "id": "gs_rank",
+   "answer": "Verilen sonuçlarda 16 Ekim 2026 tarihine ait güncel bir puan durumu tablosu bulunmuyor; sadece Galatasaray'ın kadrosunda Osimhen, Icardi ve Sané gibi isimlerin yer aldığı genel bilgiler var [3]. Bu nedenle o tarihteki sıralamayı net olarak söyleyemiyorum.",
+   "searched": true,
+   "research_ms": 1727.5,
+   "ttft_ms": 4394.5,
+   "total_ms": 6091,
+   "prompt_tokens": 3293,
+   "context_chars": 2695,
+   "sources": [
+    "galatasaray.org",
+    "sporx.com",
+    "transfermarkt.com.tr"
+   ],
+   "correct": false,
+   "unsupported": [],
+   "refused": true,
+   "truth": [
+    {
+     "rank": 1,
+     "team": "Galatasaray",
+     "played": 7,
+     "points": 16
+    },
+    {
+     "rank": 1,
+     "team": "Galatasaray",
+     "played": 7,
+     "points": 16
+    }
+   ]
+  },
+  {
+   "id": "fb_rank",
+   "answer": "Aradığım sonuçlar 2025-2026 sezonunun ilk haftalarına (8. hafta gibi) ait bilgiler içeriyor; bu tarihler 16 Ekim 2026'dan çok önce. Mevcut verilerle o günkü sıralamayı bulamadım, güncel lig tablosu için tekrar arama yapmam gerekiyor.",
+   "searched": true,
+   "research_ms": 1511.5,
+   "ttft_ms": 4756.8,
+   "total_ms": 7074,
+   "prompt_tokens": 3012,
+   "context_chars": 1879,
+   "sources": [
+    "tff.org",
+    "beinsports.com.tr",
+    "fanatik.com.tr"
+   ],
+   "correct": false,
+   "unsupported": [],
+   "refused": true,
+   "truth": [
+    {
+     "rank": 4,
+     "team": "Fenerbahçe",
+     "played": 7,
+     "points": 13
+    },
+    {
+     "rank": 4,
+     "team": "Fenerbahçe",
+     "played": 7,
+     "points": 13
+    }
+   ]
+  },
+  {
+   "id": "ts_rank",
+   "answer": "Aradığım kaynaklarda Trabzonspor'un güncel puan durumu ve sıralaması açıkça görünmüyor; sitede sadece genel haberler var [1][3]. Bu yüzden net bir sıra veremiyorum, daha detaylı bilgi almak istersen hangi ligde oynuyorlar veya son maç sonucu neymiş?",
+   "searched": true,
+   "research_ms": 1611.5,
+   "ttft_ms": 4444.1,
+   "total_ms": 6148,
+   "prompt_tokens": 3155,
+   "context_chars": 2381,
+   "sources": [
+    "beinsports.com.tr",
+    "mackolik.com",
+    "fanatik.com.tr"
+   ],
+   "correct": false,
+   "unsupported": [],
+   "refused": false,
+   "truth": [
+    {
+     "rank": 5,
+     "team": "Trabzonspor",
+     "played": 7,
+     "points": 13
+    },
+    {
+     "rank": 5,
+     "team": "Trabzonspor",
+     "played": 7,
+     "points": 13
+    }
+   ]
+  },
+  {
+   "id": "leader",
+   "answer": "2026-2027 sezonunda Trendyol Süper Lig lideri Galatasaray [3]. Gittim ki, sezona başlarken Galatasaray 16 puanla önde. Gol krallığı ise Emmanuel Orban'ın (Amed Sportif Faaliyetler) 7 golüyle elinde [3].",
+   "searched": true,
+   "research_ms": 1613.4,
+   "ttft_ms": 3709.0,
+   "total_ms": 5387,
+   "prompt_tokens": 2941,
+   "context_chars": 1607,
+   "sources": [
+    "tff.org",
+    "beinsports.com.tr",
+    "sosyalvadi.com"
+   ],
+   "correct": true,
+   "unsupported": [],
+   "refused": false,
+   "truth": [
+    "galatasaray"
+   ]
+  },
+  {
+   "id": "bjk_points",
+   "answer": "Verilen kaynaklarda Beşiktaş'ın 2025-2026 sezonu puan tablosundaki tam konumu ve puanı net olarak yer almıyor. TFF'nin resmi sitesinden [1] fikstür bilgisi alınıyor ancak güncel puan durumu verileri erişilemiyor. Mackolik.com'da [2] genel bir puan durumu sayfası var ama şu anki rakamlar listelenmedi.\n\nBu nedenle, 16 Ekim 2026 tarihindeki güncel puanı söyleyemiyorum. Daha kesin bilgi için TFF resmi sitesi veya Mackolik gibi spor sitelerini kontrol etmeni öneririm.",
+   "searched": true,
+   "research_ms": 1603.6,
+   "ttft_ms": 4845.8,
+   "total_ms": 7969,
+   "prompt_tokens": 2920,
+   "context_chars": 1564,
+   "sources": [
+    "tff.org",
+    "mackolik.com",
+    "goal.com"
+   ],
+   "correct": false,
+   "unsupported": [
+    "16"
+   ],
+   "refused": true,
+   "truth": [
+    {
+     "rank": 2,
+     "team": "Beşiktaş",
+     "played": 7,
+     "points": 15
+    },
+    {
+     "rank": 2,
+     "team": "Beşiktaş",
+     "played": 7,
+     "points": 15
+    }
+   ]
+  },
+  {
+   "id": "followup",
+   "answer": "Fenerbahçe'nin de şu anki sıralamasını net bir şekilde belirleyemiyorum; mevcut veriler lig başlangıcıyla ilgili belirsizlikler içeriyor. İki takımın da durumunu öğrenmek için güncel puan cetvelini kontrol etmem gerekiyor.",
+   "searched": false,
+   "research_ms": null,
+   "ttft_ms": 4785.0,
+   "total_ms": 13933,
+   "prompt_tokens": 2512,
+   "context_chars": 0,
+   "sources": [],
+   "correct": false,
+   "unsupported": [],
+   "refused": false,
+   "truth": [
+    {
+     "rank": 4,
+     "team": "Fenerbahçe",
+     "played": 7,
+     "points": 13
+    },
+    {
+     "rank": 4,
+     "team": "Fenerbahçe",
+     "played": 7,
+     "points": 13
+    }
+   ]
+  },
+  {
+   "id": "last_season",
+   "answer": "2025-26 sezonu Süper Lig şampiyonu Galatasaray oldu. 9 Mayıs 2026'da oynanan maçta Antalyaspor'u yenen ve 77 puan toplayan takım, üst üste dördüncü kez ligi kazanarak toplamda 26. şampiyonluğuna ulaştı [1][2].",
+   "searched": true,
+   "research_ms": 6450.2,
+   "ttft_ms": 10481.0,
+   "total_ms": 12288,
+   "prompt_tokens": 3538,
+   "context_chars": 3285,
+   "sources": [
+    "tr.wikipedia.org",
+    "aa.com.tr",
+    "tff.org"
+   ],
+   "correct": true,
+   "unsupported": [],
+   "refused": false,
+   "truth": [
+    "galatasaray"
+   ]
+  },
+  {
+   "id": "usd",
+   "answer": "Bugün (16 Ekim 2026) serbest piyasada dolar kuru yaklaşık 49.53 TL seviyesinde işlem görüyor [1][2]. Sabah saatlerinde alım-satım farkı çok az, gün içinde dalgalanma gösterebilir.",
+   "searched": true,
+   "research_ms": 2333.8,
+   "ttft_ms": 5248.8,
+   "total_ms": 6620,
+   "prompt_tokens": 3343,
+   "context_chars": 2569,
+   "sources": [
+    "bloomberght.com",
+    "ekonomim.com",
+    "milatgazetesi.com"
+   ],
+   "correct": true,
+   "unsupported": [],
+   "refused": false
+  },
+  {
+   "id": "eur",
+   "answer": "16 Ekim 2026 Cuma günü serbest piyasada Euro/TL kuru alışta yaklaşık 55,66 TL, satışta ise 55,67 TL seviyesinde işlem görüyor [1][3]. Kurlar gün içinde küçük dalgalanmalar gösterebilir.",
+   "searched": true,
+   "research_ms": 1114.7,
+   "ttft_ms": 6265.8,
+   "total_ms": 7714,
+   "prompt_tokens": 3909,
+   "context_chars": 3827,
+   "sources": [
+    "bloomberght.com",
+    "finans.mynet.com",
+    "ulusal.com.tr"
+   ],
+   "correct": false,
+   "unsupported": [
+    "55.66"
+   ],
+   "refused": false
+  },
+  {
+   "id": "weather",
+   "answer": "İstanbul'da bugün (16 Ekim 2026) hava çok bulutlu, gök gürültülü ve sağanak yağışlı olacak. Sıcaklık gece 12°C, gündüz ise 15°C civarında seyrediyor [2][3].",
+   "searched": true,
+   "research_ms": 2261.9,
+   "ttft_ms": 6274.6,
+   "total_ms": 7952,
+   "prompt_tokens": 3752,
+   "context_chars": 3961,
+   "sources": [
+    "cnnturk.com",
+    "cumhuriyet.com.tr",
+    "milliyet.com.tr"
+   ],
+   "correct": true,
+   "unsupported": [],
+   "refused": false
+  },
+  {
+   "id": "python_ver",
+   "answer": "Python 3.15, 9 Ekim 2026'da yayımlandı [1]. Ancak bu sürüm henüz kararlı değil; resmi kaynaklara göre şu an kararlı sürüm Python 3.14 [2]. Projelerde genellikle kararlı sürümler tercih edilir ama yeni özellikler için geliştirme aşamasındaki 3.15'i de test edebilirsin.",
+   "searched": true,
+   "research_ms": 3346.4,
+   "ttft_ms": 7071.2,
+   "total_ms": 9278,
+   "prompt_tokens": 3578,
+   "context_chars": 3722,
+   "sources": [
+    "remakeizmir.com",
+    "alastyr.com",
+    "evrimagaci.org"
+   ],
+   "correct": true,
+   "unsupported": [],
+   "refused": false,
+   "truth": [
+    "3.15",
+    "3.15.0"
+   ]
+  },
+  {
+   "id": "node_lts",
+   "answer": "Şu an (Ekim 2026) aktif olan LTS sürümü **Node.js 22**. Bu sürüm, Nisan 2027'ye kadar \"Active LTS\" statüsünde kalacak [3].\n\nAraştırmalar, Node.js 24'ün Ekim 2025'te LTS statüsüne geçtiğini ve yeni projeler için önerilen hedef sürüm olduğunu gösteriyor. Ancak 26'nın Ekim 2026'da bile \"Current\" (aktif geliştirme) fazında olacağı, ancak o tarihte henüz LTS statüsüne geçmeyeceği belirtiliyor [3]. Dolayısıyla bugün kullanabileceğin en güncel LTS sürümü 24 değil, 22.",
+   "searched": true,
+   "research_ms": 1225.4,
+   "ttft_ms": 5548.0,
+   "total_ms": 8898,
+   "prompt_tokens": 3448,
+   "context_chars": 3598,
+   "sources": [
+    "nodejs.org",
+    "bildirgec.com.tr",
+    "pkgpulse.com"
+   ],
+   "correct": true,
+   "unsupported": [],
+   "refused": false,
+   "truth": [
+    "24",
+    "24.22.0"
+   ]
+  },
+  {
+   "id": "tech_news",
+   "answer": "Bu hafta öne çıkan gelişme Meta'nın avuç içine sığacak bağımsız bir cihaz olan Muse'u tanıtması oldu. Mark Zuckerberg tarafından sunulan bu cihaz, telefon gerektirmeden yapay zeka ile etkileşime girmeyi hedefliyor [2]. Ayrıca OpenMuse gibi açık kaynaklı alternatifler de GitHub'da geliştirici kitlesi tarafından ilgi görüyor [2].",
+   "searched": true,
+   "research_ms": 1293.4,
+   "ttft_ms": 3711.2,
+   "total_ms": 5581,
+   "prompt_tokens": 3032,
+   "context_chars": 2107,
+   "sources": [
+    "chatgpt.com",
+    "donanimhaber.com",
+    "gemini.google.com"
+   ],
+   "correct": true,
+   "unsupported": [],
+   "refused": false
+  },
+  {
+   "id": "company",
+   "answer": "Tarih 16 Ekim 2026 olduğu için güncel bilgiye ihtiyacım var. Hemen kontrol edeyim.",
+   "searched": false,
+   "research_ms": null,
+   "ttft_ms": 384.7,
+   "total_ms": 1806,
+   "prompt_tokens": 2325,
+   "context_chars": 0,
+   "sources": [],
+   "correct": false,
+   "unsupported": [
+    "16"
+   ],
+   "refused": false
+  },
+  {
+   "id": "general",
+   "answer": "Python, yazılım geliştirme için kullanılan yüksek seviyeli, yorum satırlı ve nesne tabanlı bir programlama dilidir. Okunabilirliği kolay yapılandırması sayesinde hem yeni başlayanlar hem de deneyimli mühendisler tarafından sıklıkla tercih edilir.",
+   "searched": false,
+   "research_ms": null,
+   "ttft_ms": 272.8,
+   "total_ms": 1526,
+   "prompt_tokens": 2317,
+   "context_chars": 0,
+   "sources": [],
+   "correct": true
+  },
+  {
+   "id": "casual",
+   "answer": "Tamam, dinlenmek lazım. Biraz uzaktan izleme veya tamamen kopmak için ne yaparsın?",
+   "searched": false,
+   "research_ms": null,
+   "ttft_ms": 454.5,
+   "total_ms": 1042,
+   "prompt_tokens": 2322,
+   "context_chars": 0,
+   "sources": [],
+   "correct": true
+  },
+  {
+   "id": "general2",
+   "answer": "Fotosentezde bitkiler güneş enerjisini kullanarak suyu ($H_2O$) ve karbondioksidi ($CO_2$) şeker ($C_6H_{12}O_6$) ve oksijene dönüştürür. Bu işlem iki aşamada gerçekleşir: önce ışık enerjisi klorofilde kimyasal enerjiye (ATP ve NADPH) dönüşür, sonra bu enerji ile $CO_2$ şeker sentezlenir.",
+   "searched": false,
+   "research_ms": null,
+   "ttft_ms": 346.9,
+   "total_ms": 2511,
+   "prompt_tokens": 2322,
+   "context_chars": 0,
+   "sources": [],
+   "correct": true
+  }
+ ]
+}

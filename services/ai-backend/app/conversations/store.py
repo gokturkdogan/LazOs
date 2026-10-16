@@ -298,9 +298,7 @@ class ConversationStore:
         return cur.rowcount > 0
 
     async def delete_conversation(self, conv_id: str) -> bool:
-        await self.db.execute(
-            "DELETE FROM messages_fts WHERE rowid IN (SELECT seq FROM messages WHERE conversation_id = ?)", (conv_id,)
-        )
+        await self.db.execute("DELETE FROM messages_fts WHERE rowid IN (SELECT seq FROM messages WHERE conversation_id = ?)", (conv_id,))
         cur = await self.db.execute("DELETE FROM conversations WHERE id = ?", (conv_id,))
         await self.db.commit()
         return cur.rowcount > 0

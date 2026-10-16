@@ -50,10 +50,10 @@ def fake_search() -> FakeSearchProvider:
 def client(boot: BootConfig, fake_llm: FakeLLM, fake_search: FakeSearchProvider) -> Iterator[TestClient]:
     research = ResearchService([fake_search], fetch_timeout=0.5, total_timeout=3)
 
-    async def no_fetch(client, url, query):  # type: ignore[no-untyped-def]
-        return ""  # never touch the network from unit tests
+    async def no_fetch(client, url):  # type: ignore[no-untyped-def]
+        return None, {"url": url, "status": "test: no network"}  # never touch the network from unit tests
 
-    research._excerpt = no_fetch  # type: ignore[method-assign]
+    research._fetch_page = no_fetch  # type: ignore[method-assign]
 
     def factory(cfg: BootConfig) -> Services:
         svc = Services(cfg, llm=fake_llm, research=research)

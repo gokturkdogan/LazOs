@@ -112,8 +112,18 @@ class FeedbackService:
                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                ON CONFLICT(message_id) DO UPDATE SET rating = excluded.rating, reasons = excluded.reasons, note = excluded.note,
                    used_as_evidence = 0, updated_at = excluded.updated_at""",
-            (uuid.uuid4().hex[:12], message_id, row["conversation_id"], rating, json.dumps(reasons), (note or "").strip()[:500] or None,
-             s.llm_model, json.dumps(mode), now, now),
+            (
+                uuid.uuid4().hex[:12],
+                message_id,
+                row["conversation_id"],
+                rating,
+                json.dumps(reasons),
+                (note or "").strip()[:500] or None,
+                s.llm_model,
+                json.dumps(mode),
+                now,
+                now,
+            ),
         )
         await self.db.commit()
         created = await self._evaluate_preference_signals()
@@ -233,7 +243,9 @@ class FeedbackService:
 
     @staticmethod
     def _correction(row: aiosqlite.Row) -> dict[str, Any]:
-        return {k: row[k] for k in row.keys()} | {"usable_as_example": row["status"] == "approved" and row["kind"] == "style" and not row["blocked_reason"]}
+        return {k: row[k] for k in row.keys()} | {
+            "usable_as_example": row["status"] == "approved" and row["kind"] == "style" and not row["blocked_reason"]
+        }
 
     # ── retrieval of approved examples ─────────────────────────────────────
     async def examples_for(self, text: str, *, limit: int | None = None) -> list[Example]:
@@ -283,8 +295,16 @@ class FeedbackService:
         await self.db.execute(
             """INSERT INTO transcription_corrections (id, message_id, original_text, corrected_text, language, terms, stt_config, created_at)
                VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
-            (cid, message_id, original, corrected, s.stt_language, json.dumps(terms, ensure_ascii=False),
-             json.dumps({"model": "whisper-large-v3-turbo", "vocabulary": s.stt_vocabulary}), time.time()),
+            (
+                cid,
+                message_id,
+                original,
+                corrected,
+                s.stt_language,
+                json.dumps(terms, ensure_ascii=False),
+                json.dumps({"model": "whisper-large-v3-turbo", "vocabulary": s.stt_vocabulary}),
+                time.time(),
+            ),
         )
         await self.db.execute("UPDATE messages SET content = ?, stt_original = ? WHERE id = ?", (corrected, original, message_id))
         await self.db.execute("UPDATE messages_fts SET body = ? WHERE rowid = ?", (index_body(corrected), row["seq"]))
@@ -332,7 +352,11 @@ class FeedbackService:
                 continue
             conflict = await self._conflicting_preference(template.proposal)
             suggestion = await self._create_suggestion(
-                "preference", signal, template.proposal, template.category, evidence,
+                "preference",
+                signal,
+                template.proposal,
+                template.category,
+                evidence,
                 note=f"Çelişiyor: “{conflict}”. Onaylarsan yeni tercih geçerli olur." if conflict else None,
             )
             ids = [e.split(":", 1)[1] for e in evidence if e.startswith("feedback:")]
@@ -420,7 +444,9 @@ class FeedbackService:
                 mem, _ = await store.add_memory(sug["category"] or "communication", text_, origin="feedback")
                 memory_id = mem.id
             await self.memory.refresh_profile()
-            self.hub.publish({"type": "memory.changed", "change": "updated" if conflicting else "added", "origin": "manual", "memory": None})
+            self.hub.publish(
+                {"type": "memory.changed", "change": "updated" if conflicting else "added", "origin": "manual", "memory": None}
+            )
         await self.db.execute(
             "UPDATE learning_suggestions SET status = 'approved', proposal = ?, memory_id = ?, note = ?, updated_at = ? WHERE id = ?",
             (text_, memory_id, json.dumps(note, ensure_ascii=False) if note else sug["note"], time.time(), suggestion_id),
@@ -433,7 +459,9 @@ class FeedbackService:
         sug = await self.get_suggestion(suggestion_id)
         if sug is None or sug["status"] != "pending":
             raise FeedbackError("only pending suggestions can be rejected")
-        await self.db.execute("UPDATE learning_suggestions SET status = 'rejected', updated_at = ? WHERE id = ?", (time.time(), suggestion_id))
+        await self.db.execute(
+            "UPDATE learning_suggestions SET status = 'rejected', updated_at = ? WHERE id = ?", (time.time(), suggestion_id)
+        )
         await self.db.commit()
         self._publish("suggestions")
         return await self.get_suggestion(suggestion_id)  # type: ignore[return-value]
@@ -451,7 +479,9 @@ class FeedbackService:
                 await self.memory.store.delete_memory(sug["memory_id"])
             await self.memory.refresh_profile()
             self.hub.publish({"type": "memory.changed", "change": "deleted", "origin": "manual", "memory": None})
-        await self.db.execute("UPDATE learning_suggestions SET status = 'revoked', updated_at = ? WHERE id = ?", (time.time(), suggestion_id))
+        await self.db.execute(
+            "UPDATE learning_suggestions SET status = 'revoked', updated_at = ? WHERE id = ?", (time.time(), suggestion_id)
+        )
         await self.db.commit()
         self._publish("suggestions")
         return await self.get_suggestion(suggestion_id)  # type: ignore[return-value]
@@ -464,7 +494,9 @@ class FeedbackService:
         if sug["status"] == "approved" and sug["kind"] == "preference" and sug["memory_id"]:
             await self.memory.store.update_memory(sug["memory_id"], content=proposal)
             await self.memory.refresh_profile()
-        await self.db.execute("UPDATE learning_suggestions SET proposal = ?, updated_at = ? WHERE id = ?", (proposal, time.time(), suggestion_id))
+        await self.db.execute(
+            "UPDATE learning_suggestions SET proposal = ?, updated_at = ? WHERE id = ?", (proposal, time.time(), suggestion_id)
+        )
         await self.db.commit()
         self._publish("suggestions")
         return await self.get_suggestion(suggestion_id)  # type: ignore[return-value]

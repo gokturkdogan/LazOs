@@ -262,9 +262,7 @@ class MemoryLearner:
         idx = next((i for i, m in enumerate(messages) if m.id == message_id), None)
         if idx is None:
             return MemoryOutcome()
-        outcome = await self.process(
-            message=messages[idx], recent=messages[max(0, idx - 4) : idx], explicit=False, forget=False
-        )
+        outcome = await self.process(message=messages[idx], recent=messages[max(0, idx - 4) : idx], explicit=False, forget=False)
         self.processed += 1
         if self.after_background:
             # The extraction prompt may have displaced the chat prompt in Ollama's cache; re-warm it while idle.
